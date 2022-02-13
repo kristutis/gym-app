@@ -10,7 +10,7 @@ export const validateRequestBody = (schema: ObjectSchema) => async (req: Request
         await schema.validateAsync(req.body)
         next()
     } catch (error) {
-        return next(ApiError.uprocessableEntity(error as any))
+        return next(ApiError.unprocessableEntity(error as any))
     }
 }
 

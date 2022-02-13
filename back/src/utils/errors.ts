@@ -43,8 +43,13 @@ export class ApiError {
 }
 
 export const apiErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(err)
     if (err instanceof ApiError) {
         res.status(err.code).json({ error: { message: err.message } })
+        return
+    }
+    if (err.type && err.type == 'entity.parse.failed') {
+        res.status(400).json({ error: { message: 'Invalid request body' } })
         return
     }
     log.error(err)
