@@ -6,5 +6,5 @@ export interface User {
     hashedPassword?: string;
     createDate: Date;
     modifyDate: Date;
-    comparePassword(candidatePassword: string): Promise<boolean> 
+    role: string;
 }
