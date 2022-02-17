@@ -3,9 +3,9 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "name": "z",
+  "name": "zzz",
   "surname": "world",
-  "email": "hello@wasdorld.com",
+  "email": "helloasd@wasdorld.com",
   "password": "hellohello"
 }
 
@@ -14,6 +14,14 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "hello@wasdorld.comaa",
+  "email": "hello@wasdorld.com",
   "password": "hellohello"
+}
+
+###
+DELETE http://localhost:3000/api/auth/logout
+Content-Type: application/json
+
+{
+"refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwNDgxZDUzLTkwMjktMTFlYy05NzFhLThhZmM1M2FhNTliZCIsIm5hbWUiOiJ6Iiwic3VybmFtZSI6IndvcmxkIiwiZW1haWwiOiJoZWxsb0B3YXNkb3JsZC5jb20iLCJjcmVhdGVEYXRlIjoiMjAyMi0wMi0xN1QxOTozODoyMS4wMDBaIiwibW9kaWZ5RGF0ZSI6IjIwMjItMDItMTdUMTk6Mzg6MjEuMDAwWiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ1MTQwNjg4LCJleHAiOjE2NDUxNDc4ODh9.e3HRUcnXvy7q-ivmyD91NI_uNcrJth-zPRXaxOPnlKo"
 }
