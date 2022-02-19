@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import LogoLink from '../logo/LogoLink'
 import './Footer.css'
 
 export default function Footer() {
@@ -43,12 +44,11 @@ export default function Footer() {
       <section className="social-media">
         <div className="social-media-wrap">
           <div className="footer-logo">
-            <Link to="/" className="social-logo">
-              GYM &nbsp;
-              <i className="fas fa-dumbbell"></i>
-            </Link>
+            <LogoLink className="social-logo" />
           </div>
-          <small className="website-rights">GYM © 2021</small>
+          <small className="website-rights">
+            GYM © {new Date().getFullYear()}
+          </small>
           <div className="social-icons">
             <Link
               className="social-icon-link facebook"
