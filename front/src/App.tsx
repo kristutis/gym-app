@@ -2,7 +2,6 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/navbar/Navbar'
-import logo from './logo.svg'
 import Home from './pages/home/Home'
 
 const routes = [
@@ -28,9 +27,6 @@ function App() {
           ))}
         </Switch>
       </Router>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
     </div>
   )
 }

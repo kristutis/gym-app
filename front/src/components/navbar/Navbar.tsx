@@ -2,6 +2,9 @@ import React from 'react'
 
 export default function Navbar() {
   return (
-    <div>Navbar</div>
+    <div>
+      <img height={100}></img>
+      Navbar
+    </div>
   )
 }
