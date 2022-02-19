@@ -30,24 +30,17 @@ const routes = [
 
 function Navbar() {
   const signUpButtonMessage = isLoggedIn() ? 'LOG OUT' : 'SIGN UP'
+  const isMobileVersion = () => (window.innerWidth <= 960 ? false : true)
 
   const [buttonClicked, setButtonClicked] = useState(false)
-  const [showSignUpButton, setShowSignUpButton] = useState(
-    window.innerWidth <= 960 ? false : true
-  )
+  const [showSignUpButton, setShowSignUpButton] = useState(isMobileVersion())
 
   const handleClick = () => setButtonClicked(!buttonClicked)
   const closeMobileMenu = () => setButtonClicked(false)
 
-  const showButton = () => {
-    if (window.innerWidth <= 960) {
-      setShowSignUpButton(false)
-    } else {
-      setShowSignUpButton(true)
-    }
-  }
-
-  window.addEventListener('resize', showButton)
+  window.addEventListener('resize', () =>
+    setShowSignUpButton(isMobileVersion())
+  )
 
   return (
     <>
@@ -60,6 +53,7 @@ function Navbar() {
           <ul className={buttonClicked ? 'nav-menu active' : 'nav-menu'}>
             {routes.map((route, index) => (
               <NavbarButton
+                key={index}
                 route={route.route}
                 text={route.text}
                 onClick={closeMobileMenu}
