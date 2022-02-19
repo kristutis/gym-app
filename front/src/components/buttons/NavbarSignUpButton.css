@@ -4,7 +4,7 @@
   --transition: all 0.3s ease-out;
 }
 
-.btn {
+.navabr-signup-btn {
   padding: 8px 20px;
   border-radius: 2px;
   outline: none;
@@ -19,7 +19,7 @@
   font-size: 20px;
 }
 
-.btn:hover {
+.navabr-signup-btn:hover {
   background: var(--primary);
   color: var(--hover-text-color);
   transition: var(--transition);
