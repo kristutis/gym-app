@@ -65,14 +65,14 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
-const getExpireDate = (): string => {
+const getExpireDate = (): Date => {
 	const expireTime = CONFIG.ACCESS_TOKEN_EXPIRE;
 	const expireTimeMinutes = parseInt(
 		expireTime.substring(0, expireTime.length - 1)
 	);
 	const currentDate = new Date();
 	currentDate.setMinutes(currentDate.getMinutes() + expireTimeMinutes);
-	return currentDate.toString();
+	return currentDate;
 };
 
 export interface LoginUserProps {

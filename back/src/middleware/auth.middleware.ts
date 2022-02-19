@@ -11,13 +11,8 @@ export const authenticateRefreshToken = (
 	next: NextFunction
 ) => {
 	try {
-		const refreshToken = req.body.refreshToken;
-		if (!refreshToken) {
-			return next(ApiError.badRequest('No refresh token recieved'));
-		}
-
 		jwt.verify(
-			refreshToken,
+			req.body.refreshToken,
 			CONFIG.REFRESH_TOKEN_SECRET,
 			(err: any, user: any) => {
 				if (err) {
