@@ -1,9 +1,11 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
+import './BaseModal.css'
 
-export default function LoginModal({ show, closeFunction }: LoginModalProps) {
+export default function BaseModal({ show, closeFunction }: BaseModalProps) {
   return (
     <Modal
+      contentClassName="base-modal-content"
       show={show}
       toggle={show}
       size="lg"
@@ -11,7 +13,11 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
       centered
       onHide={() => closeFunction()}
     >
-      <Modal.Header closeButton>
+      <Modal.Header
+        className="base-modal-color"
+        closeButton
+        closeVariant="white"
+      >
         <Modal.Title id="contained-modal-title-vcenter">
           Modal heading
         </Modal.Title>
@@ -33,7 +39,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
   )
 }
 
-export interface LoginModalProps {
+export interface BaseModalProps {
   show: boolean
   closeFunction: () => void
 }

@@ -4,7 +4,7 @@ import './NavbarSignUpButton.css'
 function NavbarSignUpButton({ children }: NavbarButtonProps) {
   return (
     <p>
-      <button className={'btn'}>{children}</button>
+      <button className={'navabr-signup-btn'}>{children}</button>
     </p>
   )
 }

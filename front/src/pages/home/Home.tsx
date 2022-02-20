@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import FrontDoorVideo from '../../components/frontdoorvideo/FrontDoorVideo'
-import LoginModal from '../../components/modals/LoginModal'
+import BaseModal from '../../components/modals/BaseModal'
 import './Home.css'
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
       <FrontDoorVideo />
       <div className="fdiv">
         <button onClick={() => setModalOpened(true)}>Open modal</button>
-        <LoginModal
+        <BaseModal
           show={modalOpened}
           closeFunction={() => setModalOpened(false)}
         />
