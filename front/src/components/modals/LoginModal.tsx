@@ -28,7 +28,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
     setPasswordError('')
 
     await loginUserCall({ email, password })
-      .then((msg) => null)
+      .then((msg) => window.location.reload())
       .catch((msg) => setValidatationError(msg))
   }
 
@@ -63,8 +63,9 @@ function LoginForm({
     <Form>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         {validatationError && <ErrorMessage errorMessage={validatationError} />}
+        <br />
         <Form.Label>Email address</Form.Label>
-        {emailError && <ErrorMessage errorMessage={emailError} />}
+        <br /> {emailError && <ErrorMessage errorMessage={emailError} />}
         <Form.Control
           type="email"
           placeholder="Enter email"
@@ -74,7 +75,7 @@ function LoginForm({
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        {passwordError && <ErrorMessage errorMessage={passwordError} />}
+        <br /> {passwordError && <ErrorMessage errorMessage={passwordError} />}
         <Form.Control
           type="password"
           placeholder="Password"
@@ -88,9 +89,7 @@ function LoginForm({
 function ErrorMessage({ errorMessage }: ErrorMessageProps) {
   return (
     <>
-      <br />
       <Form.Text className="login-signup-modal-error">{errorMessage}</Form.Text>
-      <br />
     </>
   )
 }
