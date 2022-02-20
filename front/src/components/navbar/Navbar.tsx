@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { isLoggedIn } from '../../utils/auth'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
+import LoginModal from '../modals/LoginModal'
 import './Navbar.css'
 
 const routes = [
@@ -22,16 +23,14 @@ const routes = [
     route: '/products',
     text: 'Products',
   },
-  {
-    route: '/',
-    text: 'Home',
-  },
 ] as NavbarRoutesProps[]
 
 function Navbar() {
   const signUpButtonMessage = isLoggedIn() ? 'LOG OUT' : 'SIGN UP'
   const isMobileVersion = () => (window.innerWidth <= 960 ? false : true)
 
+  const [loginModalOpened, setLoginModalOpened] = useState(false)
+  const [signupModalOpened, setSignupModalOpened] = useState(false)
   const [buttonClicked, setButtonClicked] = useState(false)
   const [showSignUpButton, setShowSignUpButton] = useState(isMobileVersion())
 
@@ -60,6 +59,17 @@ function Navbar() {
               />
             ))}
             <li className="nav-item">
+              <p
+                className="nav-links"
+                onClick={() => {
+                  closeMobileMenu()
+                  setLoginModalOpened(true)
+                }}
+              >
+                Login
+              </p>
+            </li>
+            <li className="nav-item">
               <p className="nav-links-mobile" onClick={closeMobileMenu}>
                 {signUpButtonMessage}
               </p>
@@ -70,6 +80,10 @@ function Navbar() {
           )}
         </div>
       </nav>
+      <LoginModal
+        show={loginModalOpened}
+        closeFunction={() => setLoginModalOpened(false)}
+      />
     </>
   )
 }

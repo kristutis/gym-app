@@ -1,8 +1,16 @@
 import React from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
+import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import './BaseModal.css'
 
-export default function BaseModal({ show, closeFunction }: BaseModalProps) {
+export default function BaseModal({
+  title,
+  children,
+  buttonText,
+  show,
+  closeFunction,
+  submitFunction,
+}: BaseModalProps) {
   return (
     <Modal
       contentClassName="base-modal-content"
@@ -18,28 +26,23 @@ export default function BaseModal({ show, closeFunction }: BaseModalProps) {
         closeButton
         closeVariant="white"
       >
-        <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <h4>Centered Modal</h4>
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </p>
-      </Modal.Body>
+      <Modal.Body>{children}</Modal.Body>
       <Modal.Footer>
-        <Button variant="success" onClick={() => closeFunction()}>
-          Close
-        </Button>
+        <NavbarSignUpButton onClick={() => submitFunction()}>
+          {buttonText}
+        </NavbarSignUpButton>
       </Modal.Footer>
     </Modal>
   )
 }
 
 export interface BaseModalProps {
+  title: string
+  children: JSX.Element
+  buttonText: string
   show: boolean
   closeFunction: () => void
+  submitFunction: () => void
 }

@@ -2,3 +2,7 @@
   background-color: #242424;
   color: white;
 }
+
+.login-signup-modal-error {
+  color: red;
+}
