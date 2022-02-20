@@ -3,7 +3,7 @@ import { DEFAULT_BACKEND_PATH } from '../../App'
 export const signupUserCall = async (
   payload: SignupUserProps
 ): Promise<string> => {
-  const response = await fetch(DEFAULT_BACKEND_PATH + 'users', {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
