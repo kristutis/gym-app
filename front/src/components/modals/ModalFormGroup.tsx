@@ -5,6 +5,7 @@ export default function ModalFormGroup({
   label,
   errorMsg,
   inputType,
+  inputValue,
   setInput,
 }: ModalFormGroupProps) {
   return (
@@ -18,6 +19,7 @@ export default function ModalFormGroup({
         type={inputType}
         placeholder={label}
         onChange={(e) => setInput(e.target.value)}
+        value={inputValue}
       />
     </Form.Group>
   )
@@ -27,5 +29,6 @@ export interface ModalFormGroupProps {
   label: string
   errorMsg: string
   inputType: string
+  inputValue: string
   setInput: (msg: string) => void
 }

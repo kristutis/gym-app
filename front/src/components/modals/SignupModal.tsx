@@ -5,7 +5,11 @@ import BaseModal from './BaseModal'
 import { ModalFormGroupProps } from './ModalFormGroup'
 import ModalFormGroupList from './ModalFormGroupList'
 
-export default function SignupModal({ show, closeFunction }: SignupModalProps) {
+export default function SignupModal({
+  show,
+  closeFunction,
+  openLoginModal,
+}: SignupModalProps) {
   const [validatationError, setValidatationError] = useState('')
 
   const [name, setName] = useState('')
@@ -55,7 +59,11 @@ export default function SignupModal({ show, closeFunction }: SignupModalProps) {
     setPasswordError('')
 
     await signupUserCall({ name, surname, email, password })
-      .then((msg) => window.location.reload())
+      .then((msg) => {
+        alert('Account created!')
+        closeFunction()
+        openLoginModal()
+      })
       .catch((msg) => setValidatationError(msg))
   }
 
@@ -69,11 +77,17 @@ export default function SignupModal({ show, closeFunction }: SignupModalProps) {
           surnameError={surnameError}
           emailError={emailError}
           passwordError={passwordError}
+          name={name}
           setName={setName}
+          surname={surname}
           setSurname={setSurname}
+          email={email}
           setEmail={setEmail}
+          repeatEmail={repeatEmail}
           setRepeatEmail={setRepeatEmail}
+          password={password}
           setPassword={setPassword}
+          repeatPassword={repeatPassword}
           setRepeatPassword={setRepeatPassword}
         />
       }
@@ -91,11 +105,17 @@ function SignupForm({
   surnameError,
   emailError,
   passwordError,
+  name,
   setName,
+  surname,
   setSurname,
+  email,
   setEmail,
+  repeatEmail,
   setRepeatEmail,
+  password,
   setPassword,
+  repeatPassword,
   setRepeatPassword,
 }: SignupFormProps) {
   const formGroups = [
@@ -103,36 +123,42 @@ function SignupForm({
       label: 'Name',
       errorMsg: nameError,
       inputType: 'text',
+      inputValue: name,
       setInput: setName,
     },
     {
       label: 'Surname',
       errorMsg: surnameError,
       inputType: 'text',
+      inputValue: surname,
       setInput: setSurname,
     },
     {
       label: 'Email',
       errorMsg: emailError,
       inputType: 'email',
+      inputValue: email,
       setInput: setEmail,
     },
     {
       label: 'Repeat email',
       errorMsg: '',
       inputType: 'email',
+      inputValue: repeatEmail,
       setInput: setRepeatEmail,
     },
     {
       label: 'Password',
       errorMsg: passwordError,
       inputType: 'password',
+      inputValue: password,
       setInput: setPassword,
     },
     {
       label: 'Repeat Password',
       errorMsg: '',
       inputType: 'password',
+      inputValue: repeatPassword,
       setInput: setRepeatPassword,
     },
   ] as ModalFormGroupProps[]
@@ -153,15 +179,22 @@ interface SignupFormProps {
   surnameError: string
   emailError: string
   passwordError: string
-  setName: (email: string) => void
-  setSurname: (email: string) => void
-  setEmail: (email: string) => void
-  setRepeatEmail: (email: string) => void
-  setPassword: (password: string) => void
-  setRepeatPassword: (password: string) => void
+  name: string
+  setName: (msg: string) => void
+  surname: string
+  setSurname: (msg: string) => void
+  email: string
+  setEmail: (msg: string) => void
+  repeatEmail: string
+  setRepeatEmail: (msg: string) => void
+  password: string
+  setPassword: (msg: string) => void
+  repeatPassword: string
+  setRepeatPassword: (msg: string) => void
 }
 
 export interface SignupModalProps {
   show: boolean
   closeFunction: () => void
+  openLoginModal: () => void
 }

@@ -96,6 +96,7 @@ function Navbar() {
       <SignupModal
         show={signupModalOpened}
         closeFunction={() => setSignupModalOpened(false)}
+        openLoginModal={() => setLoginModalOpened(true)}
       />
     </>
   )

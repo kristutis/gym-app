@@ -12,6 +12,7 @@ export default function ModalFormGroupList({
           label={formGroup.label}
           errorMsg={formGroup.errorMsg}
           inputType={formGroup.inputType}
+          inputValue={formGroup.inputValue}
           setInput={formGroup.setInput}
         />
       ))}

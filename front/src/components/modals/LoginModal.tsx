@@ -42,7 +42,9 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
           validatationError={validatationError}
           emailError={emailError}
           passwordError={passwordError}
+          email={email}
           setEmail={setEmail}
+          password={password}
           setPassword={setPassword}
         />
       }
@@ -58,7 +60,9 @@ function LoginForm({
   validatationError,
   emailError,
   passwordError,
+  email,
   setEmail,
+  password,
   setPassword,
 }: LoginFormProps) {
   const formGroups = [
@@ -66,12 +70,14 @@ function LoginForm({
       label: 'Email',
       errorMsg: emailError,
       inputType: 'email',
+      inputValue: email,
       setInput: setEmail,
     },
     {
       label: 'Password',
       errorMsg: passwordError,
       inputType: 'password',
+      inputValue: password,
       setInput: setPassword,
     },
   ] as ModalFormGroupProps[]
@@ -92,7 +98,9 @@ interface LoginFormProps {
   validatationError: string
   emailError: string
   passwordError: string
+  email: string
   setEmail: (email: string) => void
+  password: string
   setPassword: (password: string) => void
 }
 
