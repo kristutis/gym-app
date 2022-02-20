@@ -6,6 +6,8 @@ import Footer from './components/footer/Footer'
 import Navbar from './components/navbar/Navbar'
 import Home from './pages/home/Home'
 
+export const DEFAULT_BACKEND_PATH = 'http://localhost:3001/api'
+
 const routes = [
   {
     path: '/',

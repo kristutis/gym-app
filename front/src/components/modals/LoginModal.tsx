@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
+import { loginUserCall } from '../../utils/apicalls/login'
 import BaseModal from './BaseModal'
 
 export default function LoginModal({ show, closeFunction }: LoginModalProps) {
+  const [validatationError, setValidatationError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const loginClicked = () => {
+  const loginClicked = async () => {
+    setValidatationError('')
     if (!email) {
       setEmailError('Email field must not be empty!')
       return
@@ -18,7 +21,15 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
       setPasswordError('Password field must not be empty!')
       return
     }
+    if (password.length < 6) {
+      setPasswordError('Password lenghth must be 6 symbols or more!')
+      return
+    }
     setPasswordError('')
+
+    await loginUserCall({ email, password })
+      .then((msg) => null)
+      .catch((msg) => setValidatationError(msg))
   }
 
   return (
@@ -26,6 +37,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
       title={'Please fill out login form'}
       children={
         <LoginForm
+          validatationError={validatationError}
           emailError={emailError}
           passwordError={passwordError}
           setEmail={setEmail}
@@ -41,6 +53,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
 }
 
 function LoginForm({
+  validatationError,
   emailError,
   passwordError,
   setEmail,
@@ -49,6 +62,7 @@ function LoginForm({
   return (
     <Form>
       <Form.Group className="mb-3" controlId="formBasicEmail">
+        {validatationError && <ErrorMessage errorMessage={validatationError} />}
         <Form.Label>Email address</Form.Label>
         {emailError && <ErrorMessage errorMessage={emailError} />}
         <Form.Control
@@ -71,20 +85,22 @@ function LoginForm({
   )
 }
 
-interface LoginFormProps {
-  emailError: string
-  passwordError: string
-  setEmail: (email: string) => void
-  setPassword: (password: string) => void
-}
-
 function ErrorMessage({ errorMessage }: ErrorMessageProps) {
   return (
     <>
       <br />
       <Form.Text className="login-signup-modal-error">{errorMessage}</Form.Text>
+      <br />
     </>
   )
+}
+
+interface LoginFormProps {
+  validatationError: string
+  emailError: string
+  passwordError: string
+  setEmail: (email: string) => void
+  setPassword: (password: string) => void
 }
 
 interface ErrorMessageProps {
