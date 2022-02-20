@@ -11,8 +11,6 @@ export const loginUserCall = async (
     body: JSON.stringify(payload),
   })
 
-  console.log('dasd')
-
   const responseBody = await response.json()
   if (response.status === 200) {
     //user logic

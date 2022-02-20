@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { loginUserCall } from '../../utils/apicalls/login'
 import BaseModal from './BaseModal'
+import { ModalFormGroupProps } from './ModalFormGroup'
+import ModalFormGroupList from './ModalFormGroupList'
 
 export default function LoginModal({ show, closeFunction }: LoginModalProps) {
   const [validatationError, setValidatationError] = useState('')
@@ -59,38 +61,30 @@ function LoginForm({
   setEmail,
   setPassword,
 }: LoginFormProps) {
+  const formGroups = [
+    {
+      label: 'Email',
+      errorMsg: emailError,
+      inputType: 'email',
+      setInput: setEmail,
+    },
+    {
+      label: 'Password',
+      errorMsg: passwordError,
+      inputType: 'password',
+      setInput: setPassword,
+    },
+  ] as ModalFormGroupProps[]
+
   return (
     <Form>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        {validatationError && <ErrorMessage errorMessage={validatationError} />}
-        <br />
-        <Form.Label>Email address</Form.Label>
-        <br /> {emailError && <ErrorMessage errorMessage={emailError} />}
-        <Form.Control
-          type="email"
-          placeholder="Enter email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <br /> {passwordError && <ErrorMessage errorMessage={passwordError} />}
-        <Form.Control
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Group>
+      {validatationError && (
+        <Form.Text className="login-signup-modal-error">
+          {validatationError}
+        </Form.Text>
+      )}
+      <ModalFormGroupList formGroups={formGroups} />
     </Form>
-  )
-}
-
-function ErrorMessage({ errorMessage }: ErrorMessageProps) {
-  return (
-    <>
-      <Form.Text className="login-signup-modal-error">{errorMessage}</Form.Text>
-    </>
   )
 }
 
@@ -100,10 +94,6 @@ interface LoginFormProps {
   passwordError: string
   setEmail: (email: string) => void
   setPassword: (password: string) => void
-}
-
-interface ErrorMessageProps {
-  errorMessage: string
 }
 
 export interface LoginModalProps {

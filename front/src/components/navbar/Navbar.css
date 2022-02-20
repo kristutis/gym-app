@@ -35,6 +35,7 @@
 }
 
 .nav-menu {
+  padding-left: 0;
   display: grid;
   grid-template-columns: repeat(6, auto);
   grid-gap: 10px;
@@ -43,6 +44,10 @@
   width: 60vw;
   justify-content: end;
   margin-right: 2rem;
+}
+
+.nav-item-link {
+  text-decoration: none;
 }
 
 .nav-item {

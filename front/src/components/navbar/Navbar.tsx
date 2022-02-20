@@ -4,6 +4,7 @@ import { isLoggedIn } from '../../utils/auth'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
 import LoginModal from '../modals/LoginModal'
+import SignupModal from '../modals/SignupModal'
 import './Navbar.css'
 
 const routes = [
@@ -70,19 +71,31 @@ function Navbar() {
               </p>
             </li>
             <li className="nav-item">
-              <p className="nav-links-mobile" onClick={closeMobileMenu}>
+              <p
+                className="nav-links-mobile"
+                onClick={() => {
+                  closeMobileMenu()
+                  setSignupModalOpened(true)
+                }}
+              >
                 {signUpButtonMessage}
               </p>
             </li>
           </ul>
           {showSignUpButton && (
-            <NavbarSignUpButton>{signUpButtonMessage}</NavbarSignUpButton>
+            <NavbarSignUpButton onClick={() => setSignupModalOpened(true)}>
+              {signUpButtonMessage}
+            </NavbarSignUpButton>
           )}
         </div>
       </nav>
       <LoginModal
         show={loginModalOpened}
         closeFunction={() => setLoginModalOpened(false)}
+      />
+      <SignupModal
+        show={signupModalOpened}
+        closeFunction={() => setSignupModalOpened(false)}
       />
     </>
   )
@@ -91,8 +104,8 @@ function Navbar() {
 function NavbarButton({ route, text, onClick }: NavbarButtonProps) {
   return (
     <li className="nav-item">
-      <Link to={route} className="nav-links" onClick={() => onClick()}>
-        {text}
+      <Link className="nav-item-link" to={route} onClick={() => onClick()}>
+        <p className="nav-links">{text}</p>
       </Link>
     </li>
   )
