@@ -1,3 +1,7 @@
 export const isLoggedIn = (): boolean => {
-  return false
+  return true
+}
+
+export const isAdmin = (): boolean => {
+  return true
 }

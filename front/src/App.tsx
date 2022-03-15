@@ -5,6 +5,8 @@ import './App.css'
 import Footer from './components/footer/Footer'
 import Navbar from './components/navbar/Navbar'
 import Home from './pages/home/Home'
+import Timetable from './pages/timetable/Timetable'
+import Users from './pages/users/Users'
 
 export const DEFAULT_BACKEND_PATH = 'http://localhost:3001/api'
 
@@ -12,6 +14,14 @@ const routes = [
   {
     path: '/',
     component: Home,
+  },
+  {
+    path: '/timetable',
+    component: Timetable,
+  },
+  {
+    path: '/users',
+    component: Users,
   },
 ] as RouteProps[]
 

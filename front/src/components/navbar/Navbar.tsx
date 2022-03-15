@@ -1,32 +1,41 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { isLoggedIn } from '../../utils/auth'
+import { isAdmin, isLoggedIn } from '../../utils/auth'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
 import LoginModal from '../modals/LoginModal'
 import SignupModal from '../modals/SignupModal'
 import './Navbar.css'
 
-const routes = [
+const commonRoutes = [
   {
     route: '/',
     text: 'Home',
   },
   {
-    route: '/products',
-    text: 'Products',
+    route: '/trainers',
+    text: 'Trainers',
+  },
+] as NavbarRoutesProps[]
+
+const clientRoutes = []
+
+const trainerRoutes = []
+
+const adminRoutes = [
+  {
+    route: '/users',
+    text: 'Users',
   },
   {
-    route: '/',
-    text: 'Home',
-  },
-  {
-    route: '/products',
-    text: 'Products',
+    route: '/timetable',
+    text: 'Timetable',
   },
 ] as NavbarRoutesProps[]
 
 function Navbar() {
+  const routes = [...commonRoutes, ...getRoleRoutes()]
+
   const signUpButtonMessage = isLoggedIn() ? 'LOG OUT' : 'SIGN UP'
   const isMobileVersion = () => (window.innerWidth <= 960 ? false : true)
 
@@ -59,17 +68,19 @@ function Navbar() {
                 onClick={closeMobileMenu}
               />
             ))}
-            <li className="nav-item">
-              <p
-                className="nav-links"
-                onClick={() => {
-                  closeMobileMenu()
-                  setLoginModalOpened(true)
-                }}
-              >
-                Login
-              </p>
-            </li>
+            {!isLoggedIn() && (
+              <li className="nav-item">
+                <p
+                  className="nav-links"
+                  onClick={() => {
+                    closeMobileMenu()
+                    setLoginModalOpened(true)
+                  }}
+                >
+                  Login
+                </p>
+              </li>
+            )}
             <li className="nav-item">
               <p
                 className="nav-links-mobile"
@@ -110,6 +121,13 @@ function NavbarButton({ route, text, onClick }: NavbarButtonProps) {
       </Link>
     </li>
   )
+}
+
+function getRoleRoutes(): NavbarRoutesProps[] {
+  if (isLoggedIn() && isAdmin()) {
+    return adminRoutes
+  }
+  return []
 }
 
 interface NavbarButtonProps {

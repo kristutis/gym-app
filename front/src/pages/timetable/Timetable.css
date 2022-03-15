@@ -1,0 +1,20 @@
+.create-window-form,
+.reservation-window-form {
+  /* position: relative; */
+  padding: 0.5rem;
+  border: 0.2rem solid;
+  border-radius: 8px;
+  margin: 5px;
+}
+
+.create-window-form {
+  border-color: #242424;
+}
+
+.reservation-window-form {
+  border-color: #ececec;
+}
+
+/* .reservation-window-form > * {
+  margin-bottom: 20px;
+} */
