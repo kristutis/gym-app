@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
 import Footer from './components/footer/Footer'
 import Navbar from './components/navbar/Navbar'
+import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
 import Timetable from './pages/timetable/Timetable'
 import Users from './pages/users/Users'
@@ -18,6 +19,10 @@ const routes = [
   {
     path: '/timetable',
     component: Timetable,
+  },
+  {
+    path: '/timetable/create',
+    component: CreateTimeTable,
   },
   {
     path: '/users',
