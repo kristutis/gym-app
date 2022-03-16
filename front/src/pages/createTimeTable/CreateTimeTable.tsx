@@ -1,49 +1,73 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  Col,
-  Form,
-  InputGroup,
-  ProgressBar,
-  Row,
-} from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Button } from 'react-bootstrap'
+import ErrorLabel from '../../components/errorLabel/ErrorLabel'
+import ReservationWindowForm from '../../components/reservationWindowForm/ReservationWindowForm'
 import {
   createTimetableCall,
-  CreateTimetableProps,
+  CreateTimetableCallProps,
 } from '../../utils/apicalls/timetable'
 import './CreateTimeTable.css'
 
 export default function CreateTimeTable() {
+  const [error, setError] = useState('')
   const [formsCount, setFormsCount] = useState(1)
+  const [formsPayloads, setFormsPayloads] = useState([
+    {},
+  ] as CreateTimetableCallProps[])
 
-  const handleSubmit = async (payload: CreateTimetableProps) => {
-    const error = createTimetableCall(payload)
-    if (error) {
-      alert(error)
+  const handleSubmit = async () => {
+    const err = validateInputs(formsPayloads)
+    if (err) {
+      setError(err)
+      return
     }
+
+    const errorText = createTimetableCall(formsPayloads)
+    // if (error) {
+    //   //   alert(error)
+    // }
+    setError('')
+  }
+
+  const handleCreateForm = () => {
+    setFormsPayloads([...formsPayloads, {} as CreateTimetableCallProps])
+    setFormsCount(formsCount + 1)
+  }
+
+  const handleDeleteForm = () => {
+    const newFormsPayload = [...formsPayloads]
+    newFormsPayload.pop()
+    setFormsPayloads(newFormsPayload)
+    setFormsCount(formsCount - 1)
   }
 
   return (
     <>
       <div className="create-window-form">
         <h1>Please select your specification</h1>
+        <ErrorLabel error={error} />
         <div className="mb-3">
           {[...(Array(formsCount).keys() as any)].map((index) => (
             <ReservationWindowForm
               index={index + 1}
-              deleteForm={() => setFormsCount(formsCount - 1)}
+              deleteForm={() => handleDeleteForm()}
+              setFormPayload={(payload) => {
+                const newPayloads = [...formsPayloads]
+                newPayloads[index] = payload
+                setFormsPayloads(newPayloads)
+              }}
             />
           ))}
         </div>
         <Button
           className="mb-3"
           variant="outline-success"
-          onClick={() => setFormsCount(formsCount + 1)}
+          onClick={() => handleCreateForm()}
         >
           + Add more
         </Button>
         <div className="d-grid gap-2">
-          <Button variant="success" size="lg">
+          <Button variant="success" size="lg" onClick={() => handleSubmit()}>
             CREATE
           </Button>
         </div>
@@ -52,196 +76,50 @@ export default function CreateTimeTable() {
   )
 }
 
-function ReservationWindowForm({
-  index,
-  deleteForm,
-}: ReservationWindowFormProps) {
-  const isMobileVersion = () => (window.innerWidth <= 960 ? false : true)
-
-  const currentDate = getMinDateFormat(new Date())
-
-  const [progressBar, setProgressBar] = useState(0)
-
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [startTime, setStartTime] = useState(null)
-  const [endTime, setEndTime] = useState(null)
-  const [visitingTime, setVisitingTime] = useState(null)
-  const [breakTime, setBreakTime] = useState(null)
-
-  const [excludeWeekends, setExcludeWeekends] = useState(false)
-  const [limitVisitors, setLimitVisitors] = useState(false)
-  const [visitorsCount, setVisitorsCount] = useState(0)
-  const [minEndDate, setMinEndDate] = useState(currentDate)
-
-  const [mobileVersion, setMobileVersion] = useState(isMobileVersion())
-
-  const handleProgressBar = () => {
-    let progress = 0
-    if (startDate) {
-      progress += 20
+function validateInputs(payloads: CreateTimetableCallProps[]): string {
+  for (let i = 0; i < payloads.length; i++) {
+    const form = payloads[i]
+    if (!Object.keys(form).length) {
+      return `Form #${i + 1} cannot be empty!`
     }
-    if (endDate) {
-      progress += 20
+
+    if (!form.startDate) {
+      return `Form #${i + 1} start date cannot be empty!`
     }
-    if (startTime) {
-      progress += 20
+
+    if (!form.startTime) {
+      return `Form #${i + 1} start time cannot be empty!`
     }
-    if (endTime) {
-      progress += 20
+
+    if (!form.endDate) {
+      return `Form #${i + 1} end date cannot be empty!`
     }
-    if (visitingTime) {
-      progress += 10
+
+    if (!form.endTime) {
+      return `Form #${i + 1} end time cannot be empty!`
     }
-    if (breakTime) {
-      progress += 10
+
+    if (!form.visitingTime) {
+      return `Form #${i + 1} visiting time cannot be empty!`
     }
-    setProgressBar(progress)
+
+    if (!form.breakTime) {
+      return `Form #${i + 1} break time cannot be empty!`
+    }
+
+    if (form.visitingTime <= '00:00') {
+      return `Form #${i + 1} invalid visiting time!`
+    }
+
+    console.log(form.onlyWeekends)
+    if (form.excludeWeekends && form.onlyWeekends) {
+      console.log('asds')
+      return `Form #${i + 1} cannot have both weekends and weekdays excluded!`
+    }
+
+    if (form.limitVisitors && form.visitorsCount! < 1) {
+      return `Form #${i + 1} visitors count should be more than 0!`
+    }
   }
-
-  useEffect(
-    () => handleProgressBar(),
-    [startDate, endDate, startTime, endTime, visitingTime, breakTime]
-  )
-
-  window.addEventListener('resize', () => setMobileVersion(isMobileVersion()))
-
-  return (
-    <>
-      <div className="reservation-window-form">
-        <h4>Form #{index}</h4>
-        <Form>
-          <ProgressBar
-            className="mb-4"
-            variant="success"
-            label={`${progressBar}% done`}
-            now={progressBar}
-          />
-          <Row className="mb-4">
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Start date</InputGroup.Text>
-                <Form.Control
-                  type="date"
-                  min={currentDate}
-                  onChange={(e: any) => {
-                    setStartDate(e.target.value)
-                    setMinEndDate(e.target.value)
-                  }}
-                />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Start time</InputGroup.Text>
-                <Form.Control
-                  type="time"
-                  onChange={(e: any) => {
-                    setStartTime(e.target.value)
-                  }}
-                />
-              </InputGroup>
-            </Col>
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>End date</InputGroup.Text>
-                <Form.Control
-                  type="date"
-                  min={minEndDate}
-                  onChange={(e: any) => {
-                    setEndDate(e.target.value)
-                  }}
-                />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>End time</InputGroup.Text>
-                <Form.Control
-                  type="time"
-                  onChange={(e: any) => {
-                    setEndTime(e.target.value)
-                  }}
-                />
-              </InputGroup>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Visiting time</InputGroup.Text>
-                <Form.Control
-                  type="time"
-                  onChange={(e: any) => {
-                    setVisitingTime(e.target.value)
-                  }}
-                />
-              </InputGroup>
-            </Col>
-            {mobileVersion && <Col />}
-          </Row>
-          <Row className="mb-4">
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Break time</InputGroup.Text>
-                <Form.Control
-                  type="time"
-                  onChange={(e: any) => {
-                    setBreakTime(e.target.value)
-                  }}
-                />
-              </InputGroup>
-            </Col>
-            {mobileVersion && <Col />}
-          </Row>
-
-          <Row>
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Exclude weekends?</InputGroup.Text>
-                <InputGroup.Checkbox
-                  onChange={(e: any) => setExcludeWeekends(e.target.checked)}
-                />
-                <Form.Control disabled />
-              </InputGroup>
-            </Col>
-            <Col>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Limit visitors' count?</InputGroup.Text>
-                <InputGroup.Checkbox
-                  onChange={(e: any) => setLimitVisitors(e.target.checked)}
-                />
-                <Form.Control
-                  type="number"
-                  placeholder={limitVisitors ? 'Visitors count' : ''}
-                  disabled={!limitVisitors}
-                  min={1}
-                  value={limitVisitors ? visitorsCount : ''}
-                  onChange={(e: any) => setVisitorsCount(e.target.value)}
-                />
-              </InputGroup>
-            </Col>
-          </Row>
-        </Form>
-        {index >= 2 && (
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={() => {
-              //   component
-              deleteForm()
-            }}
-          >
-            - Delete
-          </Button>
-        )}
-      </div>
-    </>
-  )
-}
-
-interface ReservationWindowFormProps {
-  index: number
-  deleteForm: () => void
-}
-
-function getMinDateFormat(date: Date): string {
-  return date.toISOString().split('T')[0]
+  return ''
 }

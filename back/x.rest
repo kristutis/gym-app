@@ -25,3 +25,11 @@ Content-Type: application/json
 {
   "refreshToken": "eyJhbGcxiOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwNDgxZDUzLTkwMjktMTFlYy05NzFhLThhZmM1M2FhNTliZCIsIm5hbWUiOiJ6Iiwic3VybmFtZSI6IndvcmxkIiwiZW1haWwiOiJoZWxsb0B3YXNkb3JsZC5jb20iLCJjcmVhdGVEYXRlIjoiMjAyMi0wMi0xN1QxOTozODoyMS4wMDBaIiwibW9kaWZ5RGF0ZSI6IjIwMjItMDItMTdUMTk6Mzg6MjEuMDAwWiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ1MTQwNzUyLCJleHAiOjE2NDUxNDc5NTJ9.vJKiV2g3Ci6xKmixVO9Rv-bag9w6XGdFykgM51QRvyk"
 }
+
+###
+POST http://localhost:3000/api/timetable
+Content-Type: application/json
+
+{
+  "email": "hello@wasdorld.com",
+}

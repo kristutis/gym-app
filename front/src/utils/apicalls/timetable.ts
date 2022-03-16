@@ -1,8 +1,9 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 
 export const createTimetableCall = async (
-  payload: CreateTimetableProps
+  payload: CreateTimetableCallProps[]
 ): Promise<string> => {
+  console.log(payload)
   const response = await fetch(DEFAULT_BACKEND_PATH + '/timetable', {
     method: 'POST',
     headers: {
@@ -30,14 +31,15 @@ export const createTimetableCall = async (
   return Promise.reject('Unhandled exception')
 }
 
-export interface CreateTimetableProps {
-  startDate: Date
-  startTime: string
-  endDate: Date
-  endTime: string
-  visitingTime: string
-  breakTime: string
+export interface CreateTimetableCallProps {
+  startDate: Date | null
+  startTime: string | null
+  endDate: Date | null
+  endTime: string | null
+  visitingTime: string | null
+  breakTime: string | null
   excludeWeekends: boolean
+  onlyWeekends: boolean
   limitVisitors: boolean
   visitorsCount?: number
 }
