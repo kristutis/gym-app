@@ -7,10 +7,21 @@ import {
   ProgressBar,
   Row,
 } from 'react-bootstrap'
+import {
+  createTimetableCall,
+  CreateTimetableProps,
+} from '../../utils/apicalls/timetable'
 import './CreateTimeTable.css'
 
 export default function CreateTimeTable() {
   const [formsCount, setFormsCount] = useState(1)
+
+  const handleSubmit = async (payload: CreateTimetableProps) => {
+    const error = createTimetableCall(payload)
+    if (error) {
+      alert(error)
+    }
+  }
 
   return (
     <>

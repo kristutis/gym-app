@@ -42,3 +42,23 @@ export const loginUserSchema: ObjectSchema = Joi.object({
 export const refreshTokenSchema: ObjectSchema = Joi.object({
 	refreshToken: Joi.string().min(1).required(),
 });
+
+export const createTimetableSchema: ObjectSchema = Joi.object({
+	startDate: Joi.date().required(),
+	startTime: Joi.string()
+		.regex(/^\d{2}:\d{2}$/)
+		.required(),
+	endDate: Joi.date().required(),
+	endTime: Joi.string()
+		.regex(/^\d{2}:\d{2}$/)
+		.required(),
+	visitingTime: Joi.string()
+		.regex(/^\d{2}:\d{2}$/)
+		.required(),
+	breakTime: Joi.string()
+		.regex(/^\d{2}:\d{2}$/)
+		.required(),
+	excludeWeekends: Joi.boolean().required(),
+	limitVisitors: Joi.boolean().required(),
+	visitorsCount: Joi.number().min(1),
+});

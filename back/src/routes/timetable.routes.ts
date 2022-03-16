@@ -1,0 +1,16 @@
+import express from 'express';
+import timetableController from '../controllers/timetable.controller';
+import {
+	createTimetableSchema,
+	validateRequestBody,
+} from '../middleware/reqBodyValidation.middleware';
+
+export const timetableRouter = express.Router();
+
+const BASE_ROUTE = '/api/timetable';
+
+timetableRouter.post(
+	BASE_ROUTE,
+	validateRequestBody(createTimetableSchema),
+	timetableController.createTimetable
+);
