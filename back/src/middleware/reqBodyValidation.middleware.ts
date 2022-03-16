@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import Joi, { ObjectSchema } from 'joi';
+import Joi, { ArraySchema, ObjectSchema } from 'joi';
 import { ApiError } from '../utils/errors';
 
 export const validateRequestBody =
-	(schema: ObjectSchema) =>
+	(schema: ObjectSchema | ArraySchema) =>
 	async (req: Request, res: Response, next: NextFunction) => {
 		schema
 			.validateAsync(req.body)
@@ -43,7 +43,7 @@ export const refreshTokenSchema: ObjectSchema = Joi.object({
 	refreshToken: Joi.string().min(1).required(),
 });
 
-export const createTimetableSchema: ObjectSchema = Joi.object({
+const createTimetableSchema: ObjectSchema = Joi.object({
 	startDate: Joi.date().required(),
 	startTime: Joi.string()
 		.regex(/^\d{2}:\d{2}$/)
@@ -59,6 +59,11 @@ export const createTimetableSchema: ObjectSchema = Joi.object({
 		.regex(/^\d{2}:\d{2}$/)
 		.required(),
 	excludeWeekends: Joi.boolean().required(),
+	onlyWeekends: Joi.boolean().required(),
 	limitVisitors: Joi.boolean().required(),
 	visitorsCount: Joi.number().min(1),
 });
+
+export const createTimetablesSchema: ArraySchema = Joi.array().items(
+	createTimetableSchema
+);

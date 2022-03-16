@@ -5,7 +5,7 @@ async function createTimetable(
 	res: Response,
 	next: NextFunction
 ) {
-	const timetableDetails = req.body as CreateTimetableProps;
+	const timetableDetails = req.body as CreateTimetableProps[];
 	console.log(timetableDetails);
 	// try {
 	// 	const hashedPassword = await bcrypt.hash(userDetails.password, 10);
@@ -33,6 +33,7 @@ export interface CreateTimetableProps {
 	visitingTime: string;
 	breakTime: string;
 	excludeWeekends: boolean;
+	onlyWeekends: boolean;
 	limitVisitors: boolean;
 	visitorsCount?: number;
 }
