@@ -9,6 +9,8 @@ export const timetableRouter = express.Router();
 
 const BASE_ROUTE = '/api/timetable';
 
+timetableRouter.get(BASE_ROUTE, timetableController.getTimetables);
+
 timetableRouter.post(
 	BASE_ROUTE,
 	validateRequestBody(createTimetablesSchema),

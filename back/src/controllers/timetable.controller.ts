@@ -1,6 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import timetablesOperations from '../db/timetables.operations';
 import { ReservationWindow } from '../models/reservationWindow.model';
+import { ResponseCode } from '../utils/responseCodes';
+
+async function getTimetables(req: Request, res: Response, next: NextFunction) {
+	try {
+		const result = await timetablesOperations.getTimetables();
+		return res.status(ResponseCode.OK).json(result);
+	} catch (e) {
+		return next(e);
+	}
+}
 
 async function createTimetable(
 	req: Request,
@@ -50,9 +60,6 @@ async function createTimetable(
 	const result = await timetablesOperations.insertTimetables(
 		reservationWindows
 	);
-	console.log(result);
-
-	// filteredDays.forEach((x) => console.log(x));
 
 	// try {
 	// 	const hashedPassword = await bcrypt.hash(userDetails.password, 10);
@@ -217,4 +224,5 @@ export interface CreateTimetableProps {
 
 export default {
 	createTimetable,
+	getTimetables,
 };
