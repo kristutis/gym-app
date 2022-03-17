@@ -61,7 +61,7 @@ const createTimetableSchema: ObjectSchema = Joi.object({
 	excludeWeekends: Joi.boolean().required(),
 	onlyWeekends: Joi.boolean().required(),
 	limitVisitors: Joi.boolean().required(),
-	visitorsCount: Joi.number().min(1),
+	visitorsCount: Joi.number().min(0),
 });
 
 export const createTimetablesSchema: ArraySchema = Joi.array().items(

@@ -36,6 +36,7 @@ export default function ReservationWindowForm({
 
   const handleProgressBar = () => {
     let progress = 0
+    console.log(startDate)
     if (startDate) {
       progress += 20
     }

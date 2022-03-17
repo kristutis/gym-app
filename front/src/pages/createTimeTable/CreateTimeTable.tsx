@@ -111,9 +111,7 @@ function validateInputs(payloads: CreateTimetableCallProps[]): string {
       return `Form #${i + 1} invalid visiting time!`
     }
 
-    console.log(form.onlyWeekends)
     if (form.excludeWeekends && form.onlyWeekends) {
-      console.log('asds')
       return `Form #${i + 1} cannot have both weekends and weekdays excluded!`
     }
 
