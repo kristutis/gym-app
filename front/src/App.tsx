@@ -7,6 +7,7 @@ import Navbar from './components/navbar/Navbar'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
 import Timetable from './pages/timetable/Timetable'
+import userCalendar from './pages/userCalendar/userCalendar'
 import Users from './pages/users/Users'
 
 export const DEFAULT_BACKEND_PATH = 'http://localhost:3001/api'
@@ -27,6 +28,10 @@ const routes = [
   {
     path: '/users',
     component: Users,
+  },
+  {
+    path: '/user-calendar',
+    component: userCalendar,
   },
 ] as RouteProps[]
 
