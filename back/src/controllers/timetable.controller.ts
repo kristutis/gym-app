@@ -4,8 +4,12 @@ import { ReservationWindow } from '../models/reservationWindow.model';
 import { ResponseCode } from '../utils/responseCodes';
 
 async function getTimetables(req: Request, res: Response, next: NextFunction) {
+	const params = req.query as any as GetTimetablesProps;
 	try {
-		const result = await timetablesOperations.getTimetables();
+		const result = await timetablesOperations.getTimetablesInRange(
+			params.startDate,
+			params.endDate
+		);
 		return res.status(ResponseCode.OK).json(result);
 	} catch (e) {
 		return next(e);
@@ -207,6 +211,11 @@ function getWeekday(day: Date): Date {
 
 function getWeekend(day: Date): Date {
 	return day.getDay() === 0 || day.getDay() === 6 ? day : null;
+}
+
+interface GetTimetablesProps {
+	startDate: Date;
+	endDate: Date;
 }
 
 export interface CreateTimetableProps {

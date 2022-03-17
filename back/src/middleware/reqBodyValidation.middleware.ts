@@ -11,6 +11,15 @@ export const validateRequestBody =
 			.catch((error) => next(ApiError.unprocessableEntity(error as any)));
 	};
 
+export const validateRequestQuery =
+	(schema: ObjectSchema | ArraySchema) =>
+	async (req: Request, res: Response, next: NextFunction) => {
+		schema
+			.validateAsync(req.query)
+			.then((r) => next())
+			.catch((error) => next(ApiError.unprocessableEntity(error as any)));
+	};
+
 const emailSchema = Joi.string()
 	.min(1)
 	.max(255)
@@ -67,3 +76,8 @@ const createTimetableSchema: ObjectSchema = Joi.object({
 export const createTimetablesSchema: ArraySchema = Joi.array().items(
 	createTimetableSchema
 );
+
+export const getTimetablesSchema: ObjectSchema = Joi.object({
+	startDate: Joi.date().required(),
+	endDate: Joi.date().required(),
+});

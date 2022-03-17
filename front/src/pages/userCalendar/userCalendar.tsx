@@ -1,3 +1,4 @@
+
 import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
@@ -6,85 +7,59 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/css/bootstrap.css'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
+import {
+  getTimetablesCall,
+  ReservationWindow,
+} from '../../utils/apicalls/timetable'
 
-export default function userCalendar() {
-  const loadReservationWindows = (startDate: Date, endDate: Date) => {
-      console.log(startDate)
-      console.log(endDate)
+export default function UserCalendar() {
+  const [events, setEvents] = useState([] as EventInput[])
+
+  const convertToEvents = (data: ReservationWindow[]): EventInput[] => {
+    const dataCopy = [...data]
+    const converted = dataCopy.map((reservationWindow) => {
+      return {
+          id: reservationWindow.id,
+        title: !!reservationWindow.limitedSpace
+          ? `${reservationWindow.peopleCount} slots available`
+          : 'Unlimited',
+        color:
+          !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
+            ? 'red'
+            : 'green',
+        start: reservationWindow.startTime,
+        end: reservationWindow.endTime,
+      } as any
+    })
+    return converted
+  }
+
+  const loadReservationWindows = async (startDate: Date, endDate: Date) => {
+      const appendedEndDay = new Date(endDate)
+      appendedEndDay.setDate(appendedEndDay.getDate() + 1)
+      try {
+        const data = await getTimetablesCall(startDate, appendedEndDay)
+        console.log(data)
+    
+        setEvents(convertToEvents(data as ReservationWindow[]))
+      } catch (e) {
+
+      }
   }
 
   const handleEventClick = (e: any) => {
-    console.log(e.event.start)
+    console.log({id: e.event.id, s: e.event.start})
   }
 
   //red booked
   //green available
   //orange: mine
-  const events: EventInput[] = [
-    {
-      title: '2 visitors',
-      color: 'orange',
-      start: '2022-03-17T12:30:00.000Z',
-      end: '2022-03-17T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-18T12:30:00.000Z',
-      end: '2022-03-18T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-    {
-      title: '2 visitors',
-      start: '2022-03-10T12:30:00.000Z',
-      end: '2022-03-2T13:30:00.000Z',
-    },
-  ]
 
   return (
     <div>
       <FullCalendar
-        // plugins={[dayGridPlugin, interactionPlugin]}
         plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin, listPlugin]}
         initialView="dayGridMonth"
         themeSystem="bootstrap5"
