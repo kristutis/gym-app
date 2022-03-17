@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import timetablesOperations from '../db/timetables.operations';
 import { ReservationWindow } from '../models/reservationWindow.model';
 
 async function createTimetable(
@@ -19,22 +20,37 @@ async function createTimetable(
 		)
 	);
 
-	const x = formatTimeTable(
-		filteredDays[1],
-		timetableDetails[1].startTime,
-		timetableDetails[1].endTime,
-		timetableDetails[1].visitingTime,
-		timetableDetails[1].breakTime,
-		timetableDetails[1].limitVisitors,
-		timetableDetails[1].visitorsCount
+	let allReservationWindows = [];
+	for (let i = 0; i < timetableDetails.length; i++) {
+		const dates = filteredDays[i];
+		const reservationWindowDetails = timetableDetails[i];
+		const formattedTimeTables = formatTimeTable(
+			dates,
+			reservationWindowDetails.startTime,
+			reservationWindowDetails.endTime,
+			reservationWindowDetails.visitingTime,
+			reservationWindowDetails.breakTime,
+			reservationWindowDetails.limitVisitors,
+			reservationWindowDetails.visitorsCount
+		);
+		allReservationWindows.push(formattedTimeTables);
+	}
+
+	const reservationWindows: ReservationWindow[] = allReservationWindows.flatMap(
+		(r) => r
 	);
 
-	x.forEach((z) =>
-		console.log({
-			s: z.startTime.toLocaleTimeString('en-GB'),
-			e: z.endTime.toLocaleTimeString('en-GB'),
-		})
+	// reservationWindows.forEach((z) =>
+	// 	console.log({
+	// 		s: z.startTime.toLocaleString('en-GB'),
+	// 		e: z.endTime.toLocaleString('en-GB'),
+	// 	})
+	// );
+
+	const result = await timetablesOperations.insertTimetables(
+		reservationWindows
 	);
+	console.log(result);
 
 	// filteredDays.forEach((x) => console.log(x));
 
