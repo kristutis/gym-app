@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ReservationWindow } from '../models/reservationWindow.model';
 
 async function createTimetable(
 	req: Request,
@@ -10,11 +11,32 @@ async function createTimetable(
 		getFilteredDays(
 			config.onlyWeekends,
 			config.excludeWeekends,
-			getDaysFromRange(new Date(config.startDate), new Date(config.endDate))
+			getDaysFromRange(
+				new Date(config.startDate),
+				new Date(config.endDate),
+				parseTime(config.startTime)
+			)
 		)
 	);
 
-	filteredDays.forEach((x) => console.log(x));
+	const x = formatTimeTable(
+		filteredDays[1],
+		timetableDetails[1].startTime,
+		timetableDetails[1].endTime,
+		timetableDetails[1].visitingTime,
+		timetableDetails[1].breakTime,
+		timetableDetails[1].limitVisitors,
+		timetableDetails[1].visitorsCount
+	);
+
+	x.forEach((z) =>
+		console.log({
+			s: z.startTime.toLocaleTimeString('en-GB'),
+			e: z.endTime.toLocaleTimeString('en-GB'),
+		})
+	);
+
+	// filteredDays.forEach((x) => console.log(x));
 
 	// try {
 	// 	const hashedPassword = await bcrypt.hash(userDetails.password, 10);
@@ -34,12 +56,109 @@ async function createTimetable(
 	// }
 }
 
-function getDaysFromRange(startDate: Date, stopDate: Date) {
-	var dateArray = new Array();
-	var currentDate = startDate;
+function formatTimeTable(
+	dates: Date[],
+	startTime: string,
+	endTime: string,
+	visitingTime: string,
+	breakTime: string,
+	limitVisitors: boolean,
+	visitorsCount: number
+): ReservationWindow[] {
+	return dates
+		.map((date) =>
+			getReservationWindows(
+				date,
+				parseTime(startTime),
+				parseTime(endTime),
+				parseTime(visitingTime),
+				parseTime(breakTime),
+				limitVisitors,
+				visitorsCount
+			)
+		)
+		.flatMap((d) => d);
+}
+
+function shouldAddDay(
+	date: Date,
+	startTime: HoursWithMinutes,
+	endTime: HoursWithMinutes
+): boolean {
+	const date2 = new Date(date);
+
+	date.setHours(startTime.hour);
+	date.setMinutes(startTime.minutes);
+
+	date2.setHours(endTime.hour);
+	date2.setMinutes(endTime.minutes);
+
+	return date >= date2;
+}
+
+function getReservationWindows(
+	date: Date,
+	startTime: HoursWithMinutes,
+	endTime: HoursWithMinutes,
+	visitingTime: HoursWithMinutes,
+	breakTime: HoursWithMinutes,
+	limitVisitors: boolean,
+	visitorsCount: number
+): ReservationWindow[] {
+	date.setHours(startTime.hour);
+	date.setMinutes(startTime.minutes);
+
+	const maxDate = new Date(date);
+	const addDay = shouldAddDay(date, startTime, endTime) ? 1 : 0;
+	maxDate.setDate(maxDate.getDate() + addDay); //24h?
+	maxDate.setHours(endTime.hour);
+	maxDate.setMinutes(endTime.minutes);
+
+	const windows = [];
+	let nextDate = date;
+	do {
+		const newDate = new Date(nextDate);
+		newDate.setHours(newDate.getHours() + visitingTime.hour);
+		newDate.setMinutes(newDate.getMinutes() + visitingTime.minutes);
+		windows.push({
+			startTime: new Date(nextDate),
+			endTime: new Date(newDate),
+			limitedSpace: limitVisitors,
+			peopleCount: limitVisitors ? visitorsCount : undefined,
+		} as ReservationWindow);
+		newDate.setHours(newDate.getHours() + breakTime.hour);
+		newDate.setMinutes(newDate.getMinutes() + breakTime.minutes);
+		nextDate = newDate;
+	} while (nextDate < maxDate);
+	windows.pop();
+	return windows;
+}
+
+function parseTime(time: string): HoursWithMinutes {
+	const parts = time.split(':');
+	return {
+		hour: parseInt(parts[0]),
+		minutes: parseInt(parts[1]),
+	} as HoursWithMinutes;
+}
+
+interface HoursWithMinutes {
+	hour: number;
+	minutes: number;
+}
+
+function getDaysFromRange(
+	startDate: Date,
+	stopDate: Date,
+	startOffset: HoursWithMinutes
+) {
+	const dateArray = new Array();
+	const currentDate = startDate;
 	while (currentDate <= stopDate) {
 		dateArray.push(new Date(currentDate));
 		currentDate.setDate(currentDate.getDate() + 1);
+		currentDate.setHours(startOffset.hour);
+		currentDate.setMinutes(startOffset.minutes);
 	}
 	return dateArray;
 }
