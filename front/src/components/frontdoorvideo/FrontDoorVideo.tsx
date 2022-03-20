@@ -1,7 +1,7 @@
 import React from 'react'
 import './FrontDoorVideo.css'
 
-function FrontDoorVideo() {
+function FrontDoorVideo({ title = '', subtitle = '' }: FrontDoorVideoProps) {
   return (
     <div className="video-container">
       <video
@@ -11,10 +11,15 @@ function FrontDoorVideo() {
         loop
         muted
       />
-      <h1>WELCOME, STRANGER</h1>
-      <p>Get up and start pumping!</p>
+      <h1>{title}</h1>
+      <p>{subtitle}</p>
     </div>
   )
+}
+
+export interface FrontDoorVideoProps {
+  title: string
+  subtitle?: string
 }
 
 export default FrontDoorVideo

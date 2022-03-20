@@ -6,7 +6,10 @@ import './Home.css'
 export default function Home() {
   return (
     <>
-      <FrontDoorVideo />
+      <FrontDoorVideo
+        title="WELCOME, STRANGER"
+        subtitle="Get up and start pumping!"
+      />
       <div className="fdiv">
         <Button variant="danger">asdasd</Button>
         Home

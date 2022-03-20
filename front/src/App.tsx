@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
 import Footer from './components/footer/Footer'
 import Navbar from './components/navbar/Navbar'
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
 import Timetable from './pages/timetable/Timetable'
@@ -13,11 +14,14 @@ import Users from './pages/users/Users'
 
 export const DEFAULT_BACKEND_PATH = 'http://localhost:3001/api'
 
-const routes = [
+const commonRoutes = [
   {
     path: '/',
     component: Home,
   },
+] as RouteProps[]
+
+const protectedRoutes = [
   {
     path: '/timetable',
     component: Timetable,
@@ -42,10 +46,17 @@ function App() {
       <Router>
         <Navbar />
         <Switch>
-          {routes.map((route, index) => (
+          {commonRoutes.map((route, index) => (
             <Route
               key={index}
               exact
+              path={route.path}
+              component={route.component}
+            />
+          ))}
+          {protectedRoutes.map((route, index) => (
+            <ProtectedRoute
+              index={index}
               path={route.path}
               component={route.component}
             />
