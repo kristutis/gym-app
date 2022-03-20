@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { loginUserCall } from '../../utils/apicalls/login'
+import AuthContext from '../auth/AuthProvider'
 import BaseModal from './BaseModal'
 import { ModalFormGroupProps } from './ModalFormGroup'
 import ModalFormGroupList from './ModalFormGroupList'
 
 export default function LoginModal({ show, closeFunction }: LoginModalProps) {
+  const { setAuth }: any = useContext(AuthContext)
+
   const [validatationError, setValidatationError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
@@ -30,7 +33,10 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
     setPasswordError('')
 
     await loginUserCall({ email, password })
-      .then((msg) => window.location.reload())
+      .then((userInfo) => {
+        setAuth(userInfo)
+        window.location.reload()
+      })
       .catch((msg) => setValidatationError(msg))
   }
 

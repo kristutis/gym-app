@@ -1,8 +1,6 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 
-export const loginUserCall = async (
-  payload: LoginUserProps
-): Promise<string> => {
+export const loginUserCall = async (payload: LoginUserProps): Promise<any> => {
   const response = await fetch(DEFAULT_BACKEND_PATH + '/auth/login', {
     method: 'POST',
     headers: {
@@ -13,8 +11,7 @@ export const loginUserCall = async (
 
   const responseBody = await response.json()
   if (response.status === 200) {
-    //user logic
-    return Promise.resolve('')
+    return Promise.resolve(responseBody)
   }
 
   if (

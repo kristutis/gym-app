@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { isAdmin, isLoggedIn } from '../../utils/auth'
+import { isAdmin, useLoggedIn } from '../../utils/auth'
+import AuthContext from '../auth/AuthProvider'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
 import LoginModal from '../modals/LoginModal'
@@ -34,9 +35,12 @@ const adminRoutes = [
 ] as NavbarRoutesProps[]
 
 function Navbar() {
-  const routes = [...commonRoutes, ...getRoleRoutes()]
+  const loggedIn = useLoggedIn()
+  const { setAuth }: any = useContext(AuthContext)
 
-  const signUpButtonMessage = isLoggedIn() ? 'LOG OUT' : 'SIGN UP'
+  const routes = [...commonRoutes, ...useRoleRoutes()]
+
+  const signUpButtonMessage = loggedIn ? 'LOG OUT' : 'SIGN UP'
   const isMobileVersion = () => (window.innerWidth <= 960 ? false : true)
 
   const [loginModalOpened, setLoginModalOpened] = useState(false)
@@ -50,6 +54,15 @@ function Navbar() {
   window.addEventListener('resize', () =>
     setShowSignUpButton(isMobileVersion())
   )
+
+  const logoutClicked = () => {
+    if (loggedIn) {
+      setAuth({})
+      window.location.reload()
+    } else {
+      setSignupModalOpened(true)
+    }
+  }
 
   return (
     <>
@@ -68,7 +81,7 @@ function Navbar() {
                 onClick={closeMobileMenu}
               />
             ))}
-            {!isLoggedIn() && (
+            {!useLoggedIn() && (
               <li className="nav-item">
                 <p
                   className="nav-links"
@@ -86,7 +99,7 @@ function Navbar() {
                 className="nav-links-mobile"
                 onClick={() => {
                   closeMobileMenu()
-                  setSignupModalOpened(true)
+                  logoutClicked()
                 }}
               >
                 {signUpButtonMessage}
@@ -94,7 +107,7 @@ function Navbar() {
             </li>
           </ul>
           {showSignUpButton && (
-            <NavbarSignUpButton onClick={() => setSignupModalOpened(true)}>
+            <NavbarSignUpButton onClick={() => logoutClicked()}>
               {signUpButtonMessage}
             </NavbarSignUpButton>
           )}
@@ -123,8 +136,8 @@ function NavbarButton({ route, text, onClick }: NavbarButtonProps) {
   )
 }
 
-function getRoleRoutes(): NavbarRoutesProps[] {
-  if (isLoggedIn() && isAdmin()) {
+function useRoleRoutes(): NavbarRoutesProps[] {
+  if (useLoggedIn() && isAdmin()) {
     return adminRoutes
   }
   return []
