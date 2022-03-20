@@ -13,9 +13,14 @@ import {
   getTimetablesCall,
   ReservationWindow,
 } from '../../utils/apicalls/timetable'
+import { useAuthHeader } from '../../utils/auth'
+import { createReservationCall, CreateReservationCallProps } from '../../utils/apicalls/reservation'
 
 export default function UserCalendar() {
+  const authHeader = useAuthHeader()
   const [showBookModal, setShowBookModal] = useState(false)
+  const [bookModalText, setBookModalText] = useState('')
+  const [bookModalId, setBookModalId] = useState(0)
 
   const [showAvailable, setShowAvailable] = useState(true)
   const [events, setEvents] = useState([] as EventInput[])
@@ -23,17 +28,17 @@ export default function UserCalendar() {
   const convertToEvents = (data: ReservationWindow[]): EventInput[] => {
     const dataCopy = [...data]
     const converted = dataCopy.map((reservationWindow) => {
+      const available =
+        !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
       return {
         id: reservationWindow.id,
         title: !!reservationWindow.limitedSpace
           ? `- ${reservationWindow.peopleCount} slots available`
           : ' - Unlimited',
-        color:
-          !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
-            ? 'red'
-            : 'green',
+        color: available ? 'red' : 'green',
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
+        extendedProps: available,
       } as any
     })
     return converted
@@ -47,27 +52,48 @@ export default function UserCalendar() {
     appendedEndDay.setDate(appendedEndDay.getDate() + 1)
     try {
       const data = await getTimetablesCall(startDate, appendedEndDay)
-      console.log(data)
-
       setEvents(convertToEvents(data as ReservationWindow[]))
-    } catch (e) {}
+    } catch (e) {
+      alert('Error when getting events')
+    }
   }
 
   const handleEventClick = (e: any) => {
+    const eventDetails = e.event
+    if (eventDetails.extendedProps.available) {
+      return
+    }
+
+    function formatBookingMsg(startDate: Date) {
+      const dayOfWeek = startDate.toLocaleString('en-us', { weekday: 'long' })
+      const isoDateParts = startDate.toISOString().split('T')
+      const date = isoDateParts[0]
+      const timeParts = isoDateParts[1].split(':')
+      const time = `${timeParts[0]}:${timeParts[1]}`
+      return `Book slot on ${dayOfWeek}, ${date} ${time}?`
+    }
+    setBookModalText(formatBookingMsg(eventDetails.start))
+    setBookModalId(eventDetails.id)
     setShowBookModal(true)
-    console.log({ id: e.event.id, s: e.event.start })
   }
 
-  //red booked
-  //green available
-  //orange: mine
+  const handleBooking = async (id: number) => {
+    try {
+        const payload = {reservationId: id } as CreateReservationCallProps
+        await createReservationCall(payload, authHeader)
+    } catch (e) {
+        alert('Error when booking a slot')
+    }
+  }
 
   return (
     <div>
       <BookSlotModal
         showModal={showBookModal}
         closeFunction={() => setShowBookModal(false)}
-        submitFunction={() => null}
+        submitFunction={() => handleBooking(bookModalId)}
+        id={bookModalId}
+        text={bookModalText}
       />
       <FullCalendar
         plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}

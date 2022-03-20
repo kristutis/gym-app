@@ -5,22 +5,13 @@ export default function BookSlotModal({
   showModal,
   closeFunction,
   submitFunction,
+  id,
+  text,
 }: BookSlotModalProps) {
   return (
     <BaseModal
       title={'Confirm selection'}
-      children={
-        <BookSlotForm />
-        // <LoginForm
-        //   validatationError={validatationError}
-        //   emailError={emailError}
-        //   passwordError={passwordError}
-        //   email={email}
-        //   setEmail={setEmail}
-        //   password={password}
-        //   setPassword={setPassword}
-        // />
-      }
+      children={<BookSlotForm text={text} />}
       buttonText={'Book slot'}
       show={showModal}
       closeFunction={closeFunction}
@@ -29,12 +20,14 @@ export default function BookSlotModal({
   )
 }
 
-function BookSlotForm() {
-  return <h1>hello</h1>
+function BookSlotForm({ text }: { text: string }) {
+  return <h4>{text}</h4>
 }
 
 export interface BookSlotModalProps {
   showModal: boolean
   closeFunction: () => void
   submitFunction: () => void
+  id: number
+  text: string
 }
