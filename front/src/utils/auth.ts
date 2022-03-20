@@ -6,6 +6,10 @@ export const useLoggedIn = (): boolean => {
   return !!Object.keys(auth).length
 }
 
-export const isAdmin = (): boolean => {
+export const useUserRole = (): boolean => {
+  return true
+}
+
+export const useAdminRole = (): boolean => {
   return true
 }

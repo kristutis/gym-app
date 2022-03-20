@@ -35,7 +35,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
     await loginUserCall({ email, password })
       .then((userInfo) => {
         setAuth(userInfo)
-        window.location.reload()
+        closeFunction()
       })
       .catch((msg) => setValidatationError(msg))
   }

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { isAdmin, useLoggedIn } from '../../utils/auth'
+import { Link, useHistory } from 'react-router-dom'
+import { useAdminRole, useLoggedIn, useUserRole } from '../../utils/auth'
 import AuthContext from '../auth/AuthProvider'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
@@ -19,9 +19,14 @@ const commonRoutes = [
   },
 ] as NavbarRoutesProps[]
 
-const clientRoutes = []
+const clientRoutes = [
+  {
+    route: 'user-calendar',
+    text: 'Timetable',
+  },
+] as NavbarRoutesProps[]
 
-const trainerRoutes = []
+const trainerRoutes = [] as NavbarRoutesProps[]
 
 const adminRoutes = [
   {
@@ -36,6 +41,7 @@ const adminRoutes = [
 
 function Navbar() {
   const loggedIn = useLoggedIn()
+  const history = useHistory()
   const { setAuth }: any = useContext(AuthContext)
 
   const routes = [...commonRoutes, ...useRoleRoutes()]
@@ -58,7 +64,7 @@ function Navbar() {
   const logoutClicked = () => {
     if (loggedIn) {
       setAuth({})
-      window.location.reload()
+      history.push('/')
     } else {
       setSignupModalOpened(true)
     }
@@ -137,7 +143,17 @@ function NavbarButton({ route, text, onClick }: NavbarButtonProps) {
 }
 
 function useRoleRoutes(): NavbarRoutesProps[] {
-  if (useLoggedIn() && isAdmin()) {
+  const isLoggedIn = useLoggedIn()
+  const isUser = useUserRole()
+  const isAdmin = useAdminRole()
+
+  if (!isLoggedIn) {
+    return []
+  }
+  if (isUser) {
+    return clientRoutes
+  }
+  if (isAdmin) {
     return adminRoutes
   }
   return []
