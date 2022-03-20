@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
@@ -7,7 +7,7 @@ import Navbar from './components/navbar/Navbar'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
 import Timetable from './pages/timetable/Timetable'
-import userCalendar from './pages/userCalendar/userCalendar'
+import UserCalendar from './pages/userCalendar/UserCalendar'
 import Users from './pages/users/Users'
 
 export const DEFAULT_BACKEND_PATH = 'http://localhost:3001/api'
@@ -31,7 +31,7 @@ const routes = [
   },
   {
     path: '/user-calendar',
-    component: userCalendar,
+    component: UserCalendar,
   },
 ] as RouteProps[]
 
