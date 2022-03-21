@@ -54,33 +54,11 @@ async function createTimetable(
 		(r) => r
 	);
 
-	// reservationWindows.forEach((z) =>
-	// 	console.log({
-	// 		s: z.startTime.toLocaleString('en-GB'),
-	// 		e: z.endTime.toLocaleString('en-GB'),
-	// 	})
-	// );
-
-	const result = await timetablesOperations.insertTimetables(
-		reservationWindows
-	);
-
-	// try {
-	// 	const hashedPassword = await bcrypt.hash(userDetails.password, 10);
-	// 	const newUser = {
-	// 		...userDetails,
-	// 		password: hashedPassword,
-	// 	} as CreateUserProps;
-	// 	await usersOperations.insertUser(newUser);
-	// 	return res
-	// 		.status(ResponseCode.CREATED)
-	// 		.send(`User ${newUser.name} created!`);
-	// } catch (e: any) {
-	// 	if (e.sqlMessage && e.sqlMessage.includes('Duplicate entry')) {
-	// 		return next(ApiError.unprocessableEntity('Email already exist'));
-	// 	}
-	// 	return next(e);
-	// }
+	try {
+		await timetablesOperations.insertTimetables(reservationWindows);
+	} catch (e) {
+		next(e);
+	}
 }
 
 function formatTimeTable(

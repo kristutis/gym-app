@@ -3,18 +3,19 @@ import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid'
-// import 'bootstrap-icons/font/bootstrap-icons.css'
-// import 'bootstrap/dist/css/bootstrap.css'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import BookSlotModal from '../../components/modals/BookSlotModal'
 import {
+  createReservationCall,
+  CreateReservationCallProps,
+} from '../../utils/apicalls/reservation'
+import {
   getTimetablesCall,
   ReservationWindow,
 } from '../../utils/apicalls/timetable'
 import { useAuthHeader } from '../../utils/auth'
-import { createReservationCall, CreateReservationCallProps } from '../../utils/apicalls/reservation'
 
 export default function UserCalendar() {
   const authHeader = useAuthHeader()
@@ -29,16 +30,16 @@ export default function UserCalendar() {
     const dataCopy = [...data]
     const converted = dataCopy.map((reservationWindow) => {
       const available =
-        !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
+        !(!!reservationWindow.limitedSpace && !reservationWindow.peopleCount)
       return {
-        id: reservationWindow.id,
+        id: reservationWindow.id.toString(),
         title: !!reservationWindow.limitedSpace
           ? `- ${reservationWindow.peopleCount} slots available`
           : ' - Unlimited',
-        color: available ? 'red' : 'green',
+        color: available ? 'green' : 'red',
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
-        extendedProps: available,
+        extendedProps: {available}
       } as any
     })
     return converted
@@ -60,7 +61,7 @@ export default function UserCalendar() {
 
   const handleEventClick = (e: any) => {
     const eventDetails = e.event
-    if (eventDetails.extendedProps.available) {
+    if (!eventDetails.extendedProps.available) {
       return
     }
 
@@ -79,10 +80,12 @@ export default function UserCalendar() {
 
   const handleBooking = async (id: number) => {
     try {
-        const payload = {reservationId: id } as CreateReservationCallProps
-        await createReservationCall(payload, authHeader)
+      const payload = { reservationId: id } as CreateReservationCallProps
+      await createReservationCall(payload, authHeader)
+      alert('Success!')
+      window.location.reload()
     } catch (e) {
-        alert('Error when booking a slot')
+      alert(e)
     }
   }
 

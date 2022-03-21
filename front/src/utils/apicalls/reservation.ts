@@ -13,10 +13,11 @@ export const createReservationCall = async (
     body: JSON.stringify(payload),
   })
 
-  const responseBody = await response.json()
-  if (response.status === 200) {
+  if (response.status === 201) {
     return Promise.resolve('')
   }
+
+  const responseBody = await response.json()
 
   if (
     responseBody?.error?.message &&

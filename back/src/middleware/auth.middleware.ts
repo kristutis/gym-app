@@ -62,22 +62,20 @@ export const authenticateAdmin = async (
 const authenticateAccount = async (req: Request) => {
 	return new Promise((resolve, reject) => {
 		try {
-			const authHeader = req.headers['authorization'];
+			const authHeader = req.headers['authorization'] as string;
 			if (!authHeader) {
-				return reject(
-					ApiError.unauthorized('Authentication header is missing')
-				);
+				return reject(ApiError.unauthorized('Authorization header is missing'));
 			}
 
 			const token = authHeader.replace('Bearer', '').trim();
 			if (!token) {
-				return reject(ApiError.unauthorized('Authentication token is missing'));
+				return reject(ApiError.unauthorized('Authorization token is missing'));
 			}
 
 			jwt.verify(token, CONFIG.ACCESS_TOKEN_SECRET, (err, user) => {
 				if (err) {
 					return reject(
-						ApiError.forbidden('Authentication token no longer valid')
+						ApiError.forbidden('Authorization token no longer valid')
 					);
 				}
 				resolve(user as User);

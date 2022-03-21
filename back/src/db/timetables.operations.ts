@@ -61,8 +61,50 @@ function getTimetablesInRange(
 	});
 }
 
+function getTimetableById(id: number): Promise<ReservationWindow | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT id, start_time as startTime, end_time as endTime, people_count as peopleCount, limited_space=1 as limitedSpace ' +
+				'FROM reservation_windows ' +
+				'WHERE id = ?',
+			[id],
+			(err, results) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(results[0] as ReservationWindow);
+			}
+		);
+	});
+}
+
+function updateTimetable(
+	reservationWindow: ReservationWindow
+): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE reservation_windows SET `start_time` = ?, `end_time` = ?, `people_count` = ?, `limited_space` = ? WHERE `id` = ?',
+			[
+				reservationWindow.startTime,
+				reservationWindow.endTime,
+				reservationWindow.peopleCount,
+				reservationWindow.limitedSpace,
+				reservationWindow.id,
+			],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
 export default {
 	insertTimetables,
 	getTimetables,
 	getTimetablesInRange,
+	getTimetableById,
+	updateTimetable,
 };
