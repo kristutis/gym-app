@@ -10,6 +10,7 @@ import BookSlotModal from '../../components/modals/BookSlotModal'
 import {
   createReservationCall,
   CreateReservationCallProps,
+  getUserReservationIdsCall,
 } from '../../utils/apicalls/reservation'
 import {
   getTimetablesCall,
@@ -26,36 +27,56 @@ export default function UserCalendar() {
   const [showAvailable, setShowAvailable] = useState(true)
   const [events, setEvents] = useState([] as EventInput[])
 
-  const convertToEvents = (data: ReservationWindow[]): EventInput[] => {
+  const convertToEvents = (data: ReservationWindow[], userResIds: number[]): EventInput[] => {
+    const getColor = (alreadyReserved: boolean, available: boolean) => {
+        if (alreadyReserved) {
+            return 'orange'
+        }
+        return available ? 'green' : 'red'
+    }
+
     const dataCopy = [...data]
     const converted = dataCopy.map((reservationWindow) => {
       const available =
         !(!!reservationWindow.limitedSpace && !reservationWindow.peopleCount)
+      const alreadyReserved = userResIds.includes(reservationWindow.id)
       return {
         id: reservationWindow.id.toString(),
         title: !!reservationWindow.limitedSpace
           ? `- ${reservationWindow.peopleCount} slots available`
           : ' - Unlimited',
-        color: available ? 'green' : 'red',
+        color: getColor(alreadyReserved, available),
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
-        extendedProps: {available}
+        extendedProps: {available, alreadyReserved}
       } as any
     })
     return converted
   }
 
+  const loadUsersReservationIds = async (): Promise<number[]> => {
+      try {
+          const userResIds = await getUserReservationIdsCall(authHeader) as number[]
+          return Promise.resolve(userResIds)
+      } catch (e) {
+        alert('Error when getting user events')
+      }
+      return Promise.resolve([])
+  }
+
   const loadReservationWindows = async (startDate: Date, endDate: Date) => {
-    if (!showAvailable) {
-      return
-    }
+    const userResIds = await loadUsersReservationIds()
+
+    // if (!showAvailable) {
+    //   return
+    // }
     const appendedEndDay = new Date(endDate)
     appendedEndDay.setDate(appendedEndDay.getDate() + 1)
     try {
       const data = await getTimetablesCall(startDate, appendedEndDay)
-      setEvents(convertToEvents(data as ReservationWindow[]))
+      setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
-      alert('Error when getting events')
+      alert('Error when getting all events')
     }
   }
 

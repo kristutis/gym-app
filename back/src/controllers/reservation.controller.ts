@@ -7,6 +7,22 @@ import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 
+async function getReservationIds(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const userId = (req.body.user as User).id;
+	try {
+		const resIds = (await reservationsOperations.getUsersReservationWindowIds(
+			userId
+		)) as number[];
+		return res.json(resIds);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function createReservation(
 	req: Request,
 	res: Response,
@@ -48,7 +64,6 @@ async function createReservation(
 
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
-		console.log(e);
 		next(e);
 	}
 }
@@ -59,4 +74,5 @@ export interface CreateReservationProps {
 
 export default {
 	createReservation,
+	getReservationIds,
 };

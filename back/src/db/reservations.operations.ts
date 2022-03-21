@@ -36,7 +36,28 @@ function reservationExist(
 	});
 }
 
+function getUsersReservationWindowIds(
+	userId: string
+): Promise<number[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT fk_reservation_id as id ' +
+				'FROM reservations ' +
+				'WHERE fk_user_id = ?',
+			[userId],
+			(err, result) => {
+				if (err) {
+					return reject(err);
+				}
+				const ids = result.map((res) => res.id);
+				return resolve(ids as number[]);
+			}
+		);
+	});
+}
+
 export default {
 	insertReservation,
 	reservationExist,
+	getUsersReservationWindowIds,
 };

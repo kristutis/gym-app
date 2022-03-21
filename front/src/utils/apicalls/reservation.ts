@@ -1,4 +1,24 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
+import { getErrorMsg } from './errors'
+
+export const getUserReservationIdsCall = async (
+  authToken: string
+): Promise<string | number[]> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservation', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody)
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
 
 export const createReservationCall = async (
   payload: CreateReservationCallProps,
@@ -18,19 +38,7 @@ export const createReservationCall = async (
   }
 
   const responseBody = await response.json()
-
-  if (
-    responseBody?.error?.message &&
-    typeof responseBody.error.message === 'string'
-  ) {
-    return Promise.reject(responseBody.error.message)
-  }
-
-  if (responseBody?.error?.message?.details[0]?.message) {
-    return Promise.reject(responseBody?.error?.message?.details[0]?.message)
-  }
-
-  return Promise.reject('Unhandled exception')
+  return Promise.reject(getErrorMsg(responseBody))
 }
 
 export interface CreateReservationCallProps {

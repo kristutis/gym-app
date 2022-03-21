@@ -10,6 +10,12 @@ export const reservationRouter = express.Router();
 
 const BASE_ROUTE = '/api/reservation';
 
+reservationRouter.get(
+	BASE_ROUTE,
+	authenticateUser,
+	reservationController.getReservationIds
+);
+
 reservationRouter.post(
 	BASE_ROUTE,
 	validateRequestBody(createReservationSchema),
