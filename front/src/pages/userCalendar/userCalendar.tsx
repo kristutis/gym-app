@@ -1,10 +1,9 @@
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
-
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import BookSlotModal from '../../components/modals/BookSlotModal'
 import CancelSlotModal from '../../components/modals/CancelSlotModal'
@@ -24,9 +23,13 @@ import { useAuthHeader } from '../../utils/auth'
 export default function UserCalendar() {
   const authHeader = useAuthHeader()
 
+  const [calendarRange, setCalendarRange] = useState({
+    startDate: {} as Date,
+    endDate: {} as Date,
+  })
+
   const [cancelBookModal, setCancelBookModal] = useState(false)
   const [cancelBookModalText, setCancelBookModalText] = useState('')
-
   const [showBookModal, setShowBookModal] = useState(false)
   const [bookModalText, setBookModalText] = useState('')
   const [bookModalId, setBookModalId] = useState(0)
@@ -77,16 +80,30 @@ export default function UserCalendar() {
     return Promise.resolve([])
   }
 
-  const loadReservationWindows = async (startDate: Date, endDate: Date) => {
+  useEffect(() => {
+    loadReservationWindows()
+  }, [calendarRange])
+
+  const loadReservationWindows = async () => {
+    if (
+      calendarRange.startDate.toString() === {}.toString() &&
+      calendarRange.endDate.toString() === {}.toString()
+    ) {
+      return
+    }
+
     const userResIds = await loadUsersReservationIds()
 
     // if (!showAvailable) {
     //   return
     // }
-    const appendedEndDay = new Date(endDate)
+    const appendedEndDay = new Date(calendarRange.endDate)
     appendedEndDay.setDate(appendedEndDay.getDate() + 1)
     try {
-      const data = await getTimetablesCall(startDate, appendedEndDay)
+      const data = await getTimetablesCall(
+        calendarRange.startDate,
+        appendedEndDay
+      )
       setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
       alert('Error when getting all events')
@@ -108,13 +125,13 @@ export default function UserCalendar() {
 
   const openCancelBookModal = (startDate: Date) => {
     function formatBookingMsg(startDate: Date) {
-        const dayOfWeek = startDate.toLocaleString('en-us', { weekday: 'long' })
-        const isoDateParts = startDate.toISOString().split('T')
-        const date = isoDateParts[0]
-        const timeParts = isoDateParts[1].split(':')
-        const time = `${timeParts[0]}:${timeParts[1]}`
-        return `${dayOfWeek}, ${date} ${time}?`
-      }
+      const dayOfWeek = startDate.toLocaleString('en-us', { weekday: 'long' })
+      const isoDateParts = startDate.toISOString().split('T')
+      const date = isoDateParts[0]
+      const timeParts = isoDateParts[1].split(':')
+      const time = `${timeParts[0]}:${timeParts[1]}`
+      return `${dayOfWeek}, ${date} ${time}?`
+    }
     setCancelBookModal(true)
     setCancelBookModalText(formatBookingMsg(startDate))
   }
@@ -139,8 +156,8 @@ export default function UserCalendar() {
     try {
       const payload = { reservationId: id } as DeleteReservationCallProps
       await deleteReservationCall(payload, authHeader)
-      alert('Success!')
-      window.location.reload()
+      setCancelBookModal(false)
+      loadReservationWindows()
     } catch (e) {
       alert(e)
     }
@@ -150,8 +167,8 @@ export default function UserCalendar() {
     try {
       const payload = { reservationId: id } as CreateReservationCallProps
       await createReservationCall(payload, authHeader)
-      alert('Success!')
-      window.location.reload()
+      setShowBookModal(false)
+      loadReservationWindows()
     } catch (e) {
       alert(e)
     }
@@ -187,7 +204,10 @@ export default function UserCalendar() {
         navLinks={true}
         dayMaxEvents={true}
         datesSet={(dateInfo) =>
-          loadReservationWindows(dateInfo.start, dateInfo.end)
+          setCalendarRange({
+            startDate: dateInfo.start,
+            endDate: dateInfo.end,
+          })
         }
         eventTimeFormat={{
           hour12: false,
