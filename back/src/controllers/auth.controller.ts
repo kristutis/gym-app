@@ -59,6 +59,7 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
 			expireDate: getExpireDate(),
 			accessToken: accessToken,
 			refreshToken: refreshToken,
+			role: user.role,
 		});
 	} catch (e) {
 		return next(e);

@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
+import { AuthorisationInfo } from '../../utils/auth'
 
 const AUTH_KEY = 'AUTH_KEY'
 
@@ -6,7 +7,7 @@ const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }: any) => {
   const currentUser = JSON.parse(localStorage.getItem(AUTH_KEY) || '{}')
-  const [auth, setAuth] = useState(currentUser)
+  const [auth, setAuth] = useState(currentUser as AuthorisationInfo)
 
   useEffect(() => {
     localStorage.setItem(AUTH_KEY, JSON.stringify(auth))
