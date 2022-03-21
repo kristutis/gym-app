@@ -56,6 +56,7 @@ function App() {
           ))}
           {protectedRoutes.map((route, index) => (
             <ProtectedRoute
+              key={index}
               index={index}
               path={route.path}
               component={route.component}

@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
+import { ToggleButton } from 'react-bootstrap'
 import BookSlotModal from '../../components/modals/BookSlotModal'
 import CancelSlotModal from '../../components/modals/CancelSlotModal'
 import {
@@ -35,14 +35,18 @@ export default function UserCalendar() {
   const [bookModalText, setBookModalText] = useState('')
   const [bookModalId, setBookModalId] = useState(0)
 
-  const [showAvailable, setShowAvailable] = useState(true)
+  const [showUsersOnly, setShowUsersOnly] = useState(false)
   const [events, setEvents] = useState([] as EventInput[])
 
   const convertToEvents = (
     data: ReservationWindow[],
     userResIds: number[]
   ): EventInput[] => {
-    const getColor = (alreadyReserved: boolean, available: boolean, startDate: Date) => {
+    const getColor = (
+      alreadyReserved: boolean,
+      available: boolean,
+      startDate: Date
+    ) => {
       if (alreadyReserved) {
         return 'orange'
       }
@@ -52,16 +56,25 @@ export default function UserCalendar() {
     const dataCopy = [...data]
     const now = new Date()
     const converted = dataCopy.map((reservationWindow) => {
-      const available = !(
-        !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
-      ) && new Date(reservationWindow.startTime).getTime() >= now.getTime()
+      const available =
+        !(!!reservationWindow.limitedSpace && !reservationWindow.peopleCount) &&
+        new Date(reservationWindow.startTime).getTime() >= now.getTime()
       const alreadyReserved = userResIds.includes(reservationWindow.id)
+
+      if (showUsersOnly && !alreadyReserved) {
+        return {}
+      }
+
       return {
         id: reservationWindow.id.toString(),
         title: !!reservationWindow.limitedSpace
           ? `- ${reservationWindow.peopleCount} slots available`
           : ' - Unlimited',
-        color: getColor(alreadyReserved, available, reservationWindow.startTime),
+        color: getColor(
+          alreadyReserved,
+          available,
+          reservationWindow.startTime
+        ),
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
         extendedProps: { available, alreadyReserved },
@@ -84,7 +97,7 @@ export default function UserCalendar() {
 
   useEffect(() => {
     loadReservationWindows()
-  }, [calendarRange])
+  }, [calendarRange, showUsersOnly])
 
   const loadReservationWindows = async () => {
     if (
@@ -96,9 +109,6 @@ export default function UserCalendar() {
 
     const userResIds = await loadUsersReservationIds()
 
-    // if (!showAvailable) {
-    //   return
-    // }
     const appendedEndDay = new Date(calendarRange.endDate)
     appendedEndDay.setDate(appendedEndDay.getDate() + 1)
     try {
@@ -108,7 +118,7 @@ export default function UserCalendar() {
       )
       setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
-        console.log(e)
+      console.log(e)
       alert('Error when getting all events')
     }
   }
@@ -218,15 +228,18 @@ export default function UserCalendar() {
           minute: '2-digit',
         }}
       />
-      <Button
-        variant="success"
-        onClick={() => {
-          setEvents([])
-          setShowAvailable(false)
-        }}
+
+      <ToggleButton
+        className="mb-2"
+        id="toggle-check"
+        type="checkbox"
+        variant="outline-warning"
+        checked={showUsersOnly}
+        value="null"
+        onChange={() => setShowUsersOnly(!showUsersOnly)}
       >
-        show only my bookings
-      </Button>
+        Show only my bookings
+      </ToggleButton>
     </div>
   )
 }

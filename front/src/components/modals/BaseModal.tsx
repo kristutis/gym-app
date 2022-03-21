@@ -15,7 +15,7 @@ export default function BaseModal({
     <Modal
       contentClassName="base-modal-content"
       show={show}
-      toggle={show}
+      toggle={!!show ? 1 : 0}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered

@@ -49,6 +49,7 @@ export default function CreateTimeTable() {
         <div className="mb-3">
           {[...(Array(formsCount).keys() as any)].map((index) => (
             <ReservationWindowForm
+              key={index}
               index={index + 1}
               deleteForm={() => handleDeleteForm()}
               setFormPayload={(payload) => {
