@@ -2,6 +2,21 @@ import { MysqlError } from 'mysql';
 import { Reservation } from '../models/reservation.model';
 import { db } from './connect';
 
+function deleteReservation(reseration: Reservation): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'DELETE FROM reservations WHERE fk_user_id = ? AND fk_reservation_id = ?',
+			[reseration.userId, reseration.reservationId],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
 function insertReservation(reseration: Reservation): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
@@ -60,4 +75,5 @@ export default {
 	insertReservation,
 	reservationExist,
 	getUsersReservationWindowIds,
+	deleteReservation,
 };

@@ -3,6 +3,7 @@ import reservationController from '../controllers/reservation.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 import {
 	createReservationSchema,
+	deleteReservationSchema,
 	validateRequestBody,
 } from '../middleware/reqBodyValidation.middleware';
 
@@ -21,4 +22,11 @@ reservationRouter.post(
 	validateRequestBody(createReservationSchema),
 	authenticateUser,
 	reservationController.createReservation
+);
+
+reservationRouter.delete(
+	BASE_ROUTE,
+	validateRequestBody(deleteReservationSchema),
+	authenticateUser,
+	reservationController.deleteReservation
 );

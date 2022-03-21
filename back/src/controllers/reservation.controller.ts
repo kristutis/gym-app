@@ -23,6 +23,47 @@ async function getReservationIds(
 	}
 }
 
+async function deleteReservation(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const { reservationId } = req.body as CreateReservationProps;
+	const userId = (req.body.user as User).id;
+
+	const currentReservation = { reservationId, userId } as Reservation;
+
+	try {
+		const reservationExist = await reservationsOperations.reservationExist(
+			currentReservation
+		);
+		if (!reservationExist) {
+			return next(ApiError.notFound('Reservation does not exist'));
+		}
+
+		const window = (await timetablesOperations.getTimetableById(
+			reservationId
+		)) as ReservationWindow;
+		if (!window) {
+			return next(ApiError.notFound('Reservation window does not exist'));
+		}
+
+		if (window.limitedSpace) {
+			const updatedWindow = {
+				...window,
+				peopleCount: window.peopleCount + 1,
+			} as ReservationWindow;
+			await timetablesOperations.updateTimetable(updatedWindow);
+		}
+
+		await reservationsOperations.deleteReservation(currentReservation);
+
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function createReservation(
 	req: Request,
 	res: Response,
@@ -75,4 +116,5 @@ export interface CreateReservationProps {
 export default {
 	createReservation,
 	getReservationIds,
+	deleteReservation,
 };

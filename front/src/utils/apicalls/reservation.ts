@@ -20,6 +20,27 @@ export const getUserReservationIdsCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const deleteReservationCall = async (
+  payload: DeleteReservationCallProps,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservation', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 204) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const createReservationCall = async (
   payload: CreateReservationCallProps,
   authToken: string
@@ -42,5 +63,9 @@ export const createReservationCall = async (
 }
 
 export interface CreateReservationCallProps {
+  reservationId: number
+}
+
+export interface DeleteReservationCallProps {
   reservationId: number
 }

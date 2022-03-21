@@ -85,3 +85,5 @@ export const getTimetablesSchema: ObjectSchema = Joi.object({
 export const createReservationSchema: ObjectSchema = Joi.object({
 	reservationId: Joi.number().required(),
 });
+
+export const deleteReservationSchema = createReservationSchema;
