@@ -1,6 +1,7 @@
+
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
@@ -41,7 +42,7 @@ export default function UserCalendar() {
     data: ReservationWindow[],
     userResIds: number[]
   ): EventInput[] => {
-    const getColor = (alreadyReserved: boolean, available: boolean) => {
+    const getColor = (alreadyReserved: boolean, available: boolean, startDate: Date) => {
       if (alreadyReserved) {
         return 'orange'
       }
@@ -49,17 +50,18 @@ export default function UserCalendar() {
     }
 
     const dataCopy = [...data]
+    const now = new Date()
     const converted = dataCopy.map((reservationWindow) => {
       const available = !(
         !!reservationWindow.limitedSpace && !reservationWindow.peopleCount
-      )
+      ) && new Date(reservationWindow.startTime).getTime() >= now.getTime()
       const alreadyReserved = userResIds.includes(reservationWindow.id)
       return {
         id: reservationWindow.id.toString(),
         title: !!reservationWindow.limitedSpace
           ? `- ${reservationWindow.peopleCount} slots available`
           : ' - Unlimited',
-        color: getColor(alreadyReserved, available),
+        color: getColor(alreadyReserved, available, reservationWindow.startTime),
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
         extendedProps: { available, alreadyReserved },
@@ -106,6 +108,7 @@ export default function UserCalendar() {
       )
       setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
+        console.log(e)
       alert('Error when getting all events')
     }
   }
@@ -140,12 +143,12 @@ export default function UserCalendar() {
     const eventDetails = e.event
     setBookModalId(eventDetails.id)
 
-    if (eventDetails.extendedProps.alreadyReserved) {
-      openCancelBookModal(eventDetails.start)
+    if (!eventDetails.extendedProps.available) {
       return
     }
 
-    if (!eventDetails.extendedProps.available) {
+    if (eventDetails.extendedProps.alreadyReserved) {
+      openCancelBookModal(eventDetails.start)
       return
     }
 
