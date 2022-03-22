@@ -20,11 +20,11 @@ Content-Type: application/json
 
 ###
 POST http://localhost:3001/api/reservation
-Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwNDgxZDUzLTkwMjktMTFlYy05NzFhLThhZmM1M2FhNTliZCIsIm5hbWUiOiJ6Iiwic3VybmFtZSI6IndvcmxkIiwiZW1haWwiOiJoZWxsb0B3YXNkb3JsZC5jb20iLCJjcmVhdGVEYXRlIjoiMjAyMi0wMi0xN1QxOTozODoyMS4wMDBaIiwibW9kaWZ5RGF0ZSI6IjIwMjItMDItMTdUMTk6Mzg6MjEuMDAwWiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ3ODE5NTk1LCJleHAiOjE2NDc4MjA0OTV9.-kCWTVszgKfQuHd065fs-t4fdiFopZhi5_CIoivqwzQ"
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwNDgxZDUzLTkwMjktMTFlYy05NzFhLThhZmM1M2FhNTliZCIsIm5hbWUiOiJ6Iiwic3VybmFtZSI6IndvcmxkIiwiZW1haWwiOiJoZWxsb0B3YXNkb3JsZC5jb20iLCJjcmVhdGVEYXRlIjoiMjAyMi0wMi0xN1QxOTozODoyMS4wMDBaIiwibW9kaWZ5RGF0ZSI6IjIwMjItMDItMTdUMTk6Mzg6MjEuMDAwWiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ3ODE5NTk1LCJleHAiOjE2NDc4MjA0OTV9.-kCWTVszgKfQuHd065fs-t4fdiFopZhi5_CIoivqwzQ
 Content-Type: application/json
 
 {
-  "reservationId": "555"
+  "reservationId": "17"
 }
 
 ###
@@ -42,7 +42,3 @@ Content-Type: application/json
 {
   "email": "hello@wasdorld.com",
 }
-
-###
-GET http://localhost:3001/api/timetable
-Content-Type: application/json

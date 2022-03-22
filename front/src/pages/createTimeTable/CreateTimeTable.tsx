@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import ErrorLabel from '../../components/errorLabel/ErrorLabel'
 import ReservationWindowForm from '../../components/reservationWindowForm/ReservationWindowForm'
+import Unauthorized from '../../components/unauthorized/Unauthorized'
 import {
   createTimetableCall,
   CreateTimetableCallProps,
 } from '../../utils/apicalls/timetable'
+import { useAdminRole } from '../../utils/auth'
 import './CreateTimeTable.css'
 
 export default function CreateTimeTable() {
@@ -16,16 +18,17 @@ export default function CreateTimeTable() {
   ] as CreateTimetableCallProps[])
 
   const handleSubmit = async () => {
-    const err = validateInputs(formsPayloads)
+    let err = validateInputs(formsPayloads)
     if (err) {
       setError(err)
       return
     }
 
-    const errorText = createTimetableCall(formsPayloads)
-    // if (error) {
-    //   //   alert(error)
-    // }
+    err = await createTimetableCall(formsPayloads)
+    if (err) {
+      setError(err)
+      return
+    }
     setError('')
   }
 
@@ -39,6 +42,10 @@ export default function CreateTimeTable() {
     newFormsPayload.pop()
     setFormsPayloads(newFormsPayload)
     setFormsCount(formsCount - 1)
+  }
+
+  if (!useAdminRole()) {
+    return <Unauthorized />
   }
 
   return (

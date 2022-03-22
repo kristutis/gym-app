@@ -7,4 +7,5 @@ export interface User {
 	createDate: Date;
 	modifyDate: Date;
 	role: string;
+	phone: string;
 }

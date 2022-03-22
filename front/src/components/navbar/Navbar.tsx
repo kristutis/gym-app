@@ -1,6 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { useAdminRole, useLoggedIn, useUserRole } from '../../utils/auth'
+import {
+  useAdminRole,
+  useLoggedIn,
+  useTrainerRole,
+  useUserRole,
+} from '../../utils/auth'
 import AuthContext from '../auth/AuthProvider'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import LogoLink from '../logo/LogoLink'
@@ -19,9 +24,16 @@ const commonRoutes = [
   },
 ] as NavbarRoutesProps[]
 
+const registeredRoutes = [
+  {
+    route: '/profile',
+    text: 'Profile',
+  },
+] as NavbarRoutesProps[]
+
 const clientRoutes = [
   {
-    route: 'user-calendar',
+    route: '/user-calendar',
     text: 'Timetable',
   },
 ] as NavbarRoutesProps[]
@@ -34,7 +46,7 @@ const adminRoutes = [
     text: 'Users',
   },
   {
-    route: '/timetable',
+    route: '/admin-timetable',
     text: 'Timetable',
   },
 ] as NavbarRoutesProps[]
@@ -145,16 +157,20 @@ function NavbarButton({ route, text, onClick }: NavbarButtonProps) {
 function useRoleRoutes(): NavbarRoutesProps[] {
   const isLoggedIn = useLoggedIn()
   const isUser = useUserRole()
+  const isTrainer = useTrainerRole()
   const isAdmin = useAdminRole()
 
   if (!isLoggedIn) {
     return []
   }
   if (isUser) {
-    return clientRoutes
+    return [...clientRoutes, ...registeredRoutes]
+  }
+  if (isTrainer) {
+    return [...trainerRoutes, ...registeredRoutes]
   }
   if (isAdmin) {
-    return adminRoutes
+    return [...adminRoutes, ...registeredRoutes]
   }
   return []
 }

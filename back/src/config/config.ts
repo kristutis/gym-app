@@ -12,6 +12,9 @@ export const CONFIG = {
 	REFRESH_TOKEN_EXPIRE: process.env.REFRESH_TOKEN_EXPIRE || '60m',
 	ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || '',
 	REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || '',
+
+	TWILIO_USER: process.env.TWILIO_USER || '',
+	TWILIO_PASS: process.env.TWILIO_PASS || '',
 };
 
 const validateTokenExpireFormat = (
@@ -34,3 +37,7 @@ validateTokenSecret(CONFIG.REFRESH_TOKEN_SECRET, 'REFRESH_TOKEN_SECRET');
 
 validateTokenExpireFormat(CONFIG.ACCESS_TOKEN_EXPIRE, 'ACCESS_TOKEN_EXPIRE');
 validateTokenExpireFormat(CONFIG.REFRESH_TOKEN_EXPIRE, 'REFRESH_TOKEN_EXPIRE');
+
+if (!CONFIG.TWILIO_USER || !CONFIG.TWILIO_PASS) {
+	throw Error(`Twilio username or password not found!`);
+}

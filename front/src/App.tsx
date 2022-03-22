@@ -1,4 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
@@ -6,9 +5,11 @@ import './App.css'
 import Footer from './components/footer/Footer'
 import Navbar from './components/navbar/Navbar'
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute'
+import AdminTimetable from './pages/adminTimetable/AdminTimetable'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
-import Timetable from './pages/timetable/Timetable'
+import Profile from './pages/profile/Profile'
+import ProfileEdit from './pages/profileEdit/ProfileEdit'
 import UserCalendar from './pages/userCalendar/UserCalendar'
 import Users from './pages/users/Users'
 
@@ -23,12 +24,12 @@ const commonRoutes = [
 
 const protectedRoutes = [
   {
-    path: '/timetable',
-    component: Timetable,
+    path: '/admin-timetable/create',
+    component: CreateTimeTable,
   },
   {
-    path: '/timetable/create',
-    component: CreateTimeTable,
+    path: '/admin-timetable',
+    component: AdminTimetable,
   },
   {
     path: '/users',
@@ -37,6 +38,14 @@ const protectedRoutes = [
   {
     path: '/user-calendar',
     component: UserCalendar,
+  },
+  {
+    path: '/profile/edit',
+    component: ProfileEdit,
+  },
+  {
+    path: '/profile',
+    component: Profile,
   },
 ] as RouteProps[]
 

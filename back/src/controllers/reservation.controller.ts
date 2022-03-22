@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { Twilio } from 'twilio';
+import { CONFIG } from '../config/config';
 import reservationsOperations from '../db/reservations.operations';
 import timetablesOperations from '../db/timetables.operations';
 import { Reservation } from '../models/reservation.model';
@@ -6,6 +8,8 @@ import { ReservationWindow } from '../models/reservationWindow.model';
 import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
+
+const twilioClient = new Twilio(CONFIG.TWILIO_USER, CONFIG.TWILIO_PASS);
 
 async function getReservationIds(
 	req: Request,
@@ -103,9 +107,19 @@ async function createReservation(
 
 		await reservationsOperations.insertReservation(newReservation);
 
+		await twilioClient.messages.create({
+			from: '+17409488189',
+			to: '+37064500886asd666',
+			body: 'AAAA',
+		});
+
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
-		next(e);
+		if (e.message.includes('is not a valid phone number')) {
+			next(ApiError.badRequest('Not a valid number'));
+		} else {
+			next(e);
+		}
 	}
 }
 
