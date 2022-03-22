@@ -1,0 +1,9 @@
+.bt-spinner-size {
+  height: 10em;
+  width: 10em;
+  border-width: 0.5em;
+}
+
+.loading-page-min-height {
+  height: 80vh;
+}
