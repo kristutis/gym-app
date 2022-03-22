@@ -1,11 +1,29 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import usersOperations from '../db/users.operations';
+import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 
+function decorateUidParam(req: Request, res: Response, next: NextFunction) {
+	req.params.uid = req.body.user.id;
+	next();
+}
+
 async function getUserDetails(req: Request, res: Response, next: NextFunction) {
-	return res.status(200).send('user get');
+	const userId = req.params.uid;
+
+	try {
+		const user = (await usersOperations.getUserById(userId)) as User;
+		if (!user) {
+			return next(ApiError.notFound(''));
+		}
+
+		const { hashedPassword, ...userWithoutPassword } = user;
+		return res.status(200).json(userWithoutPassword);
+	} catch (e) {
+		next(e);
+	}
 }
 
 async function createUser(req: Request, res: Response, next: NextFunction) {
@@ -36,6 +54,7 @@ export interface CreateUserProps {
 }
 
 export default {
+	decorateUidParam,
 	getUserDetails,
 	createUser,
 };

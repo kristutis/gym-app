@@ -20,6 +20,19 @@ export const validateRequestQuery =
 			.catch((error) => next(ApiError.unprocessableEntity(error as any)));
 	};
 
+export const validateRequestParams =
+	(schema: ObjectSchema | ArraySchema) =>
+	async (req: Request, res: Response, next: NextFunction) => {
+		schema
+			.validateAsync(req.params)
+			.then((r) => next())
+			.catch((error) => next(ApiError.unprocessableEntity(error as any)));
+	};
+
+const uidSchema = Joi.string()
+	.regex(/^[a-zA-Z0-9-]*$/)
+	.required();
+
 const emailSchema = Joi.string()
 	.min(1)
 	.max(255)
@@ -27,6 +40,10 @@ const emailSchema = Joi.string()
 	.required();
 
 const passwordSchema = Joi.string().min(6).max(255).required();
+
+export const getUserSchema: ObjectSchema = Joi.object({
+	uid: uidSchema,
+});
 
 export const createUserSchema: ObjectSchema = Joi.object({
 	name: Joi.string()
