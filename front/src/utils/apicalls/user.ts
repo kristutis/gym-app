@@ -60,6 +60,30 @@ export const getUserDetailsCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const adminDeleteUserCall = async (
+  uid: string,
+  authToken: string
+): Promise<string> => {
+  const payload = {
+    uid,
+  }
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users/' + uid, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 204) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface User {
   id: string
   name: string

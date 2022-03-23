@@ -6,8 +6,10 @@ import {
 } from '../middleware/auth.middleware';
 import {
 	createUserSchema,
+	deleteUserSchema,
 	updateUserSchema,
 	validateRequestBody,
+	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
 
 export const usersRouter = express.Router();
@@ -33,4 +35,11 @@ usersRouter.put(
 	validateRequestBody(updateUserSchema),
 	authenticateUser,
 	usersController.updateUser
+);
+
+usersRouter.delete(
+	BASE_ROUTE + '/:uid',
+	validateRequestParams(deleteUserSchema),
+	authenticateAdmin,
+	usersController.deleteUser
 );

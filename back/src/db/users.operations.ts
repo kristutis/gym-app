@@ -7,6 +7,17 @@ import { Trainer } from '../models/trainer.model';
 import { User } from '../models/user.model';
 import { db } from './connect';
 
+function deleteUser(uid: string): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query('DELETE FROM users WHERE uid = ?', [uid], (err, _) => {
+			if (err) {
+				return reject(err);
+			}
+			return resolve(null);
+		});
+	});
+}
+
 function updateUser(user: UpdateUserProps): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
@@ -124,4 +135,5 @@ export default {
 	updateUser,
 	updateUserPassword,
 	getAllUsersWithTrainerInfo,
+	deleteUser,
 };

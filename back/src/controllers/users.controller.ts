@@ -71,6 +71,17 @@ async function updateUser(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function deleteUser(req: Request, res: Response, next: NextFunction) {
+	const uid = req.params.uid as string;
+
+	try {
+		await usersOperations.deleteUser(uid);
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e: any) {
+		return next(e);
+	}
+}
+
 export interface CreateUserProps {
 	name: string;
 	surname: string;
@@ -91,4 +102,5 @@ export default {
 	createUser,
 	updateUser,
 	getUsers,
+	deleteUser,
 };

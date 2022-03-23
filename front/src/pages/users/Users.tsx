@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown, Table } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
+import DeleteUserModal from '../../components/modals/DeleteUserModal'
+import EditUserModal from '../../components/modals/EditUserModal'
 import {
   adminGetUsersCall,
   DEFAULT_PROFILE_PIC_SRC,
@@ -12,6 +14,10 @@ import './Users.css'
 function Users() {
   const authHeader = useAuthHeader()
   const [users, setUsers] = useState([] as Trainer[])
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editableUser, setEditableUser] = useState({} as Trainer)
 
   const loadUsers = () => {
     adminGetUsersCall(authHeader)
@@ -28,31 +34,58 @@ function Users() {
   }
 
   return (
-    <div className="m-2 table-responsive">
-      <Table striped bordered hover variant="dark">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Contacts</th>
-            <th>Role</th>
-            <th>Activity</th>
-            <th>Trainer Info</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, index) => (
-            <UserDetailsRow key={index} trainer={user} />
-          ))}
-        </tbody>
-      </Table>
-    </div>
+    <>
+      <EditUserModal />
+      <DeleteUserModal
+        trainer={editableUser}
+        showModal={showDeleteModal}
+        closeFunction={() => setShowDeleteModal(false)}
+        reloadUserFunction={() => loadUsers()}
+      />
+      <div className="m-2 table-responsive">
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Contacts</th>
+              <th>Role</th>
+              <th>Activity</th>
+              <th>Trainer Info</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => {
+              const actionProps = {
+                trainer: user,
+                setEditable: (t: Trainer) => setEditableUser(t),
+                openEdit: () => setShowEditModal(true),
+                openDelete: () => setShowDeleteModal(true),
+              } as ActionsProps
+              return (
+                <UserDetailsRow
+                  key={index}
+                  trainer={user}
+                  actionProps={actionProps}
+                />
+              )
+            })}
+          </tbody>
+        </Table>
+      </div>
+    </>
   )
 }
 
-function UserDetailsRow({ trainer }: { trainer: Trainer }) {
+function UserDetailsRow({
+  trainer,
+  actionProps,
+}: {
+  trainer: Trainer
+  actionProps: ActionsProps
+}) {
   const MAX_UID_LENGHT = 5
   function formatUid(uid: string): string {
     return uid.substring(0, MAX_UID_LENGHT) + '...'
@@ -70,7 +103,7 @@ function UserDetailsRow({ trainer }: { trainer: Trainer }) {
         modifyDate={new Date(trainer.modifyDate)}
       />
       <TrainerInfoCell trainer={trainer} />
-      <Actions trainer={trainer} />
+      <Actions actionProps={actionProps} />
     </tr>
   )
 }
@@ -154,13 +187,33 @@ function TrainerInfoCell({ trainer }: { trainer: Trainer }) {
   )
 }
 
-function Actions({ trainer }: { trainer: Trainer }) {
+function Actions({ actionProps }: { actionProps: ActionsProps }) {
+  const { trainer, setEditable, openEdit, openDelete } = actionProps
   return (
     <td>
-      <i className="fas fa-pen text-success mx-2" />
-      <i className="fas fa-trash text-danger" />
+      <i
+        className="fas fa-pen text-success mx-2"
+        onClick={() => {
+          setEditable(trainer)
+          openEdit()
+        }}
+      />
+      <i
+        className="fas fa-trash text-danger"
+        onClick={() => {
+          setEditable(trainer)
+          openDelete()
+        }}
+      />
     </td>
   )
+}
+
+interface ActionsProps {
+  trainer: Trainer
+  setEditable: (trainer: Trainer) => void
+  openEdit: () => void
+  openDelete: () => void
 }
 
 export default Users
