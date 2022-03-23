@@ -34,3 +34,7 @@
   width: 80%;
   min-height: 70vh;
 }
+
+.profile-edit-button:hover {
+  cursor: pointer;
+}
