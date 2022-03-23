@@ -1,0 +1,11 @@
+.trainer-details-dropdown {
+  width: 300px;
+}
+
+.trainer-details-dropdown-wrap {
+  white-space: pre-wrap;
+}
+
+.trainer-details-z-index {
+  z-index: 1;
+}

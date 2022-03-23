@@ -1,6 +1,26 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 import { getErrorMsg } from './errors'
 
+export const DEFAULT_PROFILE_PIC_SRC = '/images/profile-picture.png'
+
+export const adminGetUsersCall = async (
+  authToken: string
+): Promise<string | Trainer[]> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users', {
+    method: 'GET',
+    headers: {
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody as Trainer[])
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const updateUserCall = async (
   payload: UpdateUserProps,
   authToken: string
@@ -50,6 +70,13 @@ export interface User {
   modifyDate: Date
   role: string
   phone?: string
+}
+
+export interface Trainer extends User {
+  price: number
+  description: string
+  moto: string
+  photoUrl: string
 }
 
 export interface UpdateUserProps {

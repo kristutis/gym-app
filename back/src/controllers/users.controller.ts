@@ -1,17 +1,27 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import usersOperations from '../db/users.operations';
+import { Trainer } from '../models/trainer.model';
 import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 
-function decorateUidParam(req: Request, res: Response, next: NextFunction) {
-	req.params.uid = req.body.user.id;
-	next();
+async function getUsers(req: Request, res: Response, next: NextFunction) {
+	try {
+		const usersWithTrainerInfo =
+			(await usersOperations.getAllUsersWithTrainerInfo()) as Trainer[];
+		const usersWithoutPassword = usersWithTrainerInfo.map((user) => {
+			const { hashedPassword, ...userWithoutPassword } = user;
+			return userWithoutPassword;
+		});
+		return res.status(ResponseCode.OK).json(usersWithoutPassword);
+	} catch (e) {
+		next(e);
+	}
 }
 
 async function getUserDetails(req: Request, res: Response, next: NextFunction) {
-	const userId = req.params.uid;
+	const userId = req.body.user.id;
 
 	try {
 		const user = (await usersOperations.getUserById(userId)) as User;
@@ -77,8 +87,8 @@ export interface UpdateUserProps {
 }
 
 export default {
-	decorateUidParam,
 	getUserDetails,
 	createUser,
 	updateUser,
+	getUsers,
 };
