@@ -27,8 +27,6 @@ function Users() {
     return <Loading />
   }
 
-  console.log(users)
-
   return (
     <div className="m-2 table-responsive">
       <Table striped bordered hover variant="dark">
