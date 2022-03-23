@@ -157,7 +157,12 @@ function TrainerInfoCell({ trainer }: { trainer: Trainer }) {
 }
 
 function Actions({ trainer }: { trainer: Trainer }) {
-  return <td></td>
+  return (
+    <td>
+      <i className="fas fa-pen text-success mx-2" />
+      <i className="fas fa-trash text-danger" />
+    </td>
+  )
 }
 
 export default Users
