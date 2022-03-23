@@ -1,6 +1,27 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 import { getErrorMsg } from './errors'
 
+export const updateUserCall = async (
+  payload: UpdateUserProps,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users', {
+    method: 'PUT',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const getUserDetailsCall = async (
   authToken: string
 ): Promise<string | User> => {
@@ -28,5 +49,13 @@ export interface User {
   createDate: Date
   modifyDate: Date
   role: string
-  phone: string
+  phone?: string
+}
+
+export interface UpdateUserProps {
+  id: string
+  name: string
+  surname: string
+  phone?: string
+  password?: string
 }

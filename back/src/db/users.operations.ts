@@ -1,7 +1,43 @@
 import { MysqlError } from 'mysql';
-import { CreateUserProps } from '../controllers/users.controller';
+import {
+	CreateUserProps,
+	UpdateUserProps,
+} from '../controllers/users.controller';
 import { User } from '../models/user.model';
 import { db } from './connect';
+
+function updateUser(user: UpdateUserProps): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE users SET name = ?, surname = ?, phone = ? WHERE uid = ?',
+			[user.name, user.surname, user.phone, user.id],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
+function updateUserPassword(
+	uid: string,
+	hashedPassword: string
+): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE users SET password = ? WHERE uid = ?',
+			[hashedPassword, uid],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
 
 function insertUser(user: CreateUserProps) {
 	return new Promise((resolve, reject) => {
@@ -64,4 +100,6 @@ export default {
 	insertUser,
 	getUserByEmail,
 	getUserById,
+	updateUser,
+	updateUserPassword,
 };

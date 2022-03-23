@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
-import { User } from '../../utils/apicalls/user'
+import {
+  updateUserCall,
+  UpdateUserProps,
+  User,
+} from '../../utils/apicalls/user'
+import { useAuthHeader } from '../../utils/auth'
 import BaseModal from './BaseModal'
 import { ModalFormGroupProps } from './ModalFormGroup'
 import ModalFormGroupList from './ModalFormGroupList'
@@ -11,6 +16,8 @@ export default function ProfileEditModal({
   closeFunction,
   submitFunction,
 }: ProfileEditModalProps) {
+  const authHeader = useAuthHeader()
+
   const [name, setName] = useState(userDetails.name)
   const [surname, setSurname] = useState(userDetails.surname)
   const [phone, setPhone] = useState(
@@ -44,14 +51,22 @@ export default function ProfileEditModal({
     }
     setError('')
 
+    const updatedUser = {
+      id: userDetails.id,
+      name: name,
+      surname: surname,
+      phone: !!phone ? phone : undefined,
+      password: !!password ? password : undefined,
+    } as UpdateUserProps
+
+    try {
+      await updateUserCall(updatedUser, authHeader)
+    } catch (e) {
+      alert(e)
+      return
+    }
     submitFunction()
     closeFunction()
-    // await loginUserCall({ email, password })
-    //   .then((userInfo) => {
-    //     setAuth(userInfo)
-    //     closeFunction()
-    //   })
-    //   .catch((msg) => setValidatationError(msg))
   }
 
   return (

@@ -46,6 +46,21 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function updateUser(req: Request, res: Response, next: NextFunction) {
+	const userDetails = req.body as UpdateUserProps;
+
+	try {
+		if (userDetails.password) {
+			const hashedPassword = await bcrypt.hash(userDetails.password, 10);
+			await usersOperations.updateUserPassword(userDetails.id, hashedPassword);
+		}
+		await usersOperations.updateUser(userDetails);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e: any) {
+		return next(e);
+	}
+}
+
 export interface CreateUserProps {
 	name: string;
 	surname: string;
@@ -53,8 +68,17 @@ export interface CreateUserProps {
 	password: string;
 }
 
+export interface UpdateUserProps {
+	id: string;
+	name: string;
+	surname: string;
+	phone?: string;
+	password?: string;
+}
+
 export default {
 	decorateUidParam,
 	getUserDetails,
 	createUser,
+	updateUser,
 };

@@ -7,6 +7,7 @@ import {
 import {
 	createUserSchema,
 	getUserSchema,
+	updateUserSchema,
 	validateRequestBody,
 	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
@@ -33,4 +34,11 @@ usersRouter.post(
 	BASE_ROUTE,
 	validateRequestBody(createUserSchema),
 	usersController.createUser
+);
+
+usersRouter.put(
+	BASE_ROUTE,
+	validateRequestBody(updateUserSchema),
+	authenticateUser,
+	usersController.updateUser
 );

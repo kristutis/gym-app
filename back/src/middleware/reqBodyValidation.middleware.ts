@@ -39,24 +39,37 @@ const emailSchema = Joi.string()
 	.email({ tlds: { allow: false } })
 	.required();
 
-const passwordSchema = Joi.string().min(6).max(255).required();
+const passwordSchema = Joi.string().min(6).max(255);
+
+const nameSchema = Joi.string()
+	.min(1)
+	.max(255)
+	.regex(/^[A-Za-z]+$/)
+	.required();
+const surnameSchema = Joi.string()
+	.min(1)
+	.max(255)
+	.regex(/^[A-Za-z]+$/)
+	.required();
+
+const phoneSchema = Joi.string().regex(/^\+\d+$/);
 
 export const getUserSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
 
 export const createUserSchema: ObjectSchema = Joi.object({
-	name: Joi.string()
-		.min(1)
-		.max(255)
-		.regex(/^[A-Za-z]+$/)
-		.required(),
-	surname: Joi.string()
-		.min(1)
-		.max(255)
-		.regex(/^[A-Za-z]+$/)
-		.required(),
+	name: nameSchema,
+	surname: surnameSchema,
 	email: emailSchema,
+	password: passwordSchema.required(),
+});
+
+export const updateUserSchema: ObjectSchema = Joi.object({
+	id: uidSchema,
+	name: nameSchema,
+	surname: surnameSchema,
+	phone: phoneSchema,
 	password: passwordSchema,
 });
 
