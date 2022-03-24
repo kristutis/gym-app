@@ -3,10 +3,14 @@ export const getErrorMsg = (responseBody: any): string => {
     responseBody?.error?.message &&
     typeof responseBody.error.message === 'string'
   ) {
-    if (responseBody.error.message === 'Authorization token no longer valid') {
+    if (responseBody.error.message === 'Refresh token no longer valid') {
       window.location.replace('/')
       localStorage.clear()
       return 'Please login'
+    }
+    if (responseBody.error.message === 'Authorization token no longer valid') {
+      window.location.replace('/')
+      return 'Session expired'
     }
     return responseBody.error.message
   }

@@ -1,5 +1,6 @@
 import express from 'express';
 import authController from '../controllers/auth.controller';
+import { authenticateRefreshToken } from '../middleware/auth.middleware';
 import {
 	loginUserSchema,
 	refreshTokenSchema,
@@ -20,4 +21,11 @@ authRouter.delete(
 	BASE_ROUTE + '/logout',
 	validateRequestBody(refreshTokenSchema),
 	authController.removeRefreshToken
+);
+
+authRouter.post(
+	BASE_ROUTE + '/refresh',
+	validateRequestBody(refreshTokenSchema),
+	authenticateRefreshToken,
+	authController.refreshLogin
 );

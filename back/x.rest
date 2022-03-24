@@ -3,10 +3,10 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "name": "zzz",
-  "surname": "world",
-  "email": "helloasd@wasdorld.com",
-  "password": "hellohello"
+  "name": "aaa",
+  "surname": "aaa",
+  "email": "aaa@wasdorld.com",
+  "password": "aaaaaa"
 }
 
 ###
@@ -14,8 +14,16 @@ POST http://localhost:3001/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "hello@wasdorld.com",
-  "password": "hellohello"
+  "email": "aaa@wasdorld.com",
+  "password": "aaaaaa"
+}
+
+###
+POST http://localhost:3001/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRlOWVkOGVjLWFiYzUtMTFlYy1hMTFhLWVmNTZkZjVlMzZmNSIsIm5hbWUiOiJhYWEiLCJzdXJuYW1lIjoiYWFhIiwiZW1haWwiOiJhYWFAd2FzZG9ybGQuY29tIiwiY3JlYXRlRGF0ZSI6IjIwMjItMDMtMjRUMjI6NTc6NTUuMDAwWiIsIm1vZGlmeURhdGUiOiIyMDIyLTAzLTI0VDIyOjU3OjU1LjAwMFoiLCJyb2xlIjoidXNlciIsInBob25lIjpudWxsLCJpYXQiOjE2NDgxNjMwNzAsImV4cCI6MTY0ODE3MDI3MH0.3k7H6VcbPqpUDzYgAgy24nZa-jcNIS2KcJatyLRPW6A"
 }
 
 ###
@@ -36,7 +44,7 @@ DELETE http://localhost:3001/api/auth/logout
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGcxiOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwNDgxZDUzLTkwMjktMTFlYy05NzFhLThhZmM1M2FhNTliZCIsIm5hbWUiOiJ6Iiwic3VybmFtZSI6IndvcmxkIiwiZW1haWwiOiJoZWxsb0B3YXNkb3JsZC5jb20iLCJjcmVhdGVEYXRlIjoiMjAyMi0wMi0xN1QxOTozODoyMS4wMDBaIiwibW9kaWZ5RGF0ZSI6IjIwMjItMDItMTdUMTk6Mzg6MjEuMDAwWiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjQ1MTQwNzUyLCJleHAiOjE2NDUxNDc5NTJ9.vJKiV2g3Ci6xKmixVO9Rv-bag9w6XGdFykgM51QRvyk"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRlOWVkOGVjLWFiYzUtMTFlYy1hMTFhLWVmNTZkZjVlMzZmNSIsIm5hbWUiOiJhYWEiLCJzdXJuYW1lIjoiYWFhIiwiZW1haWwiOiJhYWFAd2FzZG9ybGQuY29tIiwiY3JlYXRlRGF0ZSI6IjIwMjItMDMtMjRUMjI6NTc6NTUuMDAwWiIsIm1vZGlmeURhdGUiOiIyMDIyLTAzLTI0VDIyOjU3OjU1LjAwMFoiLCJyb2xlIjoidXNlciIsInBob25lIjpudWxsLCJpYXQiOjE2NDgxNjI2ODYsImV4cCI6MTY0ODE2OTg4Nn0.rHJnE7rk6EdFZGMrH2k-jnbLYjUcqliTemmR5LdMCwM"
 }
 
 ###
@@ -46,3 +54,4 @@ Content-Type: application/json
 {
   "email": "hello@wasdorld.com",
 }
+

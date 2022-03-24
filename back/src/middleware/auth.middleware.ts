@@ -16,7 +16,7 @@ export const authenticateRefreshToken = (
 			CONFIG.REFRESH_TOKEN_SECRET,
 			(err: any, user: any) => {
 				if (err) {
-					return res.status(403).send('Refresh token no longer valid');
+					return next(ApiError.forbidden('Refresh token no longer valid'));
 				}
 				req.body.user = user as User;
 				next();

@@ -26,6 +26,31 @@ async function removeRefreshToken(
 	}
 }
 
+async function refreshLogin(req: Request, res: Response, next: NextFunction) {
+	const refreshToken = req.body.refreshToken;
+	const { exp, iat, ...user } = req.body.user;
+
+	if (validRefreshTokens.includes(refreshToken)) {
+		validRefreshTokens = validRefreshTokens.filter(
+			(token) => token !== refreshToken
+		);
+
+		const accessToken = generateAccessToken(user);
+		const newRefershToken = generateRefreshToken(user);
+		validRefreshTokens.push(newRefershToken);
+
+		return res.json({
+			tokenType: TOKEN_TYPE,
+			expireDate: getExpireDate(),
+			accessToken: accessToken,
+			refreshToken: newRefershToken,
+			role: user.role,
+		});
+	} else {
+		return next(ApiError.notFound('Refresh token does not exist'));
+	}
+}
+
 async function loginUser(req: Request, res: Response, next: NextFunction) {
 	const loginUserDetails = req.body as LoginUserProps;
 
@@ -84,4 +109,5 @@ export interface LoginUserProps {
 export default {
 	loginUser,
 	removeRefreshToken,
+	refreshLogin,
 };

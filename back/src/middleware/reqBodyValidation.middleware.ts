@@ -79,7 +79,9 @@ export const loginUserSchema: ObjectSchema = Joi.object({
 });
 
 export const refreshTokenSchema: ObjectSchema = Joi.object({
-	refreshToken: Joi.string().min(1).required(),
+	refreshToken: Joi.string()
+		.regex(/^[\w-]*\.[\w-]*\.[\w-]*$/)
+		.required(),
 });
 
 const createTimetableSchema: ObjectSchema = Joi.object({
