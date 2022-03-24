@@ -4,8 +4,8 @@ export const getErrorMsg = (responseBody: any): string => {
     typeof responseBody.error.message === 'string'
   ) {
     if (responseBody.error.message === 'Refresh token no longer valid') {
-      window.location.replace('/')
       localStorage.clear()
+      window.location.replace('/')
       return 'Please login'
     }
     if (responseBody.error.message === 'Authorization token no longer valid') {
