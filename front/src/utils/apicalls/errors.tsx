@@ -3,6 +3,10 @@ export const getErrorMsg = (responseBody: any): string => {
     responseBody?.error?.message &&
     typeof responseBody.error.message === 'string'
   ) {
+    if (responseBody.error.message === 'Forbidden') {
+      window.location.replace('/')
+      return 'Unauthorized'
+    }
     if (
       responseBody.error.message === 'Refresh token no longer valid' ||
       responseBody.error.message === 'Refresh token does not exist'

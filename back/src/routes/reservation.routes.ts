@@ -2,14 +2,13 @@ import express from 'express';
 import reservationController from '../controllers/reservation.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 import {
-	createReservationSchema,
-	deleteReservationSchema,
-	validateRequestBody,
+	reservationIdSchema,
+	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
 
 export const reservationRouter = express.Router();
 
-const BASE_ROUTE = '/api/reservation';
+const BASE_ROUTE = '/api/reservations';
 
 reservationRouter.get(
 	BASE_ROUTE,
@@ -18,15 +17,15 @@ reservationRouter.get(
 );
 
 reservationRouter.post(
-	BASE_ROUTE,
-	validateRequestBody(createReservationSchema),
+	BASE_ROUTE + '/:resId',
+	validateRequestParams(reservationIdSchema),
 	authenticateUser,
 	reservationController.createReservation
 );
 
 reservationRouter.delete(
-	BASE_ROUTE,
-	validateRequestBody(deleteReservationSchema),
+	BASE_ROUTE + '/:resId',
+	validateRequestParams(reservationIdSchema),
 	authenticateUser,
 	reservationController.deleteReservation
 );

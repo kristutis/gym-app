@@ -32,7 +32,7 @@ async function deleteReservation(
 	res: Response,
 	next: NextFunction
 ) {
-	const { reservationId } = req.body as CreateReservationProps;
+	const reservationId = parseInt(req.params.resId);
 	const userId = (req.body.user as User).id;
 
 	const currentReservation = { reservationId, userId } as Reservation;
@@ -73,7 +73,7 @@ async function createReservation(
 	res: Response,
 	next: NextFunction
 ) {
-	const { reservationId } = req.body as CreateReservationProps;
+	const reservationId = parseInt(req.params.resId);
 	const userId = (req.body.user as User).id;
 
 	const newReservation = { reservationId, userId } as Reservation;
@@ -107,11 +107,11 @@ async function createReservation(
 
 		await reservationsOperations.insertReservation(newReservation);
 
-		await twilioClient.messages.create({
-			from: '+17409488189',
-			to: '+37064500886asd666',
-			body: 'AAAA',
-		});
+		// await twilioClient.messages.create({
+		// 	from: '+17409488189',
+		// 	to: '+37064500886asd666',
+		// 	body: 'AAAA',
+		// });
 
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
@@ -121,10 +121,6 @@ async function createReservation(
 			next(e);
 		}
 	}
-}
-
-export interface CreateReservationProps {
-	reservationId: number;
 }
 
 export default {

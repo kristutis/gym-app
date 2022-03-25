@@ -9,9 +9,7 @@ import BookSlotModal from '../../components/modals/BookSlotModal'
 import CancelSlotModal from '../../components/modals/CancelSlotModal'
 import {
   createReservationCall,
-  CreateReservationCallProps,
   deleteReservationCall,
-  DeleteReservationCallProps,
   getUserReservationIdsCall,
 } from '../../utils/apicalls/reservation'
 import {
@@ -165,8 +163,7 @@ export default function UserCalendar() {
 
   const handleCancelReservation = async (id: number) => {
     try {
-      const payload = { reservationId: id } as DeleteReservationCallProps
-      await deleteReservationCall(payload, authHeader)
+      await deleteReservationCall(id, authHeader)
       setCancelBookModal(false)
       loadReservationWindows()
     } catch (e) {
@@ -176,8 +173,7 @@ export default function UserCalendar() {
 
   const handleBooking = async (id: number) => {
     try {
-      const payload = { reservationId: id } as CreateReservationCallProps
-      await createReservationCall(payload, authHeader)
+      await createReservationCall(id, authHeader)
       setShowBookModal(false)
       loadReservationWindows()
     } catch (e) {

@@ -4,7 +4,7 @@ import { getErrorMsg } from './errors'
 export const getUserReservationIdsCall = async (
   authToken: string
 ): Promise<string | number[]> => {
-  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservation', {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservations', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -21,51 +21,48 @@ export const getUserReservationIdsCall = async (
 }
 
 export const deleteReservationCall = async (
-  payload: DeleteReservationCallProps,
+  resId: number,
   authToken: string
 ): Promise<string> => {
-  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservation', {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authToken,
-    },
-    body: JSON.stringify(payload),
-  })
+  const response = await fetch(
+    DEFAULT_BACKEND_PATH + `/reservations/${resId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: authToken,
+      },
+    }
+  )
 
   if (response.status === 204) {
     return Promise.resolve('')
   }
 
   const responseBody = await response.json()
+  console.log(responseBody)
   return Promise.reject(getErrorMsg(responseBody))
 }
 
 export const createReservationCall = async (
-  payload: CreateReservationCallProps,
+  resId: number,
   authToken: string
 ): Promise<string> => {
-  const response = await fetch(DEFAULT_BACKEND_PATH + '/reservation', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authToken,
-    },
-    body: JSON.stringify(payload),
-  })
+  const response = await fetch(
+    DEFAULT_BACKEND_PATH + `/reservations/${resId}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: authToken,
+      },
+    }
+  )
 
   if (response.status === 201) {
     return Promise.resolve('')
   }
 
   const responseBody = await response.json()
+  console.log(responseBody)
+
   return Promise.reject(getErrorMsg(responseBody))
-}
-
-export interface CreateReservationCallProps {
-  reservationId: number
-}
-
-export interface DeleteReservationCallProps {
-  reservationId: number
 }
