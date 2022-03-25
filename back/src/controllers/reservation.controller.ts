@@ -127,10 +127,12 @@ async function createReservation(
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
 		if (e.message.includes('is not a valid phone number')) {
-			next(ApiError.badRequest('Phone number is invalid'));
-		} else {
-			next(e);
+			return next(ApiError.badRequest('Phone number is invalid'));
 		}
+		if (e.message.includes('The number  is unverified.')) {
+			return next(ApiError.badRequest('Number not verified'));
+		}
+		next(e);
 	}
 }
 
