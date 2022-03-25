@@ -16,11 +16,13 @@ import {
   getTimetablesCall,
   ReservationWindow,
 } from '../../utils/apicalls/timetable'
+import { getUserDetailsCall, User } from '../../utils/apicalls/user'
 import { useAuthHeader } from '../../utils/auth'
 
 export default function UserCalendar() {
   const authHeader = useAuthHeader()
 
+  const [usersPhone, setUsersPhone] = useState('')
   const [calendarRange, setCalendarRange] = useState({
     startDate: {} as Date,
     endDate: {} as Date,
@@ -95,6 +97,12 @@ export default function UserCalendar() {
   useEffect(() => {
     loadReservationWindows()
   }, [calendarRange, showUsersOnly])
+
+  useEffect(() => {
+    getUserDetailsCall(authHeader)
+      .then((usersDetails) => setUsersPhone((usersDetails as User).phone || ''))
+      .catch((err) => alert('Error when getting users details'))
+  }, [])
 
   const loadReservationWindows = async () => {
     if (
@@ -171,9 +179,9 @@ export default function UserCalendar() {
     }
   }
 
-  const handleBooking = async (id: number) => {
+  const handleBooking = async (id: number, sendMessage: boolean) => {
     try {
-      await createReservationCall(id, authHeader)
+      await createReservationCall(id, sendMessage, authHeader)
       setShowBookModal(false)
       loadReservationWindows()
     } catch (e) {
@@ -187,15 +195,16 @@ export default function UserCalendar() {
         showModal={cancelBookModal}
         closeFunction={() => setCancelBookModal(false)}
         submitFunction={() => handleCancelReservation(bookModalId)}
-        id={bookModalId}
         text={cancelBookModalText}
       />
       <BookSlotModal
         showModal={showBookModal}
         closeFunction={() => setShowBookModal(false)}
-        submitFunction={() => handleBooking(bookModalId)}
-        id={bookModalId}
+        submitFunction={(sendMessage: boolean) =>
+          handleBooking(bookModalId, sendMessage)
+        }
         text={bookModalText}
+        usersPhone={usersPhone}
       />
       <FullCalendar
         plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}

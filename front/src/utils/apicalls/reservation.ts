@@ -45,15 +45,21 @@ export const deleteReservationCall = async (
 
 export const createReservationCall = async (
   resId: number,
+  sendMessage: boolean,
   authToken: string
 ): Promise<string> => {
+  const payload = {
+    sendMessage,
+  }
   const response = await fetch(
     DEFAULT_BACKEND_PATH + `/reservations/${resId}`,
     {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: authToken,
       },
+      body: JSON.stringify(payload),
     }
   )
 

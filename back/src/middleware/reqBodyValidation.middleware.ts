@@ -133,3 +133,7 @@ export const reservationIdSchema: ObjectSchema = Joi.object({
 export const deleteUserSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
+
+export const createReservationBodySchema: ObjectSchema = Joi.object({
+	sendMessage: Joi.boolean().required(),
+});

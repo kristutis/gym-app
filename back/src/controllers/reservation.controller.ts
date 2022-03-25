@@ -3,6 +3,7 @@ import { Twilio } from 'twilio';
 import { CONFIG } from '../config/config';
 import reservationsOperations from '../db/reservations.operations';
 import timetablesOperations from '../db/timetables.operations';
+import usersOperations from '../db/users.operations';
 import { Reservation } from '../models/reservation.model';
 import { ReservationWindow } from '../models/reservationWindow.model';
 import { User } from '../models/user.model';
@@ -74,7 +75,9 @@ async function createReservation(
 	next: NextFunction
 ) {
 	const reservationId = parseInt(req.params.resId);
+	const sendMessage = req.body.sendMessage;
 	const userId = (req.body.user as User).id;
+	const usersName = (req.body.user as User).name;
 
 	const newReservation = { reservationId, userId } as Reservation;
 
@@ -107,11 +110,18 @@ async function createReservation(
 
 		await reservationsOperations.insertReservation(newReservation);
 
-		// await twilioClient.messages.create({
-		// 	from: '+17409488189',
-		// 	to: '+37064500886asd666',
-		// 	body: 'AAAA',
-		// });
+		if (sendMessage) {
+			const usersPhone = ((await usersOperations.getUserById(userId)) as User)
+				.phone;
+			if (!usersPhone) {
+				return ApiError.badRequest('User have not provided phone number');
+			}
+			await twilioClient.messages.create({
+				from: CONFIG.TWILIO_NUMBER,
+				to: usersPhone,
+				body: `Dear ${usersName}, your registration on ${window.startTime.toLocaleString()} was successful`,
+			});
+		}
 
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {

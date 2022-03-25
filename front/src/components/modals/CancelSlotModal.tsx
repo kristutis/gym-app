@@ -5,7 +5,6 @@ export default function CancelSlotModal({
   showModal,
   closeFunction,
   submitFunction,
-  id,
   text,
 }: CancelSlotModalProps) {
   return (
@@ -28,6 +27,5 @@ export interface CancelSlotModalProps {
   showModal: boolean
   closeFunction: () => void
   submitFunction: () => void
-  id: number
   text: string
 }

@@ -2,7 +2,9 @@ import express from 'express';
 import reservationController from '../controllers/reservation.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 import {
+	createReservationBodySchema,
 	reservationIdSchema,
+	validateRequestBody,
 	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
 
@@ -19,6 +21,7 @@ reservationRouter.get(
 reservationRouter.post(
 	BASE_ROUTE + '/:resId',
 	validateRequestParams(reservationIdSchema),
+	validateRequestBody(createReservationBodySchema),
 	authenticateUser,
 	reservationController.createReservation
 );
