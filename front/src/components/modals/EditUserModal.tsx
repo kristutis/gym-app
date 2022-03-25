@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
-import { Trainer } from '../../utils/apicalls/user'
+import {
+  adminUpdateUserCall,
+  AdminUpdateUserProps,
+  Trainer,
+} from '../../utils/apicalls/user'
 import { useAuthHeader, UserRole } from '../../utils/auth'
 import BaseModal from './BaseModal'
 import { ModalFormGroupProps } from './ModalFormGroup'
@@ -37,22 +41,64 @@ export default function EditUserModal({
     setPhotoUrl(trainer.photoUrl || '')
   }, [trainer])
 
-  useEffect(() => {
-    console.log(role)
-  }, [role])
-
   if (Object.keys(trainer).length === 0) {
     return null
   }
 
   const updateTrainer = async (t: Trainer) => {
-    // adminDeleteUserCall(uid, authHeader)
-    //   .then((res) => {
-    //     closeFunction()
-    //     reloadUserFunction()
-    //     alert(`User ${trainer.name} ${trainer.surname} deleted`)
-    //   })
-    //   .catch((err) => alert(err))
+    if (!name) {
+      setError('Name cannot be empty!')
+      return
+    }
+    if (!surname) {
+      setError('Surname cannot be empty!')
+      return
+    }
+    if (!role) {
+      setError('Role cannot be empty!')
+      return
+    }
+    if (phone && !phone.match(/^\+\d+$/)) {
+      setError('Incorrect phone number! Example: +3706*******')
+      return
+    }
+
+    if (role === UserRole.trainer) {
+      if (price <= 0) {
+        setError('Incorrect price!')
+        return
+      }
+      if (!description) {
+        setError('Description must not be empty!')
+        return
+      }
+      if (!moto) {
+        setError('Moto must not be empty!')
+        return
+      }
+    }
+    setError('')
+
+    adminUpdateUserCall(
+      {
+        id: trainer.id,
+        name,
+        surname,
+        phone,
+        role,
+        price,
+        description,
+        moto,
+        photoUrl,
+      } as AdminUpdateUserProps,
+      authHeader
+    )
+      .then((r) => {
+        closeFunction()
+        reloadUserFunction()
+        alert(`User ${name} ${surname} updated`)
+      })
+      .catch((err) => alert(err))
   }
 
   const userFormGroups = [
@@ -113,7 +159,11 @@ export default function EditUserModal({
           )}
           <ModalFormGroupList formGroups={userFormGroups} />
           <Form.Label>{'Role'}</Form.Label>
-          <Form.Select onChange={(e) => setRole(e.target.value)} value={role}>
+          <Form.Select
+            onChange={(e) => setRole(e.target.value)}
+            value={role}
+            className="mb-3"
+          >
             <RoleOptions />
           </Form.Select>
           {role === UserRole.trainer ? (

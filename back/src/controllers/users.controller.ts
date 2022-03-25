@@ -1,9 +1,12 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
+import rolesOperations, { Role } from '../db/roles.operations';
+import trainersOperations, { TrainerProps } from '../db/trainers.operations';
 import usersOperations from '../db/users.operations';
 import { Trainer } from '../models/trainer.model';
 import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
+import { TRAINER_ROLE } from '../utils/jwt';
 import { ResponseCode } from '../utils/responseCodes';
 
 async function getUsers(req: Request, res: Response, next: NextFunction) {
@@ -56,15 +59,84 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function adminUpdateUserAndTrainer(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const user = req.body as AdminUpdateUserProps;
+
+	const trainerProps =
+		TRAINER_ROLE === user.role
+			? ({
+					fkUserId: user.id,
+					price: user.price,
+					description: user.description,
+					moto: user.moto,
+					photoUrl: !!user.photoUrl ? user.photoUrl : 'DEFAULT',
+			  } as TrainerProps)
+			: null;
+
+	try {
+		const roles = (await rolesOperations.getRoles()) as Role[];
+		const fk_role = getRoleId(roles, user.role);
+
+		const trainer = await trainersOperations.getTrainerByUid(user.id);
+		const trainerExists = !!trainer && Object.keys(trainer).length > 0;
+
+		if (TRAINER_ROLE !== user.role && trainerExists) {
+			await trainersOperations.deleteTrainer(user.id);
+		}
+
+		if (TRAINER_ROLE === user.role && trainerExists) {
+			await trainersOperations.updateTrainer(trainerProps);
+		}
+
+		if (TRAINER_ROLE === user.role && !trainerExists) {
+			await trainersOperations.insertTrainer(trainerProps);
+		}
+
+		await usersOperations.updateUserWithRole(
+			user.id,
+			user.name,
+			user.surname,
+			user.phone,
+			fk_role
+		);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		return next(e);
+	}
+}
+
+function getRoleId(roles: Role[], roleName: string): number {
+	for (const roleObj of roles) {
+		if (roleObj.role === roleName) {
+			return roleObj.id;
+		}
+	}
+	return -1;
+}
+
 async function updateUser(req: Request, res: Response, next: NextFunction) {
+	const uid = (req.body.user as User).id;
 	const userDetails = req.body as UpdateUserProps;
+
+	if (uid !== userDetails.id) {
+		return next(ApiError.forbidden('Cannot edit other users details'));
+	}
 
 	try {
 		if (userDetails.password) {
 			const hashedPassword = await bcrypt.hash(userDetails.password, 10);
 			await usersOperations.updateUserPassword(userDetails.id, hashedPassword);
 		}
-		await usersOperations.updateUser(userDetails);
+		await usersOperations.updateUser(
+			userDetails.id,
+			userDetails.name,
+			userDetails.surname,
+			userDetails.phone
+		);
 		return res.sendStatus(ResponseCode.OK);
 	} catch (e: any) {
 		return next(e);
@@ -97,10 +169,23 @@ export interface UpdateUserProps {
 	password?: string;
 }
 
+export interface AdminUpdateUserProps {
+	id: string;
+	name: string;
+	surname: string;
+	phone?: string;
+	role: string;
+	price?: number;
+	description?: string;
+	moto?: string;
+	photoUrl?: string;
+}
+
 export default {
 	getUserDetails,
 	createUser,
 	updateUser,
 	getUsers,
 	deleteUser,
+	adminUpdateUserAndTrainer,
 };

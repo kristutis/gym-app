@@ -21,6 +21,27 @@ export const adminGetUsersCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const adminUpdateUserCall = async (
+  payload: AdminUpdateUserProps,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users/admin', {
+    method: 'PUT',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const updateUserCall = async (
   payload: UpdateUserProps,
   authToken: string
@@ -109,4 +130,16 @@ export interface UpdateUserProps {
   surname: string
   phone?: string
   password?: string
+}
+
+export interface AdminUpdateUserProps {
+  id: string
+  name: string
+  surname: string
+  phone?: string
+  role: string
+  price?: number
+  description?: string
+  moto?: string
+  photoUrl?: string
 }

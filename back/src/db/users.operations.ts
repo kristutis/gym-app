@@ -1,8 +1,5 @@
 import { MysqlError } from 'mysql';
-import {
-	CreateUserProps,
-	UpdateUserProps,
-} from '../controllers/users.controller';
+import { CreateUserProps } from '../controllers/users.controller';
 import { Trainer } from '../models/trainer.model';
 import { User } from '../models/user.model';
 import { db } from './connect';
@@ -18,11 +15,37 @@ function deleteUser(uid: string): Promise<MysqlError> {
 	});
 }
 
-function updateUser(user: UpdateUserProps): Promise<MysqlError> {
+function updateUserWithRole(
+	id: string,
+	name: string,
+	surname: string,
+	phone: string,
+	role: number
+): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE users SET name = ?, surname = ?, phone = ?, fk_role = ? WHERE uid = ?',
+			[name, surname, phone, role, id],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
+function updateUser(
+	id: string,
+	name: string,
+	surname: string,
+	phone?: string
+): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE users SET name = ?, surname = ?, phone = ? WHERE uid = ?',
-			[user.name, user.surname, user.phone, user.id],
+			[name, surname, phone, id],
 			(err, _) => {
 				if (err) {
 					return reject(err);
@@ -136,4 +159,5 @@ export default {
 	updateUserPassword,
 	getAllUsersWithTrainerInfo,
 	deleteUser,
+	updateUserWithRole,
 };

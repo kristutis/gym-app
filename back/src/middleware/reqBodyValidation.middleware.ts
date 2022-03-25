@@ -73,6 +73,18 @@ export const updateUserSchema: ObjectSchema = Joi.object({
 	password: passwordSchema,
 });
 
+export const adminUpdateUserSchema: ObjectSchema = Joi.object({
+	id: uidSchema,
+	name: nameSchema,
+	surname: surnameSchema,
+	phone: phoneSchema.allow(null).allow(''),
+	role: Joi.string().required(),
+	price: Joi.number().allow(null).allow(''),
+	description: Joi.string().allow(null).allow(''),
+	moto: Joi.string().allow(null).allow(''),
+	photoUrl: Joi.string().allow(null).allow(''),
+});
+
 export const loginUserSchema: ObjectSchema = Joi.object({
 	email: emailSchema,
 	password: passwordSchema,

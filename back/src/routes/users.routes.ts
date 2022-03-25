@@ -5,6 +5,7 @@ import {
 	authenticateUser,
 } from '../middleware/auth.middleware';
 import {
+	adminUpdateUserSchema,
 	createUserSchema,
 	deleteUserSchema,
 	updateUserSchema,
@@ -35,6 +36,13 @@ usersRouter.put(
 	validateRequestBody(updateUserSchema),
 	authenticateUser,
 	usersController.updateUser
+);
+
+usersRouter.put(
+	BASE_ROUTE + '/admin',
+	validateRequestBody(adminUpdateUserSchema),
+	authenticateAdmin,
+	usersController.adminUpdateUserAndTrainer
 );
 
 usersRouter.delete(
