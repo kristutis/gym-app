@@ -1,7 +1,6 @@
-
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
@@ -118,7 +117,6 @@ export default function UserCalendar() {
       )
       setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
-      console.log(e)
       alert('Error when getting all events')
     }
   }

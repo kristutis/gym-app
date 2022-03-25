@@ -27,7 +27,7 @@ export default function ModalFormGroup({
 
 export interface ModalFormGroupProps {
   label: string
-  errorMsg: string
+  errorMsg?: string
   inputType: string
   inputValue: string
   setInput: (msg: string) => void

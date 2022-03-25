@@ -3,7 +3,10 @@ export const getErrorMsg = (responseBody: any): string => {
     responseBody?.error?.message &&
     typeof responseBody.error.message === 'string'
   ) {
-    if (responseBody.error.message === 'Refresh token no longer valid') {
+    if (
+      responseBody.error.message === 'Refresh token no longer valid' ||
+      responseBody.error.message === 'Refresh token does not exist'
+    ) {
       localStorage.clear()
       window.location.replace('/')
       return 'Please login'

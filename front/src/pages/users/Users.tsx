@@ -35,7 +35,12 @@ function Users() {
 
   return (
     <>
-      <EditUserModal />
+      <EditUserModal
+        trainer={editableUser}
+        showModal={showEditModal}
+        closeFunction={() => setShowEditModal(false)}
+        reloadUserFunction={() => loadUsers()}
+      />
       <DeleteUserModal
         trainer={editableUser}
         showModal={showDeleteModal}

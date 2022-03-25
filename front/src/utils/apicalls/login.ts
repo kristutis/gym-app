@@ -16,7 +16,6 @@ export const refreshUserCall = async (
     body: JSON.stringify(payload),
   })
 
-  console.log(response.status)
   const responseBody = await response.json()
   if (response.status === 200) {
     return Promise.resolve(responseBody)
