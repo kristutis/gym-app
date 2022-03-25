@@ -77,7 +77,6 @@ async function createReservation(
 	const reservationId = parseInt(req.params.resId);
 	const sendMessage = req.body.sendMessage;
 	const userId = (req.body.user as User).id;
-	const usersName = (req.body.user as User).name;
 
 	const newReservation = { reservationId, userId } as Reservation;
 
@@ -111,22 +110,24 @@ async function createReservation(
 		await reservationsOperations.insertReservation(newReservation);
 
 		if (sendMessage) {
-			const usersPhone = ((await usersOperations.getUserById(userId)) as User)
-				.phone;
+			const user = (await usersOperations.getUserById(userId)) as User;
+			const usersPhone = user.phone;
 			if (!usersPhone) {
 				return ApiError.badRequest('User have not provided phone number');
 			}
 			await twilioClient.messages.create({
 				from: CONFIG.TWILIO_NUMBER,
 				to: usersPhone,
-				body: `Dear ${usersName}, your registration on ${window.startTime.toLocaleString()} was successful`,
+				body: `Dear ${
+					user.name
+				}, your registration on ${window.startTime.toLocaleString()} was successful`,
 			});
 		}
 
 		return res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
 		if (e.message.includes('is not a valid phone number')) {
-			next(ApiError.badRequest('Not a valid number'));
+			next(ApiError.badRequest('Phone number is invalid'));
 		} else {
 			next(e);
 		}
