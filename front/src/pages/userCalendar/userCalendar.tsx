@@ -46,6 +46,9 @@ export default function UserCalendar() {
       available: boolean,
       startDate: Date
     ) => {
+      if (new Date(startDate).getTime() <= new Date().getTime()) {
+        return 'black'
+      }
       if (alreadyReserved) {
         return 'orange'
       }
