@@ -1,3 +1,9 @@
 .trainers-page-background-image {
   background-image: url('../../../public/images/trainers-page-cover.png');
 }
+
+.subtitle-container {
+  text-align: center;
+  color: white;
+  background-color: #242424;
+}

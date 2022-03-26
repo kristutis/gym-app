@@ -19,7 +19,9 @@ export default function Trainers() {
       <h1 className="default-page-front trainers-page-background-image">
         TRAINERS
       </h1>
-      <h2>Check out our best trainers!</h2>
+      <div className="subtitle-container py-4 mb-4">
+        <h2>Check out our team!</h2>
+      </div>
       {trainers.length === 0 ? (
         <Loading />
       ) : (

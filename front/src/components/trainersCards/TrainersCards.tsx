@@ -34,7 +34,7 @@ function TrainerCard({ trainer }: { trainer: Trainer }) {
           <h4 className="card-title">{trainer.name}</h4>
           <p className="trainer-card-text text-secondary">{trainer.moto}</p>
           <Link to={'/'}>
-            <span className="btn btn-outline-success">Plačiau</span>
+            <span className="btn btn-outline-success">More</span>
           </Link>
         </div>
       </div>
