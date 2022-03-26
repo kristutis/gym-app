@@ -9,6 +9,7 @@ import AdminTimetable from './pages/adminTimetable/AdminTimetable'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
 import Profile from './pages/profile/Profile'
+import TrainerDetails from './pages/trainerDetails/TrainerDetails'
 import Trainers from './pages/trainers/Trainers'
 import UserCalendar from './pages/userCalendar/UserCalendar'
 import Users from './pages/users/Users'
@@ -19,6 +20,10 @@ const commonRoutes = [
   {
     path: '/',
     component: Home,
+  },
+  {
+    path: '/trainers/details',
+    component: TrainerDetails,
   },
   {
     path: '/trainers',

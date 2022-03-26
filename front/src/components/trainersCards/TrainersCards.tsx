@@ -33,7 +33,12 @@ function TrainerCard({ trainer }: { trainer: Trainer }) {
         <div className="trainer-card-body text-dark">
           <h4 className="card-title">{trainer.name}</h4>
           <p className="trainer-card-text text-secondary">{trainer.moto}</p>
-          <Link to={'/'}>
+          <Link
+            to={{
+              pathname: '/trainers/details',
+              state: { trainer },
+            }}
+          >
             <span className="btn btn-outline-success">More</span>
           </Link>
         </div>
