@@ -1,5 +1,28 @@
 import { MysqlError } from 'mysql';
+import { Trainer } from '../models/trainer.model';
 import { db } from './connect';
+
+function getTrainersWithUserInfo(): Promise<Trainer[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT uid as id, name, surname, email, ' +
+				' reg_date as createDate, modify_date as modifyDate, role, phone, price, description, moto, photo_url as photoUrl ' +
+				'FROM users ' +
+				'LEFT JOIN user_roles ' +
+				'ON users.fk_role = user_roles.id ' +
+				'LEFT JOIN trainers ' +
+				'ON users.uid = trainers.fk_user_id ' +
+				'WHERE role = ?',
+			['trainer'],
+			(err, results) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(results as Trainer[]);
+			}
+		);
+	});
+}
 
 function deleteTrainer(uid: string): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -80,4 +103,10 @@ export interface TrainerProps {
 	photoUrl?: string;
 }
 
-export default { getTrainerByUid, deleteTrainer, updateTrainer, insertTrainer };
+export default {
+	getTrainerByUid,
+	deleteTrainer,
+	updateTrainer,
+	insertTrainer,
+	getTrainersWithUserInfo,
+};

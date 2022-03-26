@@ -5,6 +5,7 @@ import { CONFIG } from './config/config';
 import { authRouter } from './routes/auth.routes';
 import { reservationRouter } from './routes/reservation.routes';
 import { timetableRouter } from './routes/timetable.routes';
+import { trainersRouter } from './routes/trainers.routes';
 import { usersRouter } from './routes/users.routes';
 import { ApiError, apiErrorHandler } from './utils/errors';
 import { log } from './utils/logger';
@@ -14,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	cors({
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		methods: 'GET,PUT,POST,DELETE',
 		origin: 'http://localhost:3000',
 		allowedHeaders: 'authorization,content-type',
 	})
@@ -24,6 +25,7 @@ app.use(usersRouter);
 app.use(authRouter);
 app.use(timetableRouter);
 app.use(reservationRouter);
+app.use(trainersRouter);
 
 app.get('/', (req: Request, res: Response) => res.send('Welcome to gym API!'));
 app.all('*', (req, res, next) => next(ApiError.notFound('Url does not exist')));
