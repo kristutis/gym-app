@@ -20,7 +20,11 @@ export default function Trainers() {
         TRAINERS
       </h1>
       <h2>Check out our best trainers!</h2>
-      {trainers.length === 0 ? <Loading /> : <TrainersCards {...trainers} />}
+      {trainers.length === 0 ? (
+        <Loading />
+      ) : (
+        <TrainersCards trainers={trainers} />
+      )}
     </>
   )
 }

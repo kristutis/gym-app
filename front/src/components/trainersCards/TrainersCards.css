@@ -1,0 +1,39 @@
+.trainer-cards-container {
+  margin: auto;
+  text-align: -webkit-center;
+}
+
+.trainer-card-img {
+  transform: scale(1);
+  transition: transform 0.5s ease;
+}
+
+.trainer-card-img:hover {
+  transform: scale(1.2);
+}
+
+.trainer-overflow {
+  overflow: hidden;
+}
+
+.trainer-card-body {
+  padding: 3rem 0 !important;
+}
+
+.trainer-container-flui .trainer-cards-container {
+  padding-top: 6rem;
+}
+
+.trainer-card-text {
+  font-size: 0.9rem;
+  padding: 0.4rem 1.9rem;
+}
+
+.trainer-card {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.trainer-card:hover {
+  box-shadow: 5px 10px 20px 1px rgba(0, 0, 0, 0.8) !important;
+}
