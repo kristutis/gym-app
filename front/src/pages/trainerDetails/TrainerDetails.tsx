@@ -20,9 +20,11 @@ export default function TrainerDetails(props: any) {
   const [updateRatings, setUpdateRatings] = useState(false)
 
   useEffect(() => {
-    getAllTrainerRatingsCall(trainer.id)
-      .then((ratings: any) => setTrainerRatings(ratings))
-      .catch((err) => alert(err))
+    if (trainer) {
+      getAllTrainerRatingsCall(trainer.id)
+        .then((ratings: any) => setTrainerRatings(ratings))
+        .catch((err) => alert(err))
+    }
   }, [updateRatings])
 
   if (!trainer) {
@@ -30,49 +32,64 @@ export default function TrainerDetails(props: any) {
     return null
   }
 
-  const ratingAverage =
+  const ratingAverage = (
     trainerRatings.reduce((partialSum, a) => partialSum + a, 0) /
     trainerRatings.length
+  ).toFixed(2)
 
   return (
-    <div className="m-3">
+    <div className="m-5">
       <Row>
         <Col>
-          <Card>
-            <Card.Img
-              variant="top"
-              src={
-                trainer.photoUrl === null || trainer.photoUrl === 'DEFAULT'
-                  ? DEFAULT_PROFILE_PIC_SRC
-                  : trainer.photoUrl
-              }
-            />
-            <Card.Body>
-              <Card.Title>{trainer.name + ' ' + trainer.surname}</Card.Title>
-              <Card.Text>{trainer.moto}</Card.Text>
-            </Card.Body>
-            <ListGroup className="list-group-flush">
-              <ListGroupItem>{trainer.description}</ListGroupItem>
-              <ListGroupItem>{`Hourly price: ${trainer.price}€`}</ListGroupItem>
-              <ListGroupItem>
-                {!!trainerRatings.length
-                  ? `Rating: ${ratingAverage}`
-                  : 'Trainer is not rated yet!'}
-              </ListGroupItem>
-              <StarRatingModule
-                trainerId={trainer.id}
-                updateRatings={updateRatings}
-                setUpdateRatings={setUpdateRatings}
+          <div className="trainer-comments-section-container">
+            <Card>
+              <Card.Img
+                variant="top"
+                className="img-thumbnail"
+                src={
+                  trainer.photoUrl === null || trainer.photoUrl === 'DEFAULT'
+                    ? DEFAULT_PROFILE_PIC_SRC
+                    : trainer.photoUrl
+                }
               />
-            </ListGroup>
-            <Card.Body>
-              <Link to={'/trainers'}>
-                <span className="btn btn-outline-success">Back</span>
-              </Link>
-            </Card.Body>
-          </Card>
+              <Card.Body>
+                <Card.Title>{trainer.name + ' ' + trainer.surname}</Card.Title>
+                <Card.Text>{trainer.moto}</Card.Text>
+              </Card.Body>
+              <ListGroup className="list-group-flush">
+                <ListGroupItem>
+                  About:
+                  <br />
+                  {trainer.description}
+                </ListGroupItem>
+                <ListGroupItem>{`Hourly price: ${trainer.price}€`}</ListGroupItem>
+                <ListGroupItem>
+                  {!!trainerRatings.length
+                    ? `Rating: ${ratingAverage} / 5`
+                    : 'Trainer is not rated yet!'}
+                </ListGroupItem>
+                <ListGroupItem>
+                  Contacts: <br />
+                  Email: {trainer.email} <br />
+                  {!!trainer.phone ? `Phone: ${trainer.phone}` : null}
+                </ListGroupItem>
+                <StarRatingModule
+                  trainerId={trainer.id}
+                  updateRatings={updateRatings}
+                  setUpdateRatings={setUpdateRatings}
+                />
+              </ListGroup>
+              <Card.Body>
+                <Link to={'/trainers'}>
+                  <span className="btn btn-outline-success">Back</span>
+                </Link>
+              </Card.Body>
+            </Card>
+          </div>
         </Col>
-        <Col></Col>
+        <Col>
+          <CommentsSection />
+        </Col>
       </Row>
     </div>
   )
@@ -151,5 +168,15 @@ function StarRating({
       />
       <label onClick={() => handleSelect(value)}>star</label>
     </>
+  )
+}
+
+function CommentsSection() {
+  return (
+    <div className="trainer-comments-section-container">
+      <h3 className="my-2" style={{ textAlign: 'center' }}>
+        Comments
+      </h3>
+    </div>
   )
 }

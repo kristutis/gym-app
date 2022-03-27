@@ -38,3 +38,12 @@
 .star-rating > label:active {
   position: relative;
 }
+
+.trainer-comments-section-container {
+  min-width: 250px;
+  background-color: white;
+  border: 10px solid #242424;
+  border-radius: 20px;
+  height: 100%;
+  width: 100%;
+}
