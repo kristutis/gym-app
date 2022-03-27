@@ -1,0 +1,22 @@
+import { DEFAULT_BACKEND_PATH } from '../../App'
+import { getErrorMsg } from './errors'
+
+export const getOffersCall = async (): Promise<string | Offer[]> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/offers', {
+    method: 'GET',
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody as Offer[])
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
+export interface Offer {
+  id: number
+  imageSrc: string
+  discountPercentage: number
+  description: string
+}
