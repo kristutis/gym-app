@@ -3,6 +3,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import { CONFIG } from './config/config';
 import { authRouter } from './routes/auth.routes';
+import { ratingsRouter } from './routes/ratings.routes';
 import { reservationRouter } from './routes/reservation.routes';
 import { timetableRouter } from './routes/timetable.routes';
 import { trainersRouter } from './routes/trainers.routes';
@@ -26,6 +27,7 @@ app.use(authRouter);
 app.use(timetableRouter);
 app.use(reservationRouter);
 app.use(trainersRouter);
+app.use(ratingsRouter);
 
 app.get('/', (req: Request, res: Response) => res.send('Welcome to gym API!'));
 app.all('*', (req, res, next) => next(ApiError.notFound('Url does not exist')));

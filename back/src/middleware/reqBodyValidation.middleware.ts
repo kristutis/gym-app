@@ -58,6 +58,15 @@ export const getUserSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
 
+export const uidParamSchema: ObjectSchema = Joi.object({
+	uid: uidSchema,
+});
+
+export const postRatingSchema: ObjectSchema = Joi.object({
+	uid: uidSchema,
+	rating: Joi.number().integer().min(1).max(5).required(),
+});
+
 export const createUserSchema: ObjectSchema = Joi.object({
 	name: nameSchema,
 	surname: surnameSchema,

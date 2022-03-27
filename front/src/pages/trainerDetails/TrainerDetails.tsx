@@ -1,7 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Col, ListGroup, ListGroupItem, Row } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import {
+  getAllTrainerRatingsCall,
+  getUserRatingsForTrainerCall,
+  postRatingCall,
+} from '../../utils/apicalls/ratings'
 import { DEFAULT_PROFILE_PIC_SRC, Trainer } from '../../utils/apicalls/user'
+import { useAuthHeader, useLoggedIn } from '../../utils/auth'
 import './TrainerDetails.css'
 
 const MAX_STARS_COUNT = 5
@@ -10,10 +16,23 @@ export default function TrainerDetails(props: any) {
   const history = useHistory()
   const trainer = props.location.state?.trainer as Trainer
 
+  const [trainerRatings, setTrainerRatings] = useState([] as number[])
+  const [updateRatings, setUpdateRatings] = useState(false)
+
+  useEffect(() => {
+    getAllTrainerRatingsCall(trainer.id)
+      .then((ratings: any) => setTrainerRatings(ratings))
+      .catch((err) => alert(err))
+  }, [updateRatings])
+
   if (!trainer) {
     history.push('/trainers')
     return null
   }
+
+  const ratingAverage =
+    trainerRatings.reduce((partialSum, a) => partialSum + a, 0) /
+    trainerRatings.length
 
   return (
     <div className="m-3">
@@ -35,14 +54,21 @@ export default function TrainerDetails(props: any) {
             <ListGroup className="list-group-flush">
               <ListGroupItem>{trainer.description}</ListGroupItem>
               <ListGroupItem>{`Hourly price: ${trainer.price}€`}</ListGroupItem>
-              {/* <ListGroupItem>{`Rating:`}</ListGroupItem> */}
               <ListGroupItem>
-                <StarRatingModule />
+                {!!trainerRatings.length
+                  ? `Rating: ${ratingAverage}`
+                  : 'Trainer is not rated yet!'}
               </ListGroupItem>
+              <StarRatingModule
+                trainerId={trainer.id}
+                updateRatings={updateRatings}
+                setUpdateRatings={setUpdateRatings}
+              />
             </ListGroup>
             <Card.Body>
-              <Card.Link href="#">Card Link</Card.Link>
-              <Card.Link href="#">Another Link</Card.Link>
+              <Link to={'/trainers'}>
+                <span className="btn btn-outline-success">Back</span>
+              </Link>
             </Card.Body>
           </Card>
         </Col>
@@ -52,27 +78,65 @@ export default function TrainerDetails(props: any) {
   )
 }
 
-function StarRatingModule() {
-  const [currentRating, setCurrentRating] = useState(4)
+function StarRatingModule({
+  trainerId,
+  updateRatings,
+  setUpdateRatings,
+}: {
+  trainerId: string
+  updateRatings: boolean
+  setUpdateRatings: (value: boolean) => void
+}) {
+  const loggedIn = useLoggedIn()
+  const authHeader = useAuthHeader()
+  const [currentRating, setCurrentRating] = useState(0)
+
+  useEffect(() => {
+    getUserRatingsForTrainerCall(trainerId, authHeader)
+      .then((r: any) => (!!r.rating ? setCurrentRating(r.rating) : null))
+      .catch((err) => alert(err))
+  }, [])
+
+  if (!loggedIn) {
+    return null
+  }
+
+  const handleSelect = (value: number) => {
+    postRatingCall(trainerId, value, authHeader)
+      .then((r) => {
+        setCurrentRating(value)
+        setUpdateRatings(!updateRatings)
+      })
+      .catch((err) => alert(err))
+  }
 
   return (
-    <fieldset className="star-rating">
-      {Array.from(Array(MAX_STARS_COUNT).keys())
-        .reverse()
-        .map((x) => x + 1)
-        .map((e, index) => (
-          <StarRating value={e} key={index} currentRating={currentRating} />
-        ))}
-    </fieldset>
+    <ListGroupItem>
+      <fieldset className="star-rating">
+        {Array.from(Array(MAX_STARS_COUNT).keys())
+          .reverse()
+          .map((x) => x + 1)
+          .map((e, index) => (
+            <StarRating
+              value={e}
+              key={index}
+              currentRating={currentRating}
+              handleSelect={handleSelect}
+            />
+          ))}
+      </fieldset>
+    </ListGroupItem>
   )
 }
 
 function StarRating({
   value,
   currentRating,
+  handleSelect,
 }: {
   value: number
   currentRating?: number
+  handleSelect: (value: number) => void
 }) {
   return (
     <>
@@ -81,8 +145,9 @@ function StarRating({
         name="rating"
         value={value}
         checked={!!currentRating && currentRating === value}
+        onChange={() => null}
       />
-      <label>star</label>
+      <label onClick={() => handleSelect(value)}>star</label>
     </>
   )
 }
