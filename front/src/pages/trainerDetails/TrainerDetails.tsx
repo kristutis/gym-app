@@ -92,9 +92,11 @@ function StarRatingModule({
   const [currentRating, setCurrentRating] = useState(0)
 
   useEffect(() => {
-    getUserRatingsForTrainerCall(trainerId, authHeader)
-      .then((r: any) => (!!r.rating ? setCurrentRating(r.rating) : null))
-      .catch((err) => alert(err))
+    if (loggedIn) {
+      getUserRatingsForTrainerCall(trainerId, authHeader)
+        .then((r: any) => (!!r.rating ? setCurrentRating(r.rating) : null))
+        .catch((err) => alert(err))
+    }
   }, [])
 
   if (!loggedIn) {
