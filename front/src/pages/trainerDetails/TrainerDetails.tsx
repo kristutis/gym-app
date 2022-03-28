@@ -37,7 +37,7 @@ export default function TrainerDetails(props: any) {
     if (trainer) {
       getAllTrainerRatingsCall(trainer.id)
         .then((ratings: any) => setTrainerRatings(ratings))
-        .catch((err) => alert(err))
+        .catch((err) => null)
     }
   }, [updateRatings])
 
@@ -191,7 +191,7 @@ function CommentsSection({ trainerId }: { trainerId: string }) {
   useEffect(() => {
     getTrainerCommentsCall(trainerId)
       .then((comms) => setComments(comms as TrainerComment[]))
-      .catch((err) => alert(err))
+      .catch((err) => null)
   }, [updatedComments])
 
   return (
@@ -231,7 +231,10 @@ function CommentForm({
     }
     setError(false)
     postCommentCall(trainerId, comment, authHeader)
-      .then((res) => setUpdatedComments(!updatedComments))
+      .then((res) => {
+        setUpdatedComments(!updatedComments)
+        setComment('')
+      })
       .catch((err) => alert(err))
   }
 
@@ -252,6 +255,7 @@ function CommentForm({
         <Form.Control
           as="textarea"
           rows={3}
+          value={comment}
           onChange={(e: any) => setComment(e.target.value)}
         />
       </Form.Group>
