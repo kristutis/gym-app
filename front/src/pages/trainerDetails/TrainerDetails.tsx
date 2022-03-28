@@ -127,7 +127,7 @@ function StarRatingModule({
         .then((r: any) => (!!r.rating ? setCurrentRating(r.rating) : null))
         .catch((err) => alert(err))
     }
-  }, [])
+  }, [loggedIn])
 
   if (!loggedIn) {
     return null
