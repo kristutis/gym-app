@@ -15,7 +15,6 @@ export default function Home() {
       />
       <SectionSeparator text={'Check out our offers!'} />
       <OffersCarousel />
-      {/* <div className="fdiv"></div> */}
     </>
   )
 }
@@ -39,13 +38,13 @@ function OffersCarousel() {
         <Carousel.Item key={index}>
           <div className="home-carousel">
             <Image
-              className="d-block w-100 mh-100 "
+              className="d-block w-100 mh-100"
               src={offer.imageSrc}
               alt=""
             />
           </div>
           <Carousel.Caption>
-            <h3>{`${offer.discountPercentage}% OFF`}</h3>
+            <h3>{`${offer.discountPercentage}% Off!`}</h3>
             <p>{offer.description}</p>
           </Carousel.Caption>
         </Carousel.Item>

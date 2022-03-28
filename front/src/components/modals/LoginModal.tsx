@@ -32,7 +32,7 @@ export default function LoginModal({ show, closeFunction }: LoginModalProps) {
     }
     setPasswordError('')
 
-    await loginUserCall({ email, password })
+    loginUserCall({ email, password })
       .then((userInfo) => {
         setAuth(userInfo)
         closeFunction()

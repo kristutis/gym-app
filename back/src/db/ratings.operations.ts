@@ -1,7 +1,7 @@
 import { MysqlError } from 'mysql';
 import { db } from './connect';
 
-function insertRating(
+async function insertRating(
 	userId: string,
 	trainerId: string,
 	rating: number
@@ -20,7 +20,7 @@ function insertRating(
 	});
 }
 
-function updateRating(
+async function updateRating(
 	userId: string,
 	trainerId: string,
 	rating: number
@@ -39,7 +39,7 @@ function updateRating(
 	});
 }
 
-function getTrainerRatings(
+async function getTrainerRatings(
 	trainerId: string
 ): Promise<[{ rating: number }] | MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ function getTrainerRatings(
 	});
 }
 
-function getUserRaitingForTrainer(
+async function getUserRaitingForTrainer(
 	userId: string,
 	trainerId: string
 ): Promise<{ rating: number } | undefined | MysqlError> {

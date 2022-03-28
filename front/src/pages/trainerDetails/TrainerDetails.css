@@ -41,9 +41,26 @@
 
 .trainer-comments-section-container {
   min-width: 250px;
-  background-color: white;
+  background-color: #242424;
+  color: white;
   border: 10px solid #242424;
   border-radius: 20px;
-  height: 100%;
-  width: 100%;
+}
+
+.trainer-details-img {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+.trainer-details-card {
+  background-color: #242424;
+  color: white;
+  margin: auto;
+}
+
+.trainer-details-back-button {
+  text-align: center;
+  display: block;
 }

@@ -42,6 +42,10 @@ const trainerRoutes = [] as NavbarRoutesProps[]
 
 const adminRoutes = [
   {
+    route: '/offers',
+    text: 'Offers',
+  },
+  {
     route: '/users',
     text: 'Users',
   },

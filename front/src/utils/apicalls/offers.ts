@@ -14,6 +14,24 @@ export const getOffersCall = async (): Promise<string | Offer[]> => {
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const adminGetOffersCall = async (
+  authToken: string
+): Promise<string | Offer[]> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/offers/admin', {
+    method: 'GET',
+    headers: {
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody as Offer[])
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface Offer {
   id: number
   imageSrc: string

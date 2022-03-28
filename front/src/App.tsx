@@ -8,6 +8,7 @@ import ProtectedRoute from './components/protectedRoute/ProtectedRoute'
 import AdminTimetable from './pages/adminTimetable/AdminTimetable'
 import CreateTimeTable from './pages/createTimeTable/CreateTimeTable'
 import Home from './pages/home/Home'
+import ManageOffers from './pages/manageOffers/ManageOffers'
 import Profile from './pages/profile/Profile'
 import TrainerDetails from './pages/trainerDetails/TrainerDetails'
 import Trainers from './pages/trainers/Trainers'
@@ -51,6 +52,10 @@ const protectedRoutes = [
   {
     path: '/profile',
     component: Profile,
+  },
+  {
+    path: '/offers',
+    component: ManageOffers,
   },
 ] as RouteProps[]
 

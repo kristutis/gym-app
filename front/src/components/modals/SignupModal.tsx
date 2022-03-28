@@ -58,7 +58,7 @@ export default function SignupModal({
     }
     setPasswordError('')
 
-    await signupUserCall({ name, surname, email, password })
+    signupUserCall({ name, surname, email, password })
       .then((msg) => {
         alert('Account created!')
         closeFunction()

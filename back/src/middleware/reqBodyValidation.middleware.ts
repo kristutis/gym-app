@@ -146,3 +146,7 @@ export const deleteUserSchema: ObjectSchema = Joi.object({
 export const createReservationBodySchema: ObjectSchema = Joi.object({
 	sendMessage: Joi.boolean().required(),
 });
+
+export const postCommentschema: ObjectSchema = Joi.object({
+	comment: Joi.string().min(1).required(),
+});
