@@ -1,24 +1,20 @@
 import { MysqlError } from 'mysql';
 import { db } from './connect';
 
-// function insertOffer(
-// 	userId: string,
-// 	trainerId: string,
-// 	rating: number
-// ): Promise<MysqlError> {
-// 	return new Promise((resolve, reject) => {
-// 		db.query(
-// 			'INSERT INTO trainer_ratings (rating, fk_user_id, fk_trainer_id) VALUES (?, ?, ?)',
-// 			[rating, userId, trainerId],
-// 			(err, _) => {
-// 				if (err) {
-// 					return reject(err);
-// 				}
-// 				return resolve(null);
-// 			}
-// 		);
-// 	});
-// }
+function insertOffer(offer: Offer): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'INSERT INTO offers (image_src, discount_percentage, description) VALUES (?, ?, ?)',
+			[offer.imageSrc, offer.discountPercentage, offer.description],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
 
 // function updateRating(
 // 	userId: string,
@@ -55,6 +51,7 @@ function getOffers(): Promise<Offer[] | MysqlError> {
 
 export default {
 	getOffers,
+	insertOffer,
 };
 
 export interface Offer {

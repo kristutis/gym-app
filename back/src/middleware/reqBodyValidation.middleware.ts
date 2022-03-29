@@ -158,3 +158,9 @@ export const postCommentschema: ObjectSchema = Joi.object({
 });
 
 export const updateCommentBodySchema = postCommentschema;
+
+export const postOfferSchema: ObjectSchema = Joi.object({
+	imageSrc: Joi.string().required(),
+	discountPercentage: Joi.number().min(1).required(),
+	description: Joi.string().required(),
+});

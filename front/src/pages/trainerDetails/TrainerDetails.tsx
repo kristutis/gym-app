@@ -427,7 +427,7 @@ function CommentsTable({
 function Actions({ actionProps }: { actionProps: ActionsProps }) {
   const { comment, setEditable, openEdit, openDelete } = actionProps
   return (
-    <td>
+    <>
       <i
         className="fas fa-pen text-success mx-2"
         onClick={() => {
@@ -442,7 +442,7 @@ function Actions({ actionProps }: { actionProps: ActionsProps }) {
           openDelete()
         }}
       />
-    </td>
+    </>
   )
 }
 
