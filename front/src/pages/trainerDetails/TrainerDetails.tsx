@@ -15,6 +15,7 @@ import {
   getTrainerCommentsCall,
   postCommentCall,
   TrainerComment,
+  updateCommentCall,
 } from '../../utils/apicalls/comments'
 import {
   getAllTrainerRatingsCall,
@@ -191,8 +192,8 @@ function StarRating({
 }
 
 function CommentsSection({ trainerId }: { trainerId: string }) {
-  const [updatedComments, setUpdatedComments] = useState(false)
   const [comments, setComments] = useState([] as TrainerComment[])
+  const [showCommentForm, setShowCommentForm] = useState(true)
 
   const loadComments = () => {
     getTrainerCommentsCall(trainerId)
@@ -202,31 +203,32 @@ function CommentsSection({ trainerId }: { trainerId: string }) {
 
   useEffect(() => {
     loadComments()
-  }, [updatedComments])
+  }, [])
 
   return (
     <div className="trainer-comments-section-container">
       <h3 className="my-2" style={{ textAlign: 'center' }}>
         Comments
       </h3>
-      <CommentsTable comments={comments} loadComments={loadComments} />
-      <CommentForm
-        trainerId={trainerId}
-        updatedComments={updatedComments}
-        setUpdatedComments={setUpdatedComments}
+      <CommentsTable
+        comments={comments}
+        loadComments={loadComments}
+        setShowCommentForm={setShowCommentForm}
+        showEditForm={!showCommentForm}
       />
+      {showCommentForm && (
+        <CommentForm trainerId={trainerId} loadComments={loadComments} />
+      )}
     </div>
   )
 }
 
 function CommentForm({
   trainerId,
-  updatedComments,
-  setUpdatedComments,
+  loadComments,
 }: {
   trainerId: string
-  updatedComments: boolean
-  setUpdatedComments: (value: boolean) => void
+  loadComments: () => void
 }) {
   const loggedIn = useLoggedIn()
   const authHeader = useAuthHeader()
@@ -242,7 +244,7 @@ function CommentForm({
     setError(false)
     postCommentCall(trainerId, comment, authHeader)
       .then((res) => {
-        setUpdatedComments(!updatedComments)
+        loadComments()
         setComment('')
       })
       .catch((err) => alert(err))
@@ -280,18 +282,89 @@ function CommentForm({
   )
 }
 
+function EditCommentForm({
+  oldComment,
+  loadComments,
+  setShowCommentForm,
+}: {
+  oldComment: TrainerComment
+  loadComments: () => void
+  setShowCommentForm: (value: boolean) => void
+}) {
+  const authHeader = useAuthHeader()
+
+  const [error, setError] = useState(false)
+  const [comment, setComment] = useState('')
+
+  useEffect(() => {
+    setComment(oldComment.comment)
+  }, [oldComment])
+
+  const handleUpdate = () => {
+    if (!comment) {
+      setError(true)
+      return
+    }
+    setError(false)
+    updateCommentCall(oldComment.id, comment, authHeader)
+      .then((res) => {
+        loadComments()
+        setComment('')
+        setShowCommentForm(true)
+      })
+      .catch((err) => alert(err))
+  }
+
+  return (
+    <Form className="m-3">
+      <Form.Group>
+        {error ? (
+          <Form.Label className="text-danger">
+            Cannot post empty comment!
+          </Form.Label>
+        ) : (
+          <Form.Label>Edit comment:</Form.Label>
+        )}
+        <Form.Control
+          as="textarea"
+          rows={3}
+          value={comment}
+          onChange={(e: any) => setComment(e.target.value)}
+        />
+      </Form.Group>
+      <Button
+        variant="outline-success"
+        className="mt-2"
+        onClick={() => handleUpdate()}
+      >
+        Update
+      </Button>
+      <Button
+        variant="outline-danger"
+        className="mt-2 mx-2"
+        onClick={() => setShowCommentForm(true)}
+      >
+        Cancel
+      </Button>
+    </Form>
+  )
+}
+
 function CommentsTable({
   comments,
   loadComments,
+  showEditForm,
+  setShowCommentForm,
 }: {
   comments: TrainerComment[]
   loadComments: () => void
+  showEditForm: boolean
+  setShowCommentForm: (value: boolean) => void
 }) {
   const userId = useUserId()
   const isAdmin = useAdminRole()
 
   const [comment, setComment] = useState({} as TrainerComment)
-  const [openEdit, setOpenEdit] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
 
   if (!comments?.length) {
@@ -323,7 +396,7 @@ function CommentsTable({
               const actionProps = {
                 comment,
                 setEditable: (comm: TrainerComment) => setComment(comm),
-                openEdit: () => setOpenEdit(true),
+                openEdit: () => setShowCommentForm(false),
                 openDelete: () => setOpenDelete(true),
               } as ActionsProps
               return (
@@ -340,6 +413,13 @@ function CommentsTable({
           </tbody>
         </Table>
       </div>
+      {showEditForm && (
+        <EditCommentForm
+          oldComment={comment}
+          loadComments={loadComments}
+          setShowCommentForm={setShowCommentForm}
+        />
+      )}
     </>
   )
 }

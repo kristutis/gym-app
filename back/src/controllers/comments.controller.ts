@@ -67,4 +67,37 @@ async function deleteTrainerComment(
 	}
 }
 
-export default { postComment, getTrainerComments, deleteTrainerComment };
+async function updateTrainerComment(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const commentId = parseInt(req.params.commentId);
+	const comment = req.body.comment;
+	const user = req.body.user as User;
+
+	try {
+		const commentExist = (await commentsOperations.getTrainerCommentById(
+			commentId
+		)) as TrainerComment;
+		if (!commentExist) {
+			return next(ApiError.notFound('Comment not found'));
+		}
+
+		if (commentExist.userId != user.id && user.role != ADMIN_ROLE) {
+			return next(ApiError.forbidden(''));
+		}
+
+		await commentsOperations.updateComment(commentId, comment);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		next(e);
+	}
+}
+
+export default {
+	postComment,
+	getTrainerComments,
+	deleteTrainerComment,
+	updateTrainerComment,
+};

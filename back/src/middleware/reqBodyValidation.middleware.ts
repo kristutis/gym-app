@@ -62,6 +62,8 @@ export const deleteCommentSchema: ObjectSchema = Joi.object({
 	commentId: Joi.number().min(1).integer().required(),
 });
 
+export const updateCommentIdSchema = deleteCommentSchema;
+
 export const uidParamSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
@@ -154,3 +156,5 @@ export const createReservationBodySchema: ObjectSchema = Joi.object({
 export const postCommentschema: ObjectSchema = Joi.object({
 	comment: Joi.string().min(1).required(),
 });
+
+export const updateCommentBodySchema = postCommentschema;

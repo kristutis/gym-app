@@ -69,6 +69,34 @@ export const deleteCommentCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const updateCommentCall = async (
+  commentId: number,
+  comment: string,
+  authToken: string
+): Promise<string> => {
+  const payload = {
+    comment,
+  }
+  const response = await fetch(
+    DEFAULT_BACKEND_PATH + `/comments/${commentId}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: authToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  )
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface TrainerComment {
   id: number
   userId: string

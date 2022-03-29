@@ -70,9 +70,28 @@ async function deleteComment(commentId: number): Promise<MysqlError> {
 	});
 }
 
+async function updateComment(
+	commentId: number,
+	comment: string
+): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE trainer_comments SET comment = ? WHERE id = ?',
+			[comment, commentId],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
 export default {
 	insertComment,
 	getTrainerComments,
 	deleteComment,
 	getTrainerCommentById,
+	updateComment,
 };

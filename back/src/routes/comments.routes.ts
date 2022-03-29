@@ -5,6 +5,8 @@ import {
 	deleteCommentSchema,
 	postCommentschema,
 	uidParamSchema,
+	updateCommentBodySchema,
+	updateCommentIdSchema,
 	validateRequestBody,
 	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
@@ -33,4 +35,12 @@ commentsRouter.delete(
 	validateRequestParams(deleteCommentSchema),
 	authenticateUser,
 	commentsController.deleteTrainerComment
+);
+
+commentsRouter.put(
+	COMMENTS_ROUTE + '/:commentId',
+	validateRequestParams(updateCommentIdSchema),
+	validateRequestBody(updateCommentBodySchema),
+	authenticateUser,
+	commentsController.updateTrainerComment
 );
