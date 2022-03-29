@@ -23,7 +23,7 @@ export default function CreateOfferModal({
       setError('Image URL must not be empty!')
       return
     }
-    if (!discount || discount <= 0) {
+    if (!discount || discount <= 0 || discount > 100) {
       setError('Incorrect discount!')
       return
     }

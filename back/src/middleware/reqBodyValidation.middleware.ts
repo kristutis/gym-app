@@ -167,13 +167,13 @@ export const updateCommentBodySchema = postCommentschema;
 
 export const postOfferSchema: ObjectSchema = Joi.object({
 	imageSrc: Joi.string().required(),
-	discountPercentage: Joi.number().min(1).required(),
+	discountPercentage: Joi.number().min(1).max(100).required(),
 	description: Joi.string().required(),
 });
 
 export const updateOfferSchema: ObjectSchema = Joi.object({
 	id: offerIdSchema,
 	imageSrc: Joi.string().required(),
-	discountPercentage: Joi.number().min(1).required(),
+	discountPercentage: Joi.number().min(1).max(100).required(),
 	description: Joi.string().required(),
 });

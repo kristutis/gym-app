@@ -34,7 +34,7 @@ export default function EditOfferModal({
       setError('Image URL cannot be empty!')
       return
     }
-    if (!discount || discount <= 0) {
+    if (!discount || discount <= 0 || discount > 100) {
       setError('Incorrect discount!')
       return
     }
