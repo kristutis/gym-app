@@ -39,7 +39,6 @@ export const deleteReservationCall = async (
   }
 
   const responseBody = await response.json()
-  console.log(responseBody)
   return Promise.reject(getErrorMsg(responseBody))
 }
 

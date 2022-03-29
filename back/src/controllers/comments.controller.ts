@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import commentsOperations from '../db/comments.operations';
 import TrainerComment from '../models/comment.model';
 import { User } from '../models/user.model';
+import { ApiError } from '../utils/errors';
+import { ADMIN_ROLE } from '../utils/jwt';
 import { ResponseCode } from '../utils/responseCodes';
 
 async function getTrainerComments(
@@ -38,4 +40,31 @@ async function postComment(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
-export default { postComment, getTrainerComments };
+async function deleteTrainerComment(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const commentId = parseInt(req.params.commentId);
+	const user = req.body.user as User;
+
+	try {
+		const commentExist = (await commentsOperations.getTrainerCommentById(
+			commentId
+		)) as TrainerComment;
+		if (!commentExist) {
+			return next(ApiError.notFound('Comment not found'));
+		}
+
+		if (commentExist.userId != user.id && user.role != ADMIN_ROLE) {
+			return next(ApiError.forbidden(''));
+		}
+
+		await commentsOperations.deleteComment(commentId);
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		next(e);
+	}
+}
+
+export default { postComment, getTrainerComments, deleteTrainerComment };

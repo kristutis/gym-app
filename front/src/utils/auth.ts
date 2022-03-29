@@ -7,6 +7,7 @@ export interface AuthorisationInfo {
   accessToken: string
   refreshToken: string
   role: UserRole
+  id: string
 }
 
 export enum UserRole {
@@ -15,9 +16,14 @@ export enum UserRole {
   admin = 'admin',
 }
 
+export const useUserId = (): string => {
+  const { auth } = useContext(AuthContext) as { auth: AuthorisationInfo }
+  return useLoggedIn() ? auth.id : ''
+}
+
 export const useAuthHeader = (): string => {
   const { auth } = useContext(AuthContext) as { auth: AuthorisationInfo }
-  return auth.tokenType + ' ' + auth.accessToken
+  return useLoggedIn() ? auth.tokenType + ' ' + auth.accessToken : ''
 }
 
 export const useLoggedIn = (): boolean => {

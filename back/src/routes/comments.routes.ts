@@ -2,6 +2,7 @@ import express from 'express';
 import commentsController from '../controllers/comments.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 import {
+	deleteCommentSchema,
 	postCommentschema,
 	uidParamSchema,
 	validateRequestBody,
@@ -11,6 +12,7 @@ import {
 export const commentsRouter = express.Router();
 
 const BASE_ROUTE = '/api/trainers/:uid/comments';
+const COMMENTS_ROUTE = '/api/comments';
 
 commentsRouter.get(
 	BASE_ROUTE,
@@ -24,4 +26,11 @@ commentsRouter.post(
 	validateRequestBody(postCommentschema),
 	authenticateUser,
 	commentsController.postComment
+);
+
+commentsRouter.delete(
+	COMMENTS_ROUTE + '/:commentId',
+	validateRequestParams(deleteCommentSchema),
+	authenticateUser,
+	commentsController.deleteTrainerComment
 );

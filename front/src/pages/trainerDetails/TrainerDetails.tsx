@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap'
 import { Form } from 'react-bootstrap/'
 import { Link, useHistory } from 'react-router-dom'
+import DeleteCommentModal from '../../components/modals/DeleteCommentModal'
 import {
   getTrainerCommentsCall,
   postCommentCall,
@@ -21,7 +22,12 @@ import {
   postRatingCall,
 } from '../../utils/apicalls/ratings'
 import { DEFAULT_PROFILE_PIC_SRC, Trainer } from '../../utils/apicalls/user'
-import { useAuthHeader, useLoggedIn } from '../../utils/auth'
+import {
+  useAdminRole,
+  useAuthHeader,
+  useLoggedIn,
+  useUserId,
+} from '../../utils/auth'
 import './TrainerDetails.css'
 
 const MAX_STARS_COUNT = 5
@@ -188,10 +194,14 @@ function CommentsSection({ trainerId }: { trainerId: string }) {
   const [updatedComments, setUpdatedComments] = useState(false)
   const [comments, setComments] = useState([] as TrainerComment[])
 
-  useEffect(() => {
+  const loadComments = () => {
     getTrainerCommentsCall(trainerId)
       .then((comms) => setComments(comms as TrainerComment[]))
       .catch((err) => null)
+  }
+
+  useEffect(() => {
+    loadComments()
   }, [updatedComments])
 
   return (
@@ -199,7 +209,7 @@ function CommentsSection({ trainerId }: { trainerId: string }) {
       <h3 className="my-2" style={{ textAlign: 'center' }}>
         Comments
       </h3>
-      <CommentsTable comments={comments} />
+      <CommentsTable comments={comments} loadComments={loadComments} />
       <CommentForm
         trainerId={trainerId}
         updatedComments={updatedComments}
@@ -270,7 +280,20 @@ function CommentForm({
   )
 }
 
-function CommentsTable({ comments }: { comments: TrainerComment[] }) {
+function CommentsTable({
+  comments,
+  loadComments,
+}: {
+  comments: TrainerComment[]
+  loadComments: () => void
+}) {
+  const userId = useUserId()
+  const isAdmin = useAdminRole()
+
+  const [comment, setComment] = useState({} as TrainerComment)
+  const [openEdit, setOpenEdit] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
+
   if (!comments?.length) {
     return (
       <h4 className="mx-3">Trainer does not have any comments. Be first!</h4>
@@ -278,23 +301,74 @@ function CommentsTable({ comments }: { comments: TrainerComment[] }) {
   }
 
   return (
-    <Table striped bordered hover variant="dark">
-      <thead>
-        <tr>
-          <th>Published</th>
-          <th>Name</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        {comments.map((comment, index) => (
-          <tr key={index}>
-            <td>{new Date(comment.createDate).toLocaleDateString()}</td>
-            <td>{comment.creatorName}</td>
-            <td>{comment.comment}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <>
+      <DeleteCommentModal
+        comment={comment}
+        showModal={openDelete}
+        closeFunction={() => setOpenDelete(false)}
+        reloadComments={() => loadComments()}
+      />
+      <div className="table-responsive">
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Published</th>
+              <th>Name</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comments.map((comment, index) => {
+              const editable = comment.userId === userId || isAdmin
+              const actionProps = {
+                comment,
+                setEditable: (comm: TrainerComment) => setComment(comm),
+                openEdit: () => setOpenEdit(true),
+                openDelete: () => setOpenDelete(true),
+              } as ActionsProps
+              return (
+                <tr key={index}>
+                  <td>
+                    {new Date(comment.createDate).toLocaleDateString()}
+                    {editable && <Actions actionProps={actionProps} />}
+                  </td>
+                  <td>{comment.creatorName}</td>
+                  <td>{comment.comment}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+      </div>
+    </>
   )
+}
+
+function Actions({ actionProps }: { actionProps: ActionsProps }) {
+  const { comment, setEditable, openEdit, openDelete } = actionProps
+  return (
+    <td>
+      <i
+        className="fas fa-pen text-success mx-2"
+        onClick={() => {
+          setEditable(comment)
+          openEdit()
+        }}
+      />
+      <i
+        className="fas fa-trash text-danger"
+        onClick={() => {
+          setEditable(comment)
+          openDelete()
+        }}
+      />
+    </td>
+  )
+}
+
+interface ActionsProps {
+  comment: TrainerComment
+  setEditable: (comment: TrainerComment) => void
+  openEdit: () => void
+  openDelete: () => void
 }

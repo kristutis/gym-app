@@ -47,8 +47,31 @@ export const postCommentCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const deleteCommentCall = async (
+  commentId: number,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(
+    DEFAULT_BACKEND_PATH + `/comments/${commentId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: authToken,
+      },
+    }
+  )
+
+  if (response.status === 204) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface TrainerComment {
   id: number
+  userId: string
   comment: string
   createDate: string
   creatorName: string

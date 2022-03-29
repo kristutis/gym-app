@@ -7,13 +7,30 @@ async function getTrainerComments(
 ): Promise<TrainerComment[] | MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
-			'SELECT id, comment, create_date as createDate, name as creatorName FROM trainer_comments LEFT JOIN users on trainer_comments.fk_user_id=users.uid WHERE fk_trainer_id = ?',
+			'SELECT id, fk_user_id as userId, comment, create_date as createDate, name as creatorName FROM trainer_comments LEFT JOIN users on trainer_comments.fk_user_id=users.uid WHERE fk_trainer_id = ?',
 			[trainerId],
 			(err, results) => {
 				if (err) {
 					return reject(err);
 				}
 				return resolve(results as TrainerComment[]);
+			}
+		);
+	});
+}
+
+async function getTrainerCommentById(
+	commentId: number
+): Promise<TrainerComment | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT id, fk_user_id as userId, comment, create_date as createDate, name as creatorName FROM trainer_comments LEFT JOIN users on trainer_comments.fk_user_id=users.uid WHERE id = ?',
+			[commentId],
+			(err, results) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(results[0] as TrainerComment);
 			}
 		);
 	});
@@ -38,7 +55,24 @@ async function insertComment(
 	});
 }
 
+async function deleteComment(commentId: number): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'DELETE FROM trainer_comments WHERE id = ?',
+			[commentId],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
 export default {
 	insertComment,
 	getTrainerComments,
+	deleteComment,
+	getTrainerCommentById,
 };

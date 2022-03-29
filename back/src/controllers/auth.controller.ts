@@ -44,6 +44,7 @@ async function refreshLogin(req: Request, res: Response, next: NextFunction) {
 			expireDate: getExpireDate(),
 			accessToken: accessToken,
 			refreshToken: newRefershToken,
+			id: user.id,
 			role: user.role,
 		});
 	} else {
@@ -84,6 +85,7 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
 			expireDate: getExpireDate(),
 			accessToken: accessToken,
 			refreshToken: refreshToken,
+			id: user.id,
 			role: user.role,
 		});
 	} catch (e) {
