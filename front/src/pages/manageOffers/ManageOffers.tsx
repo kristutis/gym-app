@@ -3,6 +3,7 @@ import { Button, Image, Table } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
 import CreateOfferModal from '../../components/modals/CreateOfferModal'
 import DeleteOfferModal from '../../components/modals/DeleteOfferModal'
+import EditOfferModal from '../../components/modals/EditOfferModal'
 import { adminGetOffersCall, Offer } from '../../utils/apicalls/offers'
 import { useAuthHeader } from '../../utils/auth'
 import './ManageOffers.css'
@@ -38,12 +39,12 @@ export default function ManageOffers() {
         closeFunction={() => setCreateOfferOpen(false)}
         loadOffers={loadOffers}
       />
-      {/* <EditUserModal
-        trainer={editableUser}
+      <EditOfferModal
+        offer={editable}
         showModal={showEditModal}
         closeFunction={() => setShowEditModal(false)}
-        reloadUserFunction={() => loadUsers()}
-      /> */}
+        reloadOffers={() => loadOffers()}
+      />
       <DeleteOfferModal
         offer={editable}
         showModal={showDeleteModal}

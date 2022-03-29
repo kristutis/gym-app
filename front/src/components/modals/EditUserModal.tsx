@@ -45,7 +45,7 @@ export default function EditUserModal({
     return null
   }
 
-  const updateTrainer = async (t: Trainer) => {
+  const updateTrainer = async () => {
     if (!name) {
       setError('Name cannot be empty!')
       return
@@ -174,7 +174,7 @@ export default function EditUserModal({
       buttonText={'Update'}
       show={showModal}
       closeFunction={closeFunction}
-      submitFunction={() => updateTrainer({} as Trainer)}
+      submitFunction={() => updateTrainer()}
     />
   )
 }

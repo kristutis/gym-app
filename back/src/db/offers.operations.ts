@@ -27,24 +27,20 @@ function deleteOffer(id: number): Promise<MysqlError> {
 	});
 }
 
-// function updateRating(
-// 	userId: string,
-// 	trainerId: string,
-// 	rating: number
-// ): Promise<MysqlError> {
-// 	return new Promise((resolve, reject) => {
-// 		db.query(
-// 			'UPDATE trainer_ratings	SET rating = ? WHERE fk_user_id = ? AND fk_trainer_id = ?',
-// 			[rating, userId, trainerId],
-// 			(err, _) => {
-// 				if (err) {
-// 					return reject(err);
-// 				}
-// 				return resolve(null);
-// 			}
-// 		);
-// 	});
-// }
+function updateOffer(offer: Offer): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE offers SET image_src = ?, discount_percentage = ?, description = ? WHERE id = ?',
+			[offer.imageSrc, offer.discountPercentage, offer.description, offer.id],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
 
 function getOffers(): Promise<Offer[] | MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -63,6 +59,7 @@ function getOffers(): Promise<Offer[] | MysqlError> {
 export default {
 	getOffers,
 	insertOffer,
+	updateOffer,
 	deleteOffer,
 };
 

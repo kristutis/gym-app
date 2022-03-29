@@ -32,6 +32,27 @@ export const adminGetOffersCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const updateOfferCall = async (
+  payload: Offer,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + `/offers`, {
+    method: 'PUT',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const postOfferCall = async (
   payload: Offer,
   authToken: string

@@ -2,8 +2,9 @@ import express from 'express';
 import offersControllers from '../controllers/offers.controllers';
 import { authenticateAdmin } from '../middleware/auth.middleware';
 import {
-	offerIdSchema,
+	offerIdSParamschema,
 	postOfferSchema,
+	updateOfferSchema,
 	validateRequestBody,
 	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
@@ -29,7 +30,14 @@ offersRouter.post(
 
 offersRouter.delete(
 	BASE_ROUTE + '/:offerId',
-	validateRequestParams(offerIdSchema),
+	validateRequestParams(offerIdSParamschema),
 	authenticateAdmin,
 	offersControllers.deleteOffer
+);
+
+offersRouter.put(
+	BASE_ROUTE,
+	validateRequestBody(updateOfferSchema),
+	authenticateAdmin,
+	offersControllers.updateOffer
 );

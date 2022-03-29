@@ -58,8 +58,10 @@ export const getUserSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
 
-export const offerIdSchema: ObjectSchema = Joi.object({
-	offerId: Joi.number().integer().min(1).required(),
+const offerIdSchema = Joi.number().integer().min(1).required();
+
+export const offerIdSParamschema: ObjectSchema = Joi.object({
+	offerId: offerIdSchema,
 });
 
 export const deleteCommentSchema: ObjectSchema = Joi.object({
@@ -164,6 +166,13 @@ export const postCommentschema: ObjectSchema = Joi.object({
 export const updateCommentBodySchema = postCommentschema;
 
 export const postOfferSchema: ObjectSchema = Joi.object({
+	imageSrc: Joi.string().required(),
+	discountPercentage: Joi.number().min(1).required(),
+	description: Joi.string().required(),
+});
+
+export const updateOfferSchema: ObjectSchema = Joi.object({
+	id: offerIdSchema,
 	imageSrc: Joi.string().required(),
 	discountPercentage: Joi.number().min(1).required(),
 	description: Joi.string().required(),

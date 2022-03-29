@@ -4,7 +4,6 @@ import { ResponseCode } from '../utils/responseCodes';
 
 async function deleteOffer(req: Request, res: Response, next: NextFunction) {
 	const offerId = req.params.offerId as string;
-
 	try {
 		await offersOperations.deleteOffer(parseInt(offerId));
 		return res.sendStatus(ResponseCode.DELETED);
@@ -13,9 +12,18 @@ async function deleteOffer(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function updateOffer(req: Request, res: Response, next: NextFunction) {
+	const offer = req.body as Offer;
+	try {
+		await offersOperations.updateOffer(offer);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function postOffer(req: Request, res: Response, next: NextFunction) {
 	const offer = req.body as Offer;
-
 	try {
 		await offersOperations.insertOffer(offer);
 		return res.sendStatus(ResponseCode.CREATED);
@@ -40,4 +48,5 @@ export default {
 	getOffers,
 	postOffer,
 	deleteOffer,
+	updateOffer,
 };
