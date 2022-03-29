@@ -2,6 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import offersOperations, { Offer } from '../db/offers.operations';
 import { ResponseCode } from '../utils/responseCodes';
 
+async function deleteOffer(req: Request, res: Response, next: NextFunction) {
+	const offerId = req.params.offerId as string;
+
+	try {
+		await offersOperations.deleteOffer(parseInt(offerId));
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function postOffer(req: Request, res: Response, next: NextFunction) {
 	const offer = req.body as Offer;
 
@@ -28,4 +39,5 @@ async function getOffers(req: Request, res: Response, next: NextFunction) {
 export default {
 	getOffers,
 	postOffer,
+	deleteOffer,
 };

@@ -16,6 +16,17 @@ function insertOffer(offer: Offer): Promise<MysqlError> {
 	});
 }
 
+function deleteOffer(id: number): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query('DELETE FROM offers WHERE id = ?', [id], (err, _) => {
+			if (err) {
+				return reject(err);
+			}
+			return resolve(null);
+		});
+	});
+}
+
 // function updateRating(
 // 	userId: string,
 // 	trainerId: string,
@@ -52,6 +63,7 @@ function getOffers(): Promise<Offer[] | MysqlError> {
 export default {
 	getOffers,
 	insertOffer,
+	deleteOffer,
 };
 
 export interface Offer {

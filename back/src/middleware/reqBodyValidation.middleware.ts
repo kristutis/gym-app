@@ -58,6 +58,10 @@ export const getUserSchema: ObjectSchema = Joi.object({
 	uid: uidSchema,
 });
 
+export const offerIdSchema: ObjectSchema = Joi.object({
+	offerId: Joi.number().integer().min(1).required(),
+});
+
 export const deleteCommentSchema: ObjectSchema = Joi.object({
 	commentId: Joi.number().min(1).integer().required(),
 });

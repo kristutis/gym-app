@@ -53,6 +53,25 @@ export const postOfferCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const deleteOfferCall = async (
+  id: number,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + `/offers/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken,
+    },
+  })
+
+  if (response.status === 204) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface Offer {
   id?: number
   imageSrc: string

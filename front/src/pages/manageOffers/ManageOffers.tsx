@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Image, Table } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
 import CreateOfferModal from '../../components/modals/CreateOfferModal'
+import DeleteOfferModal from '../../components/modals/DeleteOfferModal'
 import { adminGetOffersCall, Offer } from '../../utils/apicalls/offers'
 import { useAuthHeader } from '../../utils/auth'
 import './ManageOffers.css'
@@ -12,9 +13,9 @@ export default function ManageOffers() {
 
   const [createOfferOpen, setCreateOfferOpen] = useState(false)
 
-  // const [showDeleteModal, setShowDeleteModal] = useState(false)
-  // const [showEditModal, setShowEditModal] = useState(false)
-  // const [editableUser, setEditableUser] = useState({} as Trainer)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editable, setEditable] = useState({} as Offer)
 
   const loadOffers = () => {
     adminGetOffersCall(authHeader)
@@ -32,74 +33,72 @@ export default function ManageOffers() {
 
   return (
     <>
-      {/* <EditUserModal
-        trainer={editableUser}
-        showModal={showEditModal}
-        closeFunction={() => setShowEditModal(false)}
-        reloadUserFunction={() => loadUsers()}
-      />
-      <DeleteUserModal
-        trainer={editableUser}
-        showModal={showDeleteModal}
-        closeFunction={() => setShowDeleteModal(false)}
-        reloadUserFunction={() => loadUsers()}
-      /> */}
-      <>
-        <div className="m-2 table-responsive">
-          <Table striped bordered hover variant="dark">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Image</th>
-                <th>Discount</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {offers.map((offer, index) => {
-                //   const actionProps = {
-                //     trainer: user,
-                //     setEditable: (t: Trainer) => setEditableUser(t),
-                //     openEdit: () => setShowEditModal(true),
-                //     openDelete: () => setShowDeleteModal(true),
-                //   } as ActionsProps
-                return (
-                  <OfferDetailsRow
-                    key={index}
-                    offer={offer}
-                    //   actionProps={actionProps}
-                  />
-                )
-              })}
-            </tbody>
-          </Table>
-          <div className="d-grid my-2">
-            <Button
-              variant="success"
-              size="lg"
-              onClick={() => setCreateOfferOpen(true)}
-            >
-              Create Offer
-            </Button>
-          </div>
-        </div>
-      </>
       <CreateOfferModal
         show={createOfferOpen}
         closeFunction={() => setCreateOfferOpen(false)}
         loadOffers={loadOffers}
       />
+      {/* <EditUserModal
+        trainer={editableUser}
+        showModal={showEditModal}
+        closeFunction={() => setShowEditModal(false)}
+        reloadUserFunction={() => loadUsers()}
+      /> */}
+      <DeleteOfferModal
+        offer={editable}
+        showModal={showDeleteModal}
+        closeFunction={() => setShowDeleteModal(false)}
+        reloadOffers={() => loadOffers()}
+      />
+      <div className="m-2 table-responsive">
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Image</th>
+              <th>Discount</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {offers.map((offer, index) => {
+              const actionProps = {
+                offer,
+                setEditable: () => setEditable(offer),
+                openEdit: () => setShowEditModal(true),
+                openDelete: () => setShowDeleteModal(true),
+              } as ActionsProps
+              return (
+                <OfferDetailsRow
+                  key={index}
+                  offer={offer}
+                  actionProps={actionProps}
+                />
+              )
+            })}
+          </tbody>
+        </Table>
+        <div className="d-grid my-2">
+          <Button
+            variant="success"
+            size="lg"
+            onClick={() => setCreateOfferOpen(true)}
+          >
+            Create Offer
+          </Button>
+        </div>
+      </div>
     </>
   )
 }
 
 function OfferDetailsRow({
   offer,
-}: // actionProps,
-{
+  actionProps,
+}: {
   offer: Offer
-  // actionProps: ActionsProps
+  actionProps: ActionsProps
 }) {
   return (
     <tr>
@@ -112,14 +111,36 @@ function OfferDetailsRow({
       </td>
       <td>{`${offer.discountPercentage}%`}</td>
       <td>{offer.description}</td>
-      {/* <Actions actionProps={actionProps} /> */}
+      <Actions actionProps={actionProps} />
     </tr>
+  )
+}
+
+function Actions({ actionProps }: { actionProps: ActionsProps }) {
+  const { offer, setEditable, openEdit, openDelete } = actionProps
+  return (
+    <td>
+      <i
+        className="fas fa-pen text-success mx-2"
+        onClick={() => {
+          setEditable()
+          openEdit()
+        }}
+      />
+      <i
+        className="fas fa-trash text-danger"
+        onClick={() => {
+          setEditable()
+          openDelete()
+        }}
+      />
+    </td>
   )
 }
 
 interface ActionsProps {
   offer: Offer
-  setEditable: (offer: Offer) => void
+  setEditable: () => void
   openEdit: () => void
   openDelete: () => void
 }

@@ -2,8 +2,10 @@ import express from 'express';
 import offersControllers from '../controllers/offers.controllers';
 import { authenticateAdmin } from '../middleware/auth.middleware';
 import {
+	offerIdSchema,
 	postOfferSchema,
 	validateRequestBody,
+	validateRequestParams,
 } from '../middleware/reqBodyValidation.middleware';
 
 export const offersRouter = express.Router();
@@ -23,4 +25,11 @@ offersRouter.post(
 	validateRequestBody(postOfferSchema),
 	authenticateAdmin,
 	offersControllers.postOffer
+);
+
+offersRouter.delete(
+	BASE_ROUTE + '/:offerId',
+	validateRequestParams(offerIdSchema),
+	authenticateAdmin,
+	offersControllers.deleteOffer
 );

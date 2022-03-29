@@ -1,6 +1,7 @@
 import React from 'react'
-import { Offer } from '../../utils/apicalls/offers'
+import { deleteOfferCall, Offer } from '../../utils/apicalls/offers'
 import { useAuthHeader } from '../../utils/auth'
+import BaseModal from './BaseModal'
 
 export default function DeleteOfferModal({
   offer,
@@ -10,27 +11,30 @@ export default function DeleteOfferModal({
 }: DeleteOfferModalProps) {
   const authHeader = useAuthHeader()
 
-  const deleteOffer = async (cid: number) => {
-    // deleteCommentCall(cid, authHeader)
-    //   .then((res) => {
-    //     closeFunction()
-    //     reloadComments()
-    //   })
-    //   .catch((err) => alert(err))
+  const deleteOffer = async (id: number) => {
+    deleteOfferCall(id, authHeader)
+      .then((res) => {
+        closeFunction()
+        reloadOffers()
+      })
+      .catch((err) => alert(err))
   }
 
-  return <></>
-
-  //   return (
-  //     // <BaseModal
-  //     //   title={'Delete comment?'}
-  //     //   children={<h4>{comment.comment}</h4>}
-  //     //   buttonText={'Delete'}
-  //     //   show={showModal}
-  //     //   closeFunction={closeFunction}
-  //     //   submitFunction={() => deleteComment(comment.id)}
-  //     // />
-  //   )
+  return (
+    <BaseModal
+      title={'Delete offer?'}
+      children={
+        <>
+          <h4>{`${offer.discountPercentage}%`}</h4>
+          <h2>{offer.description}</h2>
+        </>
+      }
+      buttonText={'Delete'}
+      show={showModal}
+      closeFunction={closeFunction}
+      submitFunction={() => deleteOffer(offer.id!)}
+    />
+  )
 }
 
 export interface DeleteOfferModalProps {
