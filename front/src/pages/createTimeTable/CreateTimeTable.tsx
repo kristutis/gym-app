@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import ErrorLabel from '../../components/errorLabel/ErrorLabel'
 import ReservationWindowForm from '../../components/reservationWindowForm/ReservationWindowForm'
 import Unauthorized from '../../components/unauthorized/Unauthorized'
@@ -80,6 +81,11 @@ export default function CreateTimeTable() {
           </Button>
         </div>
       </div>
+      <Link to={'/admin-timetable'}>
+        <Button variant="success" className="m-2">
+          Back
+        </Button>
+      </Link>
     </>
   )
 }

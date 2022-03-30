@@ -1,15 +1,17 @@
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
-
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
+import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import {
   getTimetablesCall,
   ReservationWindow,
 } from '../../utils/apicalls/timetable'
 import { useAuthHeader } from '../../utils/auth'
+import './AdminTimetable.css'
 
 export default function AdminTimetable() {
   const authHeader = useAuthHeader()
@@ -116,6 +118,14 @@ export default function AdminTimetable() {
           minute: '2-digit',
         }}
       />
+      <Link
+        to={'/admin-timetable/create'}
+        className="admin-table-generate-button d-grid gap-2 my-2"
+      >
+        <Button variant="success" size="lg">
+          Generate Timetable
+        </Button>
+      </Link>
     </div>
   )
 }
