@@ -1,3 +1,5 @@
 back/node_modules/
 back/.env
 sql.txt
+front/cypress.json
+front/cypress/integration/tutorials/
