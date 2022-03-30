@@ -128,7 +128,16 @@ export default function AdminTimetable() {
         eventClick={(e) => handleEventClick(e)}
         select={(e: any) => {
           setDeleteDates({ startDate: e.start as Date, endDate: e.end as Date })
-          setDeleteModalOpened(true)
+          setDeleteModalOpened(
+            events.some((event) =>
+              dateRangeOverlaps(
+                new Date(event.start as Date),
+                new Date(event.end as Date),
+                e.start,
+                e.end
+              )
+            )
+          )
         }}
         selectable={true}
         navLinks={true}
@@ -155,4 +164,16 @@ export default function AdminTimetable() {
       </Link>
     </>
   )
+}
+
+function dateRangeOverlaps(
+  a_start: Date,
+  a_end: Date,
+  b_start: Date,
+  b_end: Date
+) {
+  if (a_start <= b_start && b_start <= a_end) return true
+  if (a_start <= b_end && b_end <= a_end) return true
+  if (b_start < a_start && a_end < b_end) return true
+  return false
 }
