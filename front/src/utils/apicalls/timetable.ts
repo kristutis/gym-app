@@ -1,10 +1,36 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
+import { getErrorMsg } from './errors'
+
+export const deleteTimetableCall = async (
+  startDate: Date,
+  endDate: Date,
+  authToken: string
+): Promise<string> => {
+  const params = { startDate, endDate }
+  const url: string =
+    DEFAULT_BACKEND_PATH + '/timetable?' + new URLSearchParams(params as any)
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+  })
+
+  if (response.status === 204) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
 
 export const getTimetablesCall = async (
   startDate: Date,
   endDate: Date
 ): Promise<ReservationWindow[] | string> => {
-  const params = { startDate: startDate.getTime(), endDate: endDate.getTime() }
+  const params = { startDate, endDate }
   const url: string =
     DEFAULT_BACKEND_PATH + '/timetable?' + new URLSearchParams(params as any)
 
@@ -20,48 +46,28 @@ export const getTimetablesCall = async (
     return Promise.resolve(responseBody as ReservationWindow[])
   }
 
-  if (
-    responseBody?.error?.message &&
-    typeof responseBody.error.message === 'string'
-  ) {
-    return Promise.reject(responseBody.error.message)
-  }
-
-  if (responseBody?.error?.message?.details[0]?.message) {
-    return Promise.reject(responseBody?.error?.message?.details[0]?.message)
-  }
-
-  return Promise.reject('Unhandled exception')
+  return Promise.reject(getErrorMsg(responseBody))
 }
 
 export const createTimetableCall = async (
-  payload: CreateTimetableCallProps[]
+  payload: CreateTimetableCallProps[],
+  authToken: string
 ): Promise<string> => {
   const response = await fetch(DEFAULT_BACKEND_PATH + '/timetable', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: authToken,
     },
     body: JSON.stringify(payload),
   })
 
-  const responseBody = await response.json()
-  if (response.status === 200) {
+  if (response.status === 201) {
     return Promise.resolve('')
   }
 
-  if (
-    responseBody?.error?.message &&
-    typeof responseBody.error.message === 'string'
-  ) {
-    return Promise.reject(responseBody.error.message)
-  }
-
-  if (responseBody?.error?.message?.details[0]?.message) {
-    return Promise.reject(responseBody?.error?.message?.details[0]?.message)
-  }
-
-  return Promise.reject('Unhandled exception')
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
 }
 
 export interface CreateTimetableCallProps {

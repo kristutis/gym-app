@@ -8,10 +8,12 @@ import {
   createTimetableCall,
   CreateTimetableCallProps,
 } from '../../utils/apicalls/timetable'
-import { useAdminRole } from '../../utils/auth'
+import { useAdminRole, useAuthHeader } from '../../utils/auth'
 import './CreateTimeTable.css'
 
 export default function CreateTimeTable() {
+  const authHeader = useAuthHeader()
+
   const [error, setError] = useState('')
   const [formsCount, setFormsCount] = useState(1)
   const [formsPayloads, setFormsPayloads] = useState([
@@ -25,12 +27,16 @@ export default function CreateTimeTable() {
       return
     }
 
-    err = await createTimetableCall(formsPayloads)
-    if (err) {
-      setError(err)
-      return
-    }
-    setError('')
+    createTimetableCall(formsPayloads, authHeader)
+      .then((res) => {
+        console.log(res)
+        setError('')
+        alert('Done!')
+      })
+      .catch((err) => {
+        setError(err)
+        return
+      })
   }
 
   const handleCreateForm = () => {

@@ -5,7 +5,14 @@ export default function ErrorLabel({ error }: ErrorLabelProps) {
   if (!error) {
     return null
   }
-  return <label className="error-label-text">* {error}</label>
+  const errorSymbol =
+    !!error && typeof error == 'string' && error.includes('*') ? '' : '* '
+  return (
+    <label
+      className="error-label-text"
+      dangerouslySetInnerHTML={{ __html: `${errorSymbol}${error}` }}
+    ></label>
+  )
 }
 
 export interface ErrorLabelProps {

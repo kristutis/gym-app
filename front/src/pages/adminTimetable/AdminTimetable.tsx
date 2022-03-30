@@ -1,12 +1,15 @@
+
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
+import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import timeGridPlugin from '@fullcalendar/timegrid'
-// import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import DeleteTimetablesModal from '../../components/modals/DeleteTimetablesModal'
 import {
+  deleteTimetableCall,
   getTimetablesCall,
   ReservationWindow,
 } from '../../utils/apicalls/timetable'
@@ -23,6 +26,12 @@ export default function AdminTimetable() {
 
   const [bookModalId, setBookModalId] = useState(0)
   const [events, setEvents] = useState([] as EventInput[])
+
+  const [deleteModalOpened, setDeleteModalOpened] = useState(false)
+  const [deleteDates, setDeleteDates] = useState({
+    startDate: {} as Date,
+    endDate: {} as Date,
+  })
 
   const convertToEvents = (data: ReservationWindow[]): EventInput[] => {
     const dataCopy = [...data]
@@ -65,7 +74,6 @@ export default function AdminTimetable() {
       )
       setEvents(convertToEvents(data as ReservationWindow[]))
     } catch (e) {
-      console.log(e)
       alert('Error when getting all events')
     }
   }
@@ -77,16 +85,25 @@ export default function AdminTimetable() {
     console.log(eventDetails.start)
   }
 
+  const deleteReservationWindows = (startDate: Date, endDate: Date) => {
+    deleteTimetableCall(startDate, endDate, authHeader)
+      .then((res) => {
+        loadReservationWindows()
+        setDeleteModalOpened(false)
+      })
+      .catch((err) => alert(err))
+  }
+
   return (
-    <div>
-      {/* <CancelSlotModal
-        showModal={cancelBookModal}
-        closeFunction={() => setCancelBookModal(false)}
-        submitFunction={() => handleCancelReservation(bookModalId)}
-        id={bookModalId}
-        text={cancelBookModalText}
+    <>
+      <DeleteTimetablesModal
+        startDate={deleteDates.startDate}
+        endDate={deleteDates.endDate}
+        showModal={deleteModalOpened}
+        closeFunction={() => setDeleteModalOpened(false)}
+        submitFunction={deleteReservationWindows}
       />
-      <BookSlotModal
+      {/* <BookSlotModal
         showModal={showBookModal}
         closeFunction={() => setShowBookModal(false)}
         submitFunction={() => handleBooking(bookModalId)}
@@ -94,7 +111,12 @@ export default function AdminTimetable() {
         text={bookModalText}
       /> */}
       <FullCalendar
-        plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}
+        plugins={[
+          dayGridPlugin,
+          bootstrap5Plugin,
+          timeGridPlugin,
+          interactionPlugin,
+        ]}
         initialView="dayGridMonth"
         themeSystem="bootstrap5"
         headerToolbar={{
@@ -104,6 +126,11 @@ export default function AdminTimetable() {
         }}
         events={events}
         eventClick={(e) => handleEventClick(e)}
+        select={(e: any) => {
+          setDeleteDates({ startDate: e.start as Date, endDate: e.end as Date })
+          setDeleteModalOpened(true)
+        }}
+        selectable={true}
         navLinks={true}
         dayMaxEvents={true}
         datesSet={(dateInfo) =>
@@ -126,6 +153,6 @@ export default function AdminTimetable() {
           Generate Timetable
         </Button>
       </Link>
-    </div>
+    </>
   )
 }
