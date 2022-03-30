@@ -18,6 +18,10 @@ Cypress.Commands.add('login', (email, password) => {
     cy.get("[type='password']").type(password);
     cy.contains('.navabr-signup-btn', 'Login').click();
 })
+
+Cypress.Commands.add('logout', () => {
+    cy.contains('LOG OUT').click();
+})
 //
 //
 // -- This is a child command --
