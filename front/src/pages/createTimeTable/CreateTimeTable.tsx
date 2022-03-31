@@ -29,7 +29,6 @@ export default function CreateTimeTable() {
 
     createTimetableCall(formsPayloads, authHeader)
       .then((res) => {
-        console.log(res)
         setError('')
         alert('Done!')
       })

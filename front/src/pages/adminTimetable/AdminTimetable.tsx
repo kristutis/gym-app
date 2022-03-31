@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import DeleteTimetablesModal from '../../components/modals/DeleteTimetablesModal'
+import EditTimetableModal from '../../components/modals/EditTimetableModal'
 import {
   deleteTimetableCall,
   getTimetablesCall,
@@ -23,8 +24,6 @@ export default function AdminTimetable() {
     startDate: {} as Date,
     endDate: {} as Date,
   })
-
-  const [bookModalId, setBookModalId] = useState(0)
   const [events, setEvents] = useState([] as EventInput[])
 
   const [deleteModalOpened, setDeleteModalOpened] = useState(false)
@@ -32,6 +31,9 @@ export default function AdminTimetable() {
     startDate: {} as Date,
     endDate: {} as Date,
   })
+
+  const [editTimeTable, setEditTimeTable] = useState({} as ReservationWindow)
+  const [editModalOpened, setEditModalOpened] = useState(false)
 
   const convertToEvents = (data: ReservationWindow[]): EventInput[] => {
     const dataCopy = [...data]
@@ -48,6 +50,7 @@ export default function AdminTimetable() {
             : 'green',
         start: reservationWindow.startTime,
         end: reservationWindow.endTime,
+        extendedProps: reservationWindow,
       } as EventInput
     })
     return converted
@@ -80,9 +83,14 @@ export default function AdminTimetable() {
 
   const handleEventClick = (e: any) => {
     const eventDetails = e.event as EventInput
-    setBookModalId(parseInt(eventDetails.id!))
+    
+    if ((eventDetails.start as any < new Date(Date.now()))) {
+      return
+    }
 
-    console.log(eventDetails.start)
+    const resWindowInfo = eventDetails.extendedProps as ReservationWindow
+    setEditTimeTable(resWindowInfo)
+    setEditModalOpened(true)
   }
 
   const deleteReservationWindows = (startDate: Date, endDate: Date) => {
@@ -94,6 +102,10 @@ export default function AdminTimetable() {
       .catch((err) => alert(err))
   }
 
+  const updateReservationWindow = (updated: ReservationWindow) => {
+    console.log(updated)
+  }
+
   return (
     <>
       <DeleteTimetablesModal
@@ -103,13 +115,12 @@ export default function AdminTimetable() {
         closeFunction={() => setDeleteModalOpened(false)}
         submitFunction={deleteReservationWindows}
       />
-      {/* <BookSlotModal
-        showModal={showBookModal}
-        closeFunction={() => setShowBookModal(false)}
-        submitFunction={() => handleBooking(bookModalId)}
-        id={bookModalId}
-        text={bookModalText}
-      /> */}
+      <EditTimetableModal
+        reservationWindow={editTimeTable}
+        showModal={editModalOpened}
+        closeFunction={() => setEditModalOpened(false)}
+        submitFunction={updateReservationWindow}
+      />
       <FullCalendar
         plugins={[
           dayGridPlugin,
