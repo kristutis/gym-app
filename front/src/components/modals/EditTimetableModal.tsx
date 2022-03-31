@@ -8,6 +8,7 @@ export default function EditTimetableModal({
   showModal,
   closeFunction,
   submitFunction,
+  deleteFunction,
 }: EditTimetableModalProps) {
   const [startTime, setStartTime] = useState({} as Date)
   const [endTime, setEndTime] = useState({} as Date)
@@ -49,6 +50,8 @@ export default function EditTimetableModal({
         } as ReservationWindow
         submitFunction(updatedResWindow)
       }}
+      deleteButtonText={'Delete'}
+      deleteButtonFunction={() => console.log(reservationWindow.id)}
     />
   )
 }
@@ -134,4 +137,5 @@ export interface EditTimetableModalProps {
   showModal: boolean
   closeFunction: () => void
   submitFunction: (value: ReservationWindow) => void
+  deleteFunction: (value: number) => void
 }

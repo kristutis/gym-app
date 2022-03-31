@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
 import NavbarSignUpButton from '../buttons/NavbarSignUpButton'
 import './BaseModal.css'
 
@@ -10,6 +10,8 @@ export default function BaseModal({
   show,
   closeFunction,
   submitFunction,
+  deleteButtonText,
+  deleteButtonFunction,
 }: BaseModalProps) {
   return (
     <Modal
@@ -30,6 +32,15 @@ export default function BaseModal({
       </Modal.Header>
       <Modal.Body>{children}</Modal.Body>
       <Modal.Footer>
+        {!!deleteButtonText && (
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={() => deleteButtonFunction!()}
+          >
+            {deleteButtonText}
+          </Button>
+        )}
         <NavbarSignUpButton onClick={() => submitFunction()}>
           {buttonText}
         </NavbarSignUpButton>
@@ -45,4 +56,6 @@ export interface BaseModalProps {
   show: boolean
   closeFunction: () => void
   submitFunction: () => void
+  deleteButtonText?: string
+  deleteButtonFunction?: () => void
 }
