@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 import { ReservationWindow } from '../../utils/apicalls/timetable'
+import ErrorLabel from '../errorLabel/ErrorLabel'
 import BaseModal from './BaseModal'
 
 export default function EditTimetableModal({
+  errorMsg,
   reservationWindow,
   showModal,
   closeFunction,
@@ -26,16 +28,19 @@ export default function EditTimetableModal({
     <BaseModal
       title={'Edit Reservation Window'}
       children={
-        <EditTimetableForm
-          startTime={startTime}
-          setStartTime={setStartTime}
-          endTime={endTime}
-          setEndTime={setEndTime}
-          limitedSpace={limitedSpace}
-          setLimitedSpace={setLimitedSpace}
-          peopleLimit={peopleLimit}
-          setPeopleLimit={setPeopleLimit}
-        />
+        <>
+          <ErrorLabel error={errorMsg} />
+          <EditTimetableForm
+            startTime={startTime}
+            setStartTime={setStartTime}
+            endTime={endTime}
+            setEndTime={setEndTime}
+            limitedSpace={limitedSpace}
+            setLimitedSpace={setLimitedSpace}
+            peopleLimit={peopleLimit}
+            setPeopleLimit={setPeopleLimit}
+          />
+        </>
       }
       buttonText={'Confirm'}
       show={showModal}
@@ -133,6 +138,7 @@ interface EditTimetableFormProps {
 }
 
 export interface EditTimetableModalProps {
+  errorMsg: string
   reservationWindow: ReservationWindow
   showModal: boolean
   closeFunction: () => void

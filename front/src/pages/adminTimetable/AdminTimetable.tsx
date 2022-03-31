@@ -2,7 +2,7 @@
 import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
+import interactionPlugin from '@fullcalendar/interaction' // needed for dayClicka
 import timeGridPlugin from '@fullcalendar/timegrid'
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
@@ -34,6 +34,7 @@ export default function AdminTimetable() {
     endDate: {} as Date,
   })
 
+  const [editModalError, setEditModalError] = useState('')
   const [editTimeTable, setEditTimeTable] = useState({} as ReservationWindow)
   const [editModalOpened, setEditModalOpened] = useState(false)
 
@@ -107,10 +108,11 @@ export default function AdminTimetable() {
   const updateReservationWindow = (updated: ReservationWindow) => {
     updateTimetableCall(updated, authHeader)
       .then((res) => {
+        setEditModalError('')
         loadReservationWindows()
         setEditModalOpened(false)
       })
-      .catch((err) => alert(err))
+      .catch((err) => setEditModalError(err))
   }
 
   const deleteReservationWindow = (id: number) => {
@@ -137,6 +139,7 @@ export default function AdminTimetable() {
         closeFunction={() => setEditModalOpened(false)}
         submitFunction={updateReservationWindow}
         deleteFunction={(value: number) => deleteReservationWindow(value)}
+        errorMsg={editModalError}
       />
       <FullCalendar
         plugins={[
@@ -200,8 +203,9 @@ function dateRangeOverlaps(
   b_start: Date,
   b_end: Date
 ) {
-  if (a_start <= b_start && b_start <= a_end) return true
-  if (a_start <= b_end && b_end <= a_end) return true
-  if (b_start < a_start && a_end < b_end) return true
+  if (a_start <= b_start && b_start <= a_end) return true // b starts in a
+  if (a_start <= b_end && b_end <= a_end) return true // b ends in a
+  if (b_start < a_start && a_end < b_end) return true // a in b
+  if (b_start > a_start && a_end > b_end) return true // b in a
   return false
 }

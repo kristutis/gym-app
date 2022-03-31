@@ -26,6 +26,24 @@ async function updateTimetable(
 	} as ReservationWindow;
 
 	try {
+		const overlaps = (
+			(await timetablesOperations.getOverlappingTimetables(
+				new Date(reservationWindow.startTime),
+				new Date(reservationWindow.endTime)
+			)) as ReservationWindow[]
+		).filter((r) => r.id !== reservationWindow.id);
+
+		if (overlaps.length) {
+			const startDates: Date[] = overlaps.map((r) => new Date(r.startTime));
+			const endDates: Date[] = overlaps.map((r) => new Date(r.endTime));
+			const error = `Reservation windows overlaps between dates ${new Date(
+				Math.min.apply(null, startDates as any)
+			).toLocaleString()} and ${new Date(
+				Math.max.apply(null, endDates as any)
+			).toLocaleString()}`;
+			return next(ApiError.badRequest(error));
+		}
+
 		await timetablesOperations.updateTimetable(reservationWindow);
 		return res.sendStatus(ResponseCode.OK);
 	} catch (e) {
@@ -38,7 +56,7 @@ async function deleteTimetableById(
 	res: Response,
 	next: NextFunction
 ) {
-	const id = req.params.tid as any as number;
+	const id = req.params.resId as any as number;
 
 	try {
 		await timetablesOperations.deleteTimetableById(id);
@@ -136,10 +154,17 @@ async function checkForOverlappingTimes(
 	timetableDetails: CreateTimetableProps[]
 ): Promise<ApiError | null> {
 	const messages = await Promise.all(
-		timetableDetails.map(
-			async (config) =>
-				await getOverlappingTimes(config.startDate, config.endDate)
-		)
+		timetableDetails.map(async (config) => {
+			const stDate = new Date(config.startDate);
+			const stTime = parseTime(config.startTime);
+			const edDate = new Date(config.endDate);
+			const ndTime = parseTime(config.endTime);
+			stDate.setHours(stDate.getHours() + stTime.hour);
+			stDate.setMinutes(stDate.getMinutes() + stTime.minutes);
+			edDate.setHours(edDate.getHours() + ndTime.hour);
+			edDate.setMinutes(edDate.getMinutes() + ndTime.minutes);
+			return await getOverlappingTimes(stDate, edDate);
+		})
 	);
 
 	if (messages.every((msg) => msg === '')) {
@@ -158,7 +183,7 @@ async function getOverlappingTimes(
 	endDate: Date
 ): Promise<string> {
 	const existingReservationWindows =
-		(await timetablesOperations.getTimetablesInRange(
+		(await timetablesOperations.getOverlappingTimetables(
 			startDate,
 			endDate
 		)) as ReservationWindow[];
