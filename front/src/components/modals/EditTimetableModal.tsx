@@ -69,9 +69,9 @@ function EditTimetableForm({
   const [minDate, setMinDate] = useState(Date.now())
 
   const convertDateTime = (value: Date): string =>
-    startTime.toLocaleString().split('T')[0] +
+    value.toLocaleString().split('T')[0] +
     'T' +
-    new Date(startTime).toLocaleTimeString('lt-LT')
+    new Date(value).toLocaleTimeString('lt-LT')
 
   return (
     <>
