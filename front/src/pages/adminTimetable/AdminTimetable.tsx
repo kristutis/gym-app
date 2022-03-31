@@ -14,6 +14,7 @@ import {
   deleteTimetableCall,
   getTimetablesCall,
   ReservationWindow,
+  updateTimetableCall,
 } from '../../utils/apicalls/timetable'
 import { useAuthHeader } from '../../utils/auth'
 import './AdminTimetable.css'
@@ -104,7 +105,12 @@ export default function AdminTimetable() {
   }
 
   const updateReservationWindow = (updated: ReservationWindow) => {
-    console.log(updated)
+    updateTimetableCall(updated, authHeader)
+      .then((res) => {
+        loadReservationWindows()
+        setEditModalOpened(false)
+      })
+      .catch((err) => alert(err))
   }
 
   const deleteReservationWindow = (id: number) => {

@@ -1,6 +1,28 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 import { getErrorMsg } from './errors'
 
+export const updateTimetableCall = async (
+  payload: ReservationWindow,
+  authToken: string
+): Promise<string> => {
+  payload.limitedSpace = !!payload.limitedSpace ? true : false
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/timetable', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const deleteTimetableByIdCall = async (
   id: number,
   authToken: string

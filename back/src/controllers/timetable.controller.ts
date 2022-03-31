@@ -11,6 +11,28 @@ function convertParamsToDates(params: any): TimetableQueryProps {
 	} as TimetableQueryProps;
 }
 
+async function updateTimetable(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const body = req.body;
+	const reservationWindow = {
+		id: parseInt(body.id),
+		startTime: new Date(body.startTime),
+		endTime: new Date(body.endTime),
+		limitedSpace: body.limitedSpace as boolean,
+		peopleCount: !!body.limitedSpace ? parseInt(body.peopleCount) : undefined,
+	} as ReservationWindow;
+
+	try {
+		await timetablesOperations.updateTimetable(reservationWindow);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		return next(e);
+	}
+}
+
 async function deleteTimetableById(
 	req: Request,
 	res: Response,
@@ -304,4 +326,5 @@ export default {
 	getTimetables,
 	deleteTimetable,
 	deleteTimetableById,
+	updateTimetable,
 };

@@ -117,6 +117,14 @@ export const refreshTokenSchema: ObjectSchema = Joi.object({
 		.required(),
 });
 
+export const updateTimetableSchema: ObjectSchema = Joi.object({
+	id: Joi.number().integer().min(1).required(),
+	startTime: Joi.date().required(),
+	endTime: Joi.date().required(),
+	limitedSpace: Joi.boolean().required(),
+	peopleCount: Joi.number().min(0),
+});
+
 const createTimetableSchema: ObjectSchema = Joi.object({
 	startDate: Joi.date().required(),
 	startTime: Joi.string()
@@ -149,12 +157,8 @@ export const getTimetablesSchema: ObjectSchema = Joi.object({
 
 export const deleteTimetableSchema = getTimetablesSchema;
 
-export const deleteTimetableParamsSchema: ObjectSchema = Joi.object({
-	tid: Joi.number().integer().min(1).required(),
-});
-
 export const reservationIdSchema: ObjectSchema = Joi.object({
-	resId: Joi.number().integer().required(),
+	resId: Joi.number().integer().min(1).required(),
 });
 
 export const deleteUserSchema: ObjectSchema = Joi.object({

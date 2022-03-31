@@ -3,9 +3,10 @@ import timetableController from '../controllers/timetable.controller';
 import { authenticateAdmin } from '../middleware/auth.middleware';
 import {
 	createTimetablesSchema,
-	deleteTimetableParamsSchema,
 	deleteTimetableSchema,
 	getTimetablesSchema,
+	reservationIdSchema,
+	updateTimetableSchema,
 	validateRequestBody,
 	validateRequestParams,
 	validateRequestQuery,
@@ -36,8 +37,15 @@ timetableRouter.delete(
 );
 
 timetableRouter.delete(
-	BASE_ROUTE + '/:tid',
-	validateRequestParams(deleteTimetableParamsSchema),
+	BASE_ROUTE + '/:resId',
+	validateRequestParams(reservationIdSchema),
 	authenticateAdmin,
 	timetableController.deleteTimetableById
+);
+
+timetableRouter.put(
+	BASE_ROUTE,
+	validateRequestBody(updateTimetableSchema),
+	authenticateAdmin,
+	timetableController.updateTimetable
 );
