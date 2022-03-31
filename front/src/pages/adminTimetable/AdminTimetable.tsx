@@ -1,7 +1,8 @@
+
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom'
 import DeleteTimetablesModal from '../../components/modals/DeleteTimetablesModal'
 import EditTimetableModal from '../../components/modals/EditTimetableModal'
 import {
+  deleteTimetableByIdCall,
   deleteTimetableCall,
   getTimetablesCall,
   ReservationWindow,
@@ -106,7 +108,12 @@ export default function AdminTimetable() {
   }
 
   const deleteReservationWindow = (id: number) => {
-    console.log(id)
+    deleteTimetableByIdCall(id, authHeader)
+      .then((res) => {
+        loadReservationWindows()
+        setEditModalOpened(false)
+      })
+      .catch((err) => alert(err))
   }
 
   return (

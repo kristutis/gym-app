@@ -51,7 +51,7 @@ export default function EditTimetableModal({
         submitFunction(updatedResWindow)
       }}
       deleteButtonText={'Delete'}
-      deleteButtonFunction={() => console.log(reservationWindow.id)}
+      deleteButtonFunction={() => deleteFunction(reservationWindow.id)}
     />
   )
 }
