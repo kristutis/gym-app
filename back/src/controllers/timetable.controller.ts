@@ -1,10 +1,51 @@
 import { NextFunction, Request, Response } from 'express';
 import timetablesOperations from '../db/timetables.operations';
 import { ReservationWindow } from '../models/reservationWindow.model';
+import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 
+function convertParamsToDates(params: any): TimetableQueryProps {
+	return {
+		startDate: new Date(params.startDate as any),
+		endDate: new Date(params.endDate as any),
+	} as TimetableQueryProps;
+}
+
+async function deleteTimetableById(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const id = req.params.tid as any as number;
+
+	try {
+		await timetablesOperations.deleteTimetableById(id);
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		return next(e);
+	}
+}
+
+async function deleteTimetable(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const params = convertParamsToDates(req.query);
+
+	try {
+		await timetablesOperations.deleteTimetablesInRange(
+			params.startDate,
+			params.endDate
+		);
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		return next(e);
+	}
+}
+
 async function getTimetables(req: Request, res: Response, next: NextFunction) {
-	const params = req.query as any as GetTimetablesProps;
+	const params = convertParamsToDates(req.query);
 	try {
 		const result = await timetablesOperations.getTimetablesInRange(
 			params.startDate,
@@ -22,6 +63,13 @@ async function createTimetable(
 	next: NextFunction
 ) {
 	const timetableDetails = req.body as CreateTimetableProps[];
+
+	try {
+		await checkForOverlappingTimes(timetableDetails);
+	} catch (e) {
+		return next(e);
+	}
+
 	const filteredDays = timetableDetails.map((config) =>
 		getFilteredDays(
 			config.onlyWeekends,
@@ -56,9 +104,51 @@ async function createTimetable(
 
 	try {
 		await timetablesOperations.insertTimetables(reservationWindows);
+		res.sendStatus(ResponseCode.CREATED);
 	} catch (e) {
 		next(e);
 	}
+}
+
+async function checkForOverlappingTimes(
+	timetableDetails: CreateTimetableProps[]
+): Promise<ApiError | null> {
+	const messages = await Promise.all(
+		timetableDetails.map(
+			async (config) =>
+				await getOverlappingTimes(config.startDate, config.endDate)
+		)
+	);
+
+	if (messages.every((msg) => msg === '')) {
+		return Promise.resolve(null);
+	}
+
+	const resultMessages = messages
+		.map((msg, index) => (msg !== '' ? `* Form #${index + 1} ${msg}` : ''))
+		.filter((msg) => msg !== '')
+		.join('<br/>');
+	return Promise.reject(ApiError.badRequest(resultMessages));
+}
+
+async function getOverlappingTimes(
+	startDate: Date,
+	endDate: Date
+): Promise<string> {
+	const existingReservationWindows =
+		(await timetablesOperations.getTimetablesInRange(
+			startDate,
+			endDate
+		)) as ReservationWindow[];
+
+	if (!existingReservationWindows.length) {
+		return '';
+	}
+
+	const start = new Date(startDate);
+	const end = new Date(endDate);
+
+	return `Reservation windows overlaps between dates ${start.toLocaleDateString()} and ${end.toLocaleDateString()}`;
 }
 
 function formatTimeTable(
@@ -68,7 +158,7 @@ function formatTimeTable(
 	visitingTime: string,
 	breakTime: string,
 	limitVisitors: boolean,
-	visitorsCount: number
+	visitorsCount?: number
 ): ReservationWindow[] {
 	return dates
 		.map((date) =>
@@ -108,7 +198,7 @@ function getReservationWindows(
 	visitingTime: HoursWithMinutes,
 	breakTime: HoursWithMinutes,
 	limitVisitors: boolean,
-	visitorsCount: number
+	visitorsCount?: number
 ): ReservationWindow[] {
 	date.setHours(startTime.hour);
 	date.setMinutes(startTime.minutes);
@@ -175,23 +265,23 @@ function getFilteredDays(
 ): Date[] {
 	let filteredDays = days;
 	if (weekends) {
-		filteredDays = days.map((d) => getWeekend(d));
+		filteredDays = days.map((d) => getWeekend(d)) as Date[];
 	}
 	if (weekdays) {
-		filteredDays = days.map((d) => getWeekday(d));
+		filteredDays = days.map((d) => getWeekday(d)) as Date[];
 	}
 	return filteredDays.filter((d) => d != null);
 }
 
-function getWeekday(day: Date): Date {
+function getWeekday(day: Date): Date | null {
 	return day.getDay() === 0 || day.getDay() === 6 ? null : day;
 }
 
-function getWeekend(day: Date): Date {
+function getWeekend(day: Date): Date | null {
 	return day.getDay() === 0 || day.getDay() === 6 ? day : null;
 }
 
-interface GetTimetablesProps {
+interface TimetableQueryProps {
 	startDate: Date;
 	endDate: Date;
 }
@@ -212,4 +302,6 @@ export interface CreateTimetableProps {
 export default {
 	createTimetable,
 	getTimetables,
+	deleteTimetable,
+	deleteTimetableById,
 };
