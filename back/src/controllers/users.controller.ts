@@ -101,7 +101,8 @@ async function adminUpdateUserAndTrainer(
 			user.name,
 			user.surname,
 			user.phone,
-			fk_role
+			fk_role,
+			user.balance
 		);
 		return res.sendStatus(ResponseCode.OK);
 	} catch (e) {
@@ -179,6 +180,7 @@ export interface AdminUpdateUserProps {
 	description?: string;
 	moto?: string;
 	photoUrl?: string;
+	balance: number;
 }
 
 export default {

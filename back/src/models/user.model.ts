@@ -8,4 +8,5 @@ export interface User {
 	modifyDate: Date;
 	role: string;
 	phone: string;
+	balance: number;
 }

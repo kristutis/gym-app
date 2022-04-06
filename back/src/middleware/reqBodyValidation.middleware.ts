@@ -104,6 +104,7 @@ export const adminUpdateUserSchema: ObjectSchema = Joi.object({
 	description: Joi.string().allow(null).allow(''),
 	moto: Joi.string().allow(null).allow(''),
 	photoUrl: Joi.string().allow(null).allow(''),
+	balance: Joi.number().required(),
 });
 
 export const loginUserSchema: ObjectSchema = Joi.object({

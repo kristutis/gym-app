@@ -20,12 +20,13 @@ function updateUserWithRole(
 	name: string,
 	surname: string,
 	phone: string,
-	role: number
+	role: number,
+	balance: number
 ): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
-			'UPDATE users SET name = ?, surname = ?, phone = ?, fk_role = ? WHERE uid = ?',
-			[name, surname, phone, role, id],
+			'UPDATE users SET name = ?, surname = ?, phone = ?, fk_role = ?, balance = ? WHERE uid = ?',
+			[name, surname, phone, role, balance, id],
 			(err, _) => {
 				if (err) {
 					return reject(err);
@@ -134,8 +135,8 @@ function getUserById(uid: string): Promise<User | MysqlError> {
 function getAllUsersWithTrainerInfo(): Promise<Trainer[] | MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
-			'SELECT uid as id, name, surname, email, password as hashedPassword,' +
-				' reg_date as createDate, modify_date as modifyDate, role, phone, price, description, moto, photo_url as photoUrl ' +
+			'SELECT uid as id, name, surname, email, password as hashedPassword, ' +
+				'reg_date as createDate, modify_date as modifyDate, role, phone, price, description, moto, photo_url as photoUrl, balance ' +
 				'FROM users ' +
 				'LEFT JOIN user_roles ' +
 				'ON users.fk_role = user_roles.id ' +
