@@ -6,6 +6,7 @@ import { commentsRouter } from './routes/comments.routes';
 import { offersRouter } from './routes/offers.routes';
 import { ratingsRouter } from './routes/ratings.routes';
 import { reservationRouter } from './routes/reservation.routes';
+import { subscriptionsRouter } from './routes/subscriptions.routes';
 import { timetableRouter } from './routes/timetable.routes';
 import { trainersRouter } from './routes/trainers.routes';
 import { usersRouter } from './routes/users.routes';
@@ -31,6 +32,7 @@ app.use(trainersRouter);
 app.use(ratingsRouter);
 app.use(offersRouter);
 app.use(commentsRouter);
+app.use(subscriptionsRouter);
 
 app.get('/', (req: Request, res: Response) => res.send('Welcome to gym API!'));
 app.all('*', (req, res, next) => next(ApiError.notFound('Url does not exist')));

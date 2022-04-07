@@ -64,6 +64,14 @@ export const offerIdSParamschema: ObjectSchema = Joi.object({
 	offerId: offerIdSchema,
 });
 
+export const purchaseSubscriptionParamSchema: ObjectSchema = Joi.object({
+	name: Joi.string()
+		.min(1)
+		.max(255)
+		.regex(/^[A-Za-z ]+$/)
+		.required(),
+});
+
 export const deleteCommentSchema: ObjectSchema = Joi.object({
 	commentId: Joi.number().min(1).integer().required(),
 });

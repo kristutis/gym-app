@@ -15,6 +15,21 @@ function deleteUser(uid: string): Promise<MysqlError> {
 	});
 }
 
+function updateUserBalance(id: string, balance: number): Promise<MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE users SET  balance = ? WHERE uid = ?',
+			[balance, id],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
 function updateUserWithRole(
 	id: string,
 	name: string,
@@ -116,10 +131,12 @@ function getUserById(uid: string): Promise<User | MysqlError> {
 		db.query(
 			'SELECT ' +
 				'uid as id, name, surname, email, password as hashedPassword,' +
-				' reg_date as createDate, modify_date as modifyDate, role, phone ' +
+				' reg_date as createDate, modify_date as modifyDate, role, phone, balance, valid_until as subscriptionValidUntil, fk_subscription_name as subscriptionName  ' +
 				'FROM users ' +
 				'LEFT JOIN user_roles ' +
 				'ON users.fk_role = user_roles.id ' +
+				'LEFT JOIN user_subscriptions ' +
+				'ON users.uid = user_subscriptions.fk_user_id ' +
 				'WHERE uid = ?',
 			[uid],
 			(err, results) => {
@@ -161,4 +178,5 @@ export default {
 	getAllUsersWithTrainerInfo,
 	deleteUser,
 	updateUserWithRole,
+	updateUserBalance,
 };

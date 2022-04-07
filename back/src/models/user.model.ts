@@ -9,4 +9,6 @@ export interface User {
 	role: string;
 	phone: string;
 	balance: number;
+	subscriptionName?: string;
+	subscriptionValidUntil?: Date;
 }
