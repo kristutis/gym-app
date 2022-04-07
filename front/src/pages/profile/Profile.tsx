@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { Button } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
 import ProfileEditModal from '../../components/modals/ProfileEditModal'
+import PurchaseSubscriptionModal from '../../components/modals/PurchaseSubscriptionModal'
 import { getUserDetailsCall, User } from '../../utils/apicalls/user'
 import { useAuthHeader } from '../../utils/auth'
 import './Profile.css'
@@ -10,6 +12,10 @@ export default function Profile() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [userDetails, setUserDetails] = useState({} as User)
   const [profileForm, setProfileForm] = useState([] as InfoSectionProps[])
+
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+  const [showCancelSubscribtionModal, setShowCancelSubscribtionModal] =
+    useState(false)
 
   const loadUserDetails = async () => {
     getUserDetailsCall(authHeader)
@@ -37,6 +43,17 @@ export default function Profile() {
             label: 'Phone',
             text: userDetails.phone || 'Not provided',
           },
+          {
+            label: 'Current Balance',
+            text: !!userDetails.balance
+              ? userDetails.balance.toFixed(2) + '€'
+              : '',
+          },
+          SubscriptionSection(
+            userDetails,
+            () => setShowPurchaseModal(true),
+            () => setShowCancelSubscribtionModal(true)
+          ),
         ] as InfoWindowProps[],
       },
       {
@@ -66,6 +83,12 @@ export default function Profile() {
         show={showEditModal}
         submitFunction={loadUserDetails}
         closeFunction={() => setShowEditModal(false)}
+      />
+      <PurchaseSubscriptionModal
+        balance={userDetails?.balance || 0}
+        show={showPurchaseModal}
+        submitFunction={loadUserDetails}
+        closeFunction={() => setShowPurchaseModal(false)}
       />
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
@@ -114,18 +137,24 @@ function InfoSection({ title, info }: InfoSectionProps) {
       <hr className="mt-0 mb-4" />
       <div className="row pt-1">
         {info.map((window, index) => (
-          <InfoWindow key={index} label={window.label} text={window.text} />
+          <InfoWindow
+            key={index}
+            label={window.label}
+            text={window.text}
+            children={window.children}
+          />
         ))}
       </div>
     </>
   )
 }
 
-function InfoWindow({ label, text }: InfoWindowProps) {
+function InfoWindow({ label, text, children }: InfoWindowProps) {
   return (
     <div className="col-6 mb-3">
       <h6>{label}</h6>
       <p className="text-muted">{text}</p>
+      {children}
     </div>
   )
 }
@@ -134,9 +163,80 @@ function formatDate(date: Date): string {
   return new Date(date).toLocaleString()
 }
 
+function SubscriptionSection(
+  userDetails: User,
+  setShowPurhcaseModal: () => void,
+  setShowCancelSubscribtionModal: () => void
+): InfoWindowProps {
+  if (!Object.keys(userDetails).length || userDetails.role !== 'user') {
+    return {} as InfoWindowProps
+  }
+
+  const subscriptionValid =
+    !!userDetails.subscriptionValidUntil &&
+    !!userDetails.subscriptionValidUntil &&
+    new Date(userDetails.subscriptionValidUntil).getTime() >= Date.now() //!!!
+
+  const subscriptionStatusText = (): string => {
+    if (!userDetails.subscriptionName) {
+      return 'Not subscribed'
+    }
+    if (subscriptionValid) {
+      return `Valid until ${new Date(
+        userDetails.subscriptionValidUntil!
+      ).toLocaleDateString()}`
+    }
+    return 'Out of date'
+  }
+
+  return {
+    label: 'Subscription Status',
+    text: subscriptionStatusText(),
+    children: (
+      <SubscriptionButton
+        valid={subscriptionValid}
+        setShowPurhcaseModal={setShowPurhcaseModal}
+        setShowCancelSubscribtionModal={setShowCancelSubscribtionModal}
+      />
+    ),
+  } as InfoWindowProps
+}
+
+function SubscriptionButton({
+  valid,
+  setShowPurhcaseModal,
+  setShowCancelSubscribtionModal,
+}: {
+  valid: boolean
+  setShowPurhcaseModal: () => void
+  setShowCancelSubscribtionModal: () => void
+}) {
+  if (valid) {
+    return (
+      <Button
+        size="sm"
+        variant="outline-danger"
+        onClick={() => setShowCancelSubscribtionModal()}
+      >
+        Cancel Subscription
+      </Button>
+    )
+  }
+  return (
+    <Button
+      size="sm"
+      variant="outline-success"
+      onClick={() => setShowPurhcaseModal()}
+    >
+      Purchase Subscription
+    </Button>
+  )
+}
+
 interface InfoWindowProps {
   label: string
   text: string
+  children?: JSX.Element
 }
 
 interface InfoSectionProps {

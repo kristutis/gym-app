@@ -114,7 +114,10 @@ export interface User {
   createDate: Date
   modifyDate: Date
   role: string
+  balance: number
   phone?: string
+  subscriptionName?: string
+  subscriptionValidUntil?: string
 }
 
 export interface Trainer extends User {
@@ -142,4 +145,5 @@ export interface AdminUpdateUserProps {
   description?: string
   moto?: string
   photoUrl?: string
+  balance: number
 }

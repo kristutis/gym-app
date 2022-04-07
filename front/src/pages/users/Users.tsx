@@ -58,6 +58,7 @@ function Users() {
               <th>Role</th>
               <th>Activity</th>
               <th>Trainer Info</th>
+              <th>Balance</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -108,6 +109,7 @@ function UserDetailsRow({
         modifyDate={new Date(trainer.modifyDate)}
       />
       <TrainerInfoCell trainer={trainer} />
+      <td>{trainer.balance}</td>
       <Actions actionProps={actionProps} />
     </tr>
   )

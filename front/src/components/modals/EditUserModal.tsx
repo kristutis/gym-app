@@ -24,6 +24,7 @@ export default function EditUserModal({
   const [surname, setSurname] = useState('')
   const [role, setRole] = useState('')
   const [phone, setPhone] = useState('')
+  const [balance, setBalance] = useState(0)
 
   const [price, setPrice] = useState(0)
   const [description, setDescription] = useState('')
@@ -39,6 +40,7 @@ export default function EditUserModal({
     setDescription(trainer.description || '')
     setMoto(trainer.moto || '')
     setPhotoUrl(trainer.photoUrl || '')
+    setBalance(trainer.balance)
   }, [trainer])
 
   if (Object.keys(trainer).length === 0) {
@@ -60,6 +62,10 @@ export default function EditUserModal({
     }
     if (phone && !phone.match(/^\+\d+$/)) {
       setError('Incorrect phone number! Example: +3706*******')
+      return
+    }
+    if (!balance || balance < 0) {
+      setError('Incorrect user balance')
       return
     }
 
@@ -90,6 +96,7 @@ export default function EditUserModal({
         description,
         moto,
         photoUrl,
+        balance,
       } as AdminUpdateUserProps,
       authHeader
     )
@@ -119,6 +126,12 @@ export default function EditUserModal({
       inputType: 'text',
       inputValue: phone,
       setInput: (value: string) => setPhone(value),
+    },
+    {
+      label: 'Current Balance',
+      inputType: 'number',
+      inputValue: balance,
+      setInput: (value: number) => setBalance(value),
     },
   ] as ModalFormGroupProps[]
 
