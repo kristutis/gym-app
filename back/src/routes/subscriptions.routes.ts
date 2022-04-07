@@ -21,3 +21,9 @@ subscriptionsRouter.post(
 	authenticateUser,
 	subscriptionsController.purchaseSubscription
 );
+
+subscriptionsRouter.delete(
+	BASE_ROUTE,
+	authenticateUser,
+	subscriptionsController.deleteSubscription
+);

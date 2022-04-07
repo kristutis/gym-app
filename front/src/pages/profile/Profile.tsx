@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
+import CancelSubscriptionModal from '../../components/modals/CancelSubscriptionModal'
 import ProfileEditModal from '../../components/modals/ProfileEditModal'
 import PurchaseSubscriptionModal from '../../components/modals/PurchaseSubscriptionModal'
 import { getUserDetailsCall, User } from '../../utils/apicalls/user'
@@ -90,6 +91,11 @@ export default function Profile() {
         submitFunction={loadUserDetails}
         closeFunction={() => setShowPurchaseModal(false)}
       />
+      <CancelSubscriptionModal
+        show={showCancelSubscribtionModal}
+        submitFunction={loadUserDetails}
+        closeFunction={() => setShowCancelSubscribtionModal(false)}
+      />
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col col-lg-6 mb-4 mb-lg-0 profile-page-card-width">
@@ -174,8 +180,7 @@ function SubscriptionSection(
 
   const subscriptionValid =
     !!userDetails.subscriptionValidUntil &&
-    !!userDetails.subscriptionValidUntil &&
-    new Date(userDetails.subscriptionValidUntil).getTime() >= Date.now() //!!!
+    new Date(userDetails.subscriptionValidUntil).getTime() >= Date.now()
 
   const subscriptionStatusText = (): string => {
     if (!userDetails.subscriptionName) {

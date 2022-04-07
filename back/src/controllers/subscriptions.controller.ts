@@ -35,10 +35,7 @@ async function purchaseSubscription(
 			)) as SubscriptionType;
 		const user = (await usersOperations.getUserById(userId)) as User;
 
-		if (
-			user.subscriptionValidUntil &&
-			new Date(user.subscriptionValidUntil) > new Date()
-		) {
+		if (isSubscriptionValid(user)) {
 			return next(
 				ApiError.badRequest(
 					`Subscription is valid until ${user.subscriptionValidUntil}`
@@ -69,7 +66,35 @@ async function purchaseSubscription(
 	}
 }
 
+async function deleteSubscription(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const userId = (req.body.user as User).id;
+
+	try {
+		const user = (await usersOperations.getUserById(userId)) as User;
+		if (!isSubscriptionValid(user)) {
+			return next(ApiError.badRequest(`User does not have subscriptions`));
+		}
+
+		await subscriptionsOperations.deleteUserSubscriptions(userId);
+		return res.sendStatus(ResponseCode.DELETED);
+	} catch (e) {
+		next(e);
+	}
+}
+
+function isSubscriptionValid(user: User): boolean {
+	return (
+		!!user.subscriptionValidUntil &&
+		new Date(user.subscriptionValidUntil) > new Date()
+	);
+}
+
 export default {
 	getSubscriptionTypes,
 	purchaseSubscription,
+	deleteSubscription,
 };
