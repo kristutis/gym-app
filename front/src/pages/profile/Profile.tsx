@@ -147,6 +147,7 @@ function InfoSection({ title, info }: InfoSectionProps) {
             key={index}
             label={window.label}
             text={window.text}
+            text2={window.text2}
             children={window.children}
           />
         ))}
@@ -155,11 +156,12 @@ function InfoSection({ title, info }: InfoSectionProps) {
   )
 }
 
-function InfoWindow({ label, text, children }: InfoWindowProps) {
+function InfoWindow({ label, text, text2, children }: InfoWindowProps) {
   return (
     <div className="col-6 mb-3">
       <h6>{label}</h6>
       <p className="text-muted">{text}</p>
+      {!!text2 && <p className="text-muted">{text2}</p>}
       {children}
     </div>
   )
@@ -178,25 +180,34 @@ function SubscriptionSection(
     return {} as InfoWindowProps
   }
 
-  const subscriptionValid =
-    !!userDetails.subscriptionValidUntil &&
-    new Date(userDetails.subscriptionValidUntil).getTime() >= Date.now()
+  const subscriptionValid = isSubscriptionValid(userDetails)
 
-  const subscriptionStatusText = (): string => {
+  const subscriptionValidText = (): { text: string; text2?: string } => {
     if (!userDetails.subscriptionName) {
-      return 'Not subscribed'
+      return { text: 'Not subscribed' }
     }
+
+    const formatTime = (time: string) => {
+      const split = time.split(':')
+      return split[0] + ':' + split[1]
+    }
+
     if (subscriptionValid) {
-      return `Valid until ${new Date(
-        userDetails.subscriptionValidUntil!
-      ).toLocaleDateString()}`
+      return {
+        text: `${userDetails.subscriptionName}, ${formatTime(
+          userDetails.subscriptionStartTime!
+        )} to ${formatTime(userDetails.subscriptionEndTime!)}`,
+        text2: `Valid until ${new Date(
+          userDetails.subscriptionValidUntil!
+        ).toLocaleDateString()}`,
+      }
     }
-    return 'Out of date'
+    return { text: 'Out of date' }
   }
 
   return {
     label: 'Subscription Status',
-    text: subscriptionStatusText(),
+    ...subscriptionValidText(),
     children: (
       <SubscriptionButton
         valid={subscriptionValid}
@@ -241,10 +252,18 @@ function SubscriptionButton({
 interface InfoWindowProps {
   label: string
   text: string
+  text2?: string
   children?: JSX.Element
 }
 
 interface InfoSectionProps {
   title: string
   info: InfoWindowProps[]
+}
+
+export const isSubscriptionValid = (userDetails: User): boolean => {
+  return (
+    !!userDetails.subscriptionValidUntil &&
+    new Date(userDetails.subscriptionValidUntil).getTime() >= Date.now()
+  )
 }

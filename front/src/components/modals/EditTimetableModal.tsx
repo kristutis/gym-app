@@ -20,7 +20,7 @@ export default function EditTimetableModal({
   useEffect(() => {
     setStartTime(reservationWindow.startTime)
     setEndTime(reservationWindow.endTime)
-    setLimitedSpace(reservationWindow.limitedSpace)
+    setLimitedSpace(!!reservationWindow.limitedSpace)
     setPeopleLimit(reservationWindow.peopleCount || 0)
   }, [reservationWindow])
 
@@ -106,7 +106,7 @@ function EditTimetableForm({
       <InputGroup className="mb-3">
         <InputGroup.Text>Limit visitors' count?</InputGroup.Text>
         <InputGroup.Checkbox
-          defaultValue={limitedSpace}
+          checked={limitedSpace}
           onChange={(e: any) => {
             setLimitedSpace(e.target.checked)
           }}

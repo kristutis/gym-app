@@ -1,28 +1,31 @@
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
+import FullCalendar, { EventInput } from '@fullcalendar/react'; // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
 import { ToggleButton } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import BookSlotModal from '../../components/modals/BookSlotModal'
 import CancelSlotModal from '../../components/modals/CancelSlotModal'
 import {
   createReservationCall,
   deleteReservationCall,
-  getUserReservationIdsCall,
+  getUserReservationIdsCall
 } from '../../utils/apicalls/reservation'
 import {
   getTimetablesCall,
-  ReservationWindow,
+  ReservationWindow
 } from '../../utils/apicalls/timetable'
 import { getUserDetailsCall, User } from '../../utils/apicalls/user'
 import { useAuthHeader } from '../../utils/auth'
+import { isSubscriptionValid } from '../profile/Profile'
 
 export default function UserCalendar() {
   const authHeader = useAuthHeader()
 
   const [usersPhone, setUsersPhone] = useState('')
+  const [userDetails, setUserDetails] = useState({} as User)
   const [calendarRange, setCalendarRange] = useState({
     startDate: {} as Date,
     endDate: {} as Date,
@@ -41,6 +44,15 @@ export default function UserCalendar() {
     data: ReservationWindow[],
     userResIds: number[]
   ): EventInput[] => {
+    const inSubscriptionRange = (start: Date, end: Date): boolean => {
+      if (Object.keys(userDetails).length === 0 || !isSubscriptionValid(userDetails)) {
+        return false
+      }
+      const formatTime = (time: Date) => time.toLocaleTimeString('lt-LT').split(' ')[0]
+      return userDetails.subscriptionStartTime === userDetails.subscriptionEndTime || formatTime(start) > userDetails.subscriptionStartTime! && formatTime(start) < userDetails.subscriptionEndTime!
+
+    }
+
     const getColor = (
       alreadyReserved: boolean,
       available: boolean,
@@ -60,7 +72,9 @@ export default function UserCalendar() {
     const converted = dataCopy.map((reservationWindow) => {
       const available =
         !(!!reservationWindow.limitedSpace && !reservationWindow.peopleCount) &&
-        new Date(reservationWindow.startTime).getTime() >= now.getTime()
+        new Date(reservationWindow.startTime).getTime() >= now.getTime() &&
+        inSubscriptionRange(new Date(reservationWindow.startTime), new Date(reservationWindow.endTime))
+
       const alreadyReserved = userResIds.includes(reservationWindow.id)
 
       if (showUsersOnly && !alreadyReserved) {
@@ -99,11 +113,14 @@ export default function UserCalendar() {
 
   useEffect(() => {
     loadReservationWindows()
-  }, [calendarRange, showUsersOnly])
+  }, [calendarRange, showUsersOnly, userDetails])
 
   useEffect(() => {
     getUserDetailsCall(authHeader)
-      .then((usersDetails) => setUsersPhone((usersDetails as User).phone || ''))
+      .then((usersDetails) => {
+        setUserDetails(usersDetails as User)
+        setUsersPhone((usersDetails as User).phone || '')
+      })
       .catch((err) => alert('Error when getting users details'))
   }, [])
 
@@ -130,27 +147,24 @@ export default function UserCalendar() {
     }
   }
 
-  const openBookModal = (startDate: Date) => {
-    function formatBookingMsg(startDate: Date) {
+  const openBookModal = (startDate: Date, endDate: Date) => {
+    function formatBookingMsg() {
       const dayOfWeek = startDate.toLocaleString('en-us', { weekday: 'long' })
-      const isoDateParts = startDate.toISOString().split('T')
-      const date = isoDateParts[0]
-      const timeParts = isoDateParts[1].split(':')
-      const time = `${timeParts[0]}:${timeParts[1]}`
-      return `Book slot on ${dayOfWeek}, ${date} ${time}?`
+      const date = startDate.toLocaleString().split(', ')[0]
+      const time = startDate.toLocaleTimeString('lt-LT').substring(0, 5)
+      const time2 = endDate.toLocaleTimeString('lt-LT').substring(0, 5)
+      return `Book slot on ${dayOfWeek}, ${date}, ${time} - ${time2}?`
     }
-    setBookModalText(formatBookingMsg(startDate))
+    setBookModalText(formatBookingMsg())
     setShowBookModal(true)
   }
 
   const openCancelBookModal = (startDate: Date) => {
     function formatBookingMsg(startDate: Date) {
       const dayOfWeek = startDate.toLocaleString('en-us', { weekday: 'long' })
-      const isoDateParts = startDate.toISOString().split('T')
-      const date = isoDateParts[0]
-      const timeParts = isoDateParts[1].split(':')
-      const time = `${timeParts[0]}:${timeParts[1]}`
-      return `${dayOfWeek}, ${date} ${time}?`
+      const date = startDate.toISOString().split('T')[0]
+      const time = startDate.toLocaleTimeString('lt-LT').substring(0, 5)
+      return `${dayOfWeek}, ${date}, ${time}?`
     }
     setCancelBookModal(true)
     setCancelBookModalText(formatBookingMsg(startDate))
@@ -169,7 +183,7 @@ export default function UserCalendar() {
       return
     }
 
-    openBookModal(eventDetails.start)
+    openBookModal(eventDetails.start, eventDetails.end)
   }
 
   const handleCancelReservation = async (id: number) => {
@@ -209,6 +223,7 @@ export default function UserCalendar() {
         text={bookModalText}
         usersPhone={usersPhone}
       />
+      <SubscriptionStatusSection user={userDetails} />
       <FullCalendar
         plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}
         initialView="dayGridMonth"
@@ -247,5 +262,52 @@ export default function UserCalendar() {
         Show only my bookings
       </ToggleButton>
     </div>
+  )
+}
+
+function SubscriptionStatusSection({ user }: { user: User }) {
+  if (Object.keys(user).length === 0) {
+    return <></>
+  }
+
+  if (!user.subscriptionName) {
+    return (
+      <div className="text-center">
+        <label className="text-danger">
+          You do not have a subscription. <BuySubscriptionText />
+        </label>
+      </div>
+    )
+  }
+
+  if (isSubscriptionValid(user)) {
+    return (
+      <div className="text-center">
+        <label className="text-success">
+          {`${user.subscriptionName} subscription valid until ${new Date(
+            user.subscriptionValidUntil!
+          ).toLocaleDateString()}`}
+        </label>
+      </div>
+    )
+  }
+
+  return (
+    <div className="text-center">
+      <label className="text-danger">
+        Subscription is out of date. <BuySubscriptionText />
+      </label>
+    </div>
+  )
+}
+
+function BuySubscriptionText() {
+  return (
+    <label className="text-danger">
+      You can purchase the subcription&nbsp;
+      <Link to="/profile" className="text-danger">
+        in your profile page
+      </Link>
+    </label>
   )
 }

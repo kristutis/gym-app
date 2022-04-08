@@ -118,6 +118,8 @@ export interface User {
   phone?: string
   subscriptionName?: string
   subscriptionValidUntil?: string
+  subscriptionStartTime?: string
+  subscriptionEndTime?: string
 }
 
 export interface Trainer extends User {

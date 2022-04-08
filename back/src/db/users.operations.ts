@@ -130,13 +130,16 @@ function getUserById(uid: string): Promise<User | MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'SELECT ' +
-				'uid as id, name, surname, email, password as hashedPassword,' +
-				' reg_date as createDate, modify_date as modifyDate, role, phone, balance, valid_until as subscriptionValidUntil, fk_subscription_name as subscriptionName  ' +
+				'uid as id, users.name as name, surname, email, password as hashedPassword,' +
+				' reg_date as createDate, modify_date as modifyDate, role, phone, balance, valid_until as subscriptionValidUntil, ' +
+				' fk_subscription_name as subscriptionName, start_time as subscriptionStartTime, end_time as subscriptionEndTime  ' +
 				'FROM users ' +
 				'LEFT JOIN user_roles ' +
 				'ON users.fk_role = user_roles.id ' +
 				'LEFT JOIN user_subscriptions ' +
 				'ON users.uid = user_subscriptions.fk_user_id ' +
+				'LEFT JOIN subscription_types ' +
+				'ON subscription_types.name = user_subscriptions.fk_subscription_name ' +
 				'WHERE uid = ?',
 			[uid],
 			(err, results) => {

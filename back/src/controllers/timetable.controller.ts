@@ -22,7 +22,10 @@ async function updateTimetable(
 		startTime: new Date(body.startTime),
 		endTime: new Date(body.endTime),
 		limitedSpace: body.limitedSpace as boolean,
-		peopleCount: !!body.limitedSpace ? parseInt(body.peopleCount) : undefined,
+		peopleCount:
+			!!body.limitedSpace && !!body.peopleCount
+				? parseInt(body.peopleCount)
+				: undefined,
 	} as ReservationWindow;
 
 	try {

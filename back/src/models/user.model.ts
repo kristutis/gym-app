@@ -11,4 +11,6 @@ export interface User {
 	balance: number;
 	subscriptionName?: string;
 	subscriptionValidUntil?: Date;
+	subscriptionStartTime?: string;
+	subscriptionEndTime?: string;
 }
