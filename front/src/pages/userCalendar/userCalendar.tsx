@@ -1,6 +1,7 @@
+
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
-import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
-import FullCalendar, { EventInput } from '@fullcalendar/react'; // must go before plugins, 1
+import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
@@ -11,11 +12,11 @@ import CancelSlotModal from '../../components/modals/CancelSlotModal'
 import {
   createReservationCall,
   deleteReservationCall,
-  getUserReservationIdsCall
+  getUserReservationIdsCall,
 } from '../../utils/apicalls/reservation'
 import {
   getTimetablesCall,
-  ReservationWindow
+  ReservationWindow,
 } from '../../utils/apicalls/timetable'
 import { getUserDetailsCall, User } from '../../utils/apicalls/user'
 import { useAuthHeader } from '../../utils/auth'
@@ -44,13 +45,20 @@ export default function UserCalendar() {
     data: ReservationWindow[],
     userResIds: number[]
   ): EventInput[] => {
-    const inSubscriptionRange = (start: Date, end: Date): boolean => {
-      if (Object.keys(userDetails).length === 0 || !isSubscriptionValid(userDetails)) {
+    const inSubscriptionRange = (start: Date): boolean => {
+      if (
+        Object.keys(userDetails).length === 0 ||
+        !isSubscriptionValid(userDetails)
+      ) {
         return false
       }
-      const formatTime = (time: Date) => time.toLocaleTimeString('lt-LT').split(' ')[0]
-      return userDetails.subscriptionStartTime === userDetails.subscriptionEndTime || formatTime(start) > userDetails.subscriptionStartTime! && formatTime(start) < userDetails.subscriptionEndTime!
-
+      const formatTime = (time: Date) =>
+        time.toLocaleTimeString('lt-LT').split(' ')[0]
+      return (
+        userDetails.subscriptionStartTime === userDetails.subscriptionEndTime ||
+        (formatTime(start) > userDetails.subscriptionStartTime! &&
+          formatTime(start) < userDetails.subscriptionEndTime!)
+      )
     }
 
     const getColor = (
@@ -73,7 +81,7 @@ export default function UserCalendar() {
       const available =
         !(!!reservationWindow.limitedSpace && !reservationWindow.peopleCount) &&
         new Date(reservationWindow.startTime).getTime() >= now.getTime() &&
-        inSubscriptionRange(new Date(reservationWindow.startTime), new Date(reservationWindow.endTime))
+        inSubscriptionRange(new Date(reservationWindow.startTime))
 
       const alreadyReserved = userResIds.includes(reservationWindow.id)
 

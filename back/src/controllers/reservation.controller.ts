@@ -95,14 +95,44 @@ async function createReservation(
 			return next(ApiError.notFound('Reservation window does not exist'));
 		}
 
-		if (window.limitedSpace && window.peopleCount <= 0) {
+		const userInfo = (await usersOperations.getUserById(userId)) as User;
+		if (!userInfo.subscriptionName) {
+			return next(ApiError.badRequest('User does not have a subscription'));
+		}
+
+		if (
+			!!userInfo.subscriptionValidUntil &&
+			new Date(userInfo.subscriptionValidUntil).getTime() < Date.now()
+		) {
+			return next(ApiError.badRequest('User subscription is out of date'));
+		}
+
+		const inSubscriptionRange = (start: Date): boolean => {
+			const formatTime = (time: Date) =>
+				time.toLocaleTimeString('lt-LT').split(' ')[0];
+			return (
+				userInfo.subscriptionStartTime === userInfo.subscriptionEndTime ||
+				(formatTime(start) > userInfo.subscriptionStartTime! &&
+					formatTime(start) < userInfo.subscriptionEndTime!)
+			);
+		};
+
+		if (!inSubscriptionRange(new Date(window.startTime))) {
+			return next(
+				ApiError.badRequest(
+					'Reservation window is out of subscription time range'
+				)
+			);
+		}
+
+		if (window.limitedSpace && window.peopleCount! <= 0) {
 			return next(ApiError.badRequest('Not enough visiting space'));
 		}
 
 		if (window.limitedSpace) {
 			const updatedWindow = {
 				...window,
-				peopleCount: window.peopleCount - 1,
+				peopleCount: window.peopleCount! - 1,
 			} as ReservationWindow;
 			await timetablesOperations.updateTimetable(updatedWindow);
 		}
@@ -125,11 +155,11 @@ async function createReservation(
 		}
 
 		return res.sendStatus(ResponseCode.CREATED);
-	} catch (e) {
-		if (e.message.includes('is not a valid phone number')) {
+	} catch (e: any) {
+		if (!!e.message && e.message.includes('is not a valid phone number')) {
 			return next(ApiError.badRequest('Phone number is invalid'));
 		}
-		if (e.message.includes('The number  is unverified.')) {
+		if (!!e.message && e.message.includes('The number  is unverified.')) {
 			return next(ApiError.badRequest('Number not verified'));
 		}
 		next(e);
