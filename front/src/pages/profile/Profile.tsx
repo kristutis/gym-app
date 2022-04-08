@@ -4,7 +4,12 @@ import Loading from '../../components/loading/Loading'
 import CancelSubscriptionModal from '../../components/modals/CancelSubscriptionModal'
 import ProfileEditModal from '../../components/modals/ProfileEditModal'
 import PurchaseSubscriptionModal from '../../components/modals/PurchaseSubscriptionModal'
-import { getUserDetailsCall, User } from '../../utils/apicalls/user'
+import { getTrainerImgCall } from '../../utils/apicalls/trainer'
+import {
+  DEFAULT_PROFILE_PIC_SRC,
+  getUserDetailsCall,
+  User,
+} from '../../utils/apicalls/user'
 import { useAuthHeader } from '../../utils/auth'
 import './Profile.css'
 
@@ -13,6 +18,7 @@ export default function Profile() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [userDetails, setUserDetails] = useState({} as User)
   const [profileForm, setProfileForm] = useState([] as InfoSectionProps[])
+  const [trainerImg, setTrainerImg] = useState('')
 
   const [showPurchaseModal, setShowPurchaseModal] = useState(false)
   const [showCancelSubscribtionModal, setShowCancelSubscribtionModal] =
@@ -29,8 +35,16 @@ export default function Profile() {
   }, [])
 
   useEffect(() => {
-    if (userDetails.role == 'trainer') {
-      //---
+    if (!!userDetails.role && userDetails.role == 'trainer') {
+      getTrainerImgCall(userDetails.id)
+        .then((photoUrl) =>
+          setTrainerImg(
+            photoUrl === null || photoUrl === 'DEFAULT'
+              ? DEFAULT_PROFILE_PIC_SRC
+              : photoUrl
+          )
+        )
+        .catch((res) => null)
     }
     setProfileForm([
       {
@@ -46,9 +60,10 @@ export default function Profile() {
           },
           {
             label: 'Current Balance',
-            text: !!userDetails.balance
-              ? userDetails.balance.toFixed(2) + '€'
-              : '',
+            text:
+              userDetails.balance !== undefined
+                ? userDetails.balance.toFixed(2) + '€'
+                : '',
           },
           SubscriptionSection(
             userDetails,
@@ -102,19 +117,23 @@ export default function Profile() {
             <div className="card mb-3 style1">
               <div className="row g-0">
                 <div className="col-md-4 profile-page-gradient-custom text-center text-white style2">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Shaqi_jrvej.jpg/1200px-Shaqi_jrvej.jpg"
-                    alt="Avatar"
-                    className="img-fluid my-5 style3"
-                  />
-                  <h5>
-                    {userDetails.name} {userDetails.surname}
-                  </h5>
-                  <p>{userDetails.role}</p>
-                  <i
-                    className="far fa-edit mb-5 profile-edit-button"
-                    onClick={() => setShowEditModal(true)}
-                  />
+                  <div className="profile-page-center-container">
+                    {!!true && (
+                      <img
+                        src={trainerImg}
+                        alt=""
+                        className="img-fluid my-5 style3"
+                      />
+                    )}
+                    <h5>
+                      {userDetails.name} {userDetails.surname}
+                    </h5>
+                    <p>{userDetails.role}</p>
+                    <i
+                      className="far fa-edit mb-5 profile-edit-button"
+                      onClick={() => setShowEditModal(true)}
+                    />
+                  </div>
                 </div>
                 <div className="col-md-8">
                   <div className="card-body p-4">

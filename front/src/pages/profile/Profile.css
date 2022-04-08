@@ -1,4 +1,8 @@
 .profile-page-gradient-custom {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* fallback for old browsers */
   background: #f6d365;
 
@@ -27,7 +31,7 @@
 }
 
 .style3 {
-  width: 80px;
+  width: 70%;
 }
 
 .profile-page-card-width {

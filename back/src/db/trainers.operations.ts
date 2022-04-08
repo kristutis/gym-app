@@ -24,6 +24,21 @@ function getTrainersWithUserInfo(): Promise<Trainer[] | MysqlError> {
 	});
 }
 
+function getTrainerImgSrc(uid: string): Promise<string | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT photo_url as photoUrl FROM trainers WHERE fk_user_id = ?',
+			[uid],
+			(err, results) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(results[0] as string);
+			}
+		);
+	});
+}
+
 function deleteTrainer(uid: string): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query('DELETE FROM trainers WHERE fk_user_id = ?', [uid], (err, _) => {
@@ -109,4 +124,5 @@ export default {
 	updateTrainer,
 	insertTrainer,
 	getTrainersWithUserInfo,
+	getTrainerImgSrc,
 };

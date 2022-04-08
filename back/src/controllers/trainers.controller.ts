@@ -13,4 +13,20 @@ async function getTrainers(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
-export default { getTrainers };
+async function getTrainerImgSrc(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const tranerId = req.params.uid;
+	try {
+		const photoUrl = (await trainersOperations.getTrainerImgSrc(
+			tranerId
+		)) as string;
+		return res.status(ResponseCode.OK).json({ photoUrl });
+	} catch (e) {
+		next(e);
+	}
+}
+
+export default { getTrainers, getTrainerImgSrc };

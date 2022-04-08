@@ -14,3 +14,16 @@ export const getTrainersCall = async (): Promise<string | Trainer[]> => {
 
   return Promise.reject(getErrorMsg(responseBody))
 }
+
+export const getTrainerImgCall = async (uid: string): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + `/trainers/${uid}/img`, {
+    method: 'GET',
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody.photoUrl.photoUrl)
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
