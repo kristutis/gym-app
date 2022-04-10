@@ -105,6 +105,32 @@ export const adminDeleteUserCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const updateUserPasswordCall = async (
+  payload: UpdatePasswordProps,
+  authToken: string
+): Promise<string> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users/password', {
+    method: 'PUT',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
+export interface UpdatePasswordProps {
+  oldPassword: string
+  newPassword: string
+}
+
 export interface User {
   id: string
   name: string
@@ -134,7 +160,6 @@ export interface UpdateUserProps {
   name: string
   surname: string
   phone?: string
-  password?: string
 }
 
 export interface AdminUpdateUserProps {

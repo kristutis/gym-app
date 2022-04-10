@@ -15,6 +15,7 @@ export default function ProfileEditModal({
   show,
   closeFunction,
   submitFunction,
+  setShowChangePasswordModal,
 }: ProfileEditModalProps) {
   const authHeader = useAuthHeader()
 
@@ -23,8 +24,6 @@ export default function ProfileEditModal({
   const [phone, setPhone] = useState(
     userDetails.phone == null ? '' : userDetails.phone
   )
-  const [password, setPassword] = useState('')
-  const [repeatPassword, setRepeatPassword] = useState('')
 
   const [error, setError] = useState('')
 
@@ -41,14 +40,6 @@ export default function ProfileEditModal({
       setError('Incorrect phone number!')
       return
     }
-    if (password && password.length < 6) {
-      setError('Password lenghth must be 6 symbols or more!')
-      return
-    }
-    if (password != repeatPassword) {
-      setError('Passwords does not match!')
-      return
-    }
     setError('')
 
     const updatedUser = {
@@ -56,7 +47,6 @@ export default function ProfileEditModal({
       name: name,
       surname: surname,
       phone: !!phone ? phone : undefined,
-      password: !!password ? password : undefined,
     } as UpdateUserProps
 
     try {
@@ -81,16 +71,17 @@ export default function ProfileEditModal({
           setSurname={setSurname}
           phone={phone}
           setPhone={setPhone}
-          password={password}
-          setPassword={setPassword}
-          repeatPassword={repeatPassword}
-          setRepeatPassword={setRepeatPassword}
         />
       }
       buttonText={'Update'}
       show={show}
       closeFunction={closeFunction}
       submitFunction={submitClicked}
+      deleteButtonText={'Change password'}
+      deleteButtonFunction={() => {
+        closeFunction()
+        setShowChangePasswordModal()
+      }}
     />
   )
 }
@@ -103,10 +94,6 @@ function ProfileEditForm({
   setSurname,
   phone,
   setPhone,
-  password,
-  setPassword,
-  repeatPassword,
-  setRepeatPassword,
 }: ProfileEditFormProps) {
   const formGroups = [
     {
@@ -130,20 +117,6 @@ function ProfileEditForm({
       inputValue: phone,
       setInput: setPhone,
     },
-    {
-      label: 'Password',
-      errorMsg: '',
-      inputType: 'text',
-      inputValue: password,
-      setInput: setPassword,
-    },
-    {
-      label: 'Repeat password',
-      errorMsg: '',
-      inputType: 'text',
-      inputValue: repeatPassword,
-      setInput: setRepeatPassword,
-    },
   ] as ModalFormGroupProps[]
 
   return (
@@ -164,10 +137,6 @@ interface ProfileEditFormProps {
   setSurname: (surname: string) => void
   phone: string
   setPhone: (phone: string) => void
-  password: string
-  setPassword: (password: string) => void
-  repeatPassword: string
-  setRepeatPassword: (repeatPassword: string) => void
 }
 
 export interface ProfileEditModalProps {
@@ -175,4 +144,5 @@ export interface ProfileEditModalProps {
   show: boolean
   submitFunction: () => void
   closeFunction: () => void
+  setShowChangePasswordModal: () => void
 }

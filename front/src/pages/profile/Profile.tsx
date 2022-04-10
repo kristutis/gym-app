@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
 import CancelSubscriptionModal from '../../components/modals/CancelSubscriptionModal'
+import ChangePasswordModal from '../../components/modals/ChangePasswordModal'
 import ProfileEditModal from '../../components/modals/ProfileEditModal'
 import PurchaseSubscriptionModal from '../../components/modals/PurchaseSubscriptionModal'
 import { getTrainerImgCall } from '../../utils/apicalls/trainer'
@@ -16,6 +17,7 @@ import './Profile.css'
 export default function Profile() {
   const authHeader = useAuthHeader()
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const [userDetails, setUserDetails] = useState({} as User)
   const [profileForm, setProfileForm] = useState([] as InfoSectionProps[])
   const [trainerImg, setTrainerImg] = useState('')
@@ -99,6 +101,11 @@ export default function Profile() {
         show={showEditModal}
         submitFunction={loadUserDetails}
         closeFunction={() => setShowEditModal(false)}
+        setShowChangePasswordModal={() => setShowChangePasswordModal(true)}
+      />
+      <ChangePasswordModal
+        show={showChangePasswordModal}
+        closeFunction={() => setShowChangePasswordModal(false)}
       />
       <PurchaseSubscriptionModal
         balance={userDetails?.balance || 0}

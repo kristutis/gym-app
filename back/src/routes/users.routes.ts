@@ -8,6 +8,7 @@ import {
 	adminUpdateUserSchema,
 	createUserSchema,
 	deleteUserSchema,
+	updateUserPasswordSchema,
 	updateUserSchema,
 	validateRequestBody,
 	validateRequestParams,
@@ -36,6 +37,13 @@ usersRouter.put(
 	validateRequestBody(updateUserSchema),
 	authenticateUser,
 	usersController.updateUser
+);
+
+usersRouter.put(
+	BASE_ROUTE + '/password',
+	validateRequestBody(updateUserPasswordSchema),
+	authenticateUser,
+	usersController.updateUserPassword
 );
 
 usersRouter.put(

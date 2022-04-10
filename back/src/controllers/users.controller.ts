@@ -89,18 +89,18 @@ async function adminUpdateUserAndTrainer(
 		}
 
 		if (TRAINER_ROLE === user.role && trainerExists) {
-			await trainersOperations.updateTrainer(trainerProps);
+			await trainersOperations.updateTrainer(trainerProps!);
 		}
 
 		if (TRAINER_ROLE === user.role && !trainerExists) {
-			await trainersOperations.insertTrainer(trainerProps);
+			await trainersOperations.insertTrainer(trainerProps!);
 		}
 
 		await usersOperations.updateUserWithRole(
 			user.id,
 			user.name,
 			user.surname,
-			user.phone,
+			user.phone || 'NULL',
 			fk_role,
 			user.balance
 		);
@@ -119,6 +119,38 @@ function getRoleId(roles: Role[], roleName: string): number {
 	return -1;
 }
 
+async function updateUserPassword(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const email = (req.body.user as User).email;
+	const passwordDetails = req.body as UpdatePasswordProps;
+
+	try {
+		const user = (await usersOperations.getUserByEmail(email)) as User;
+		if (!user) {
+			return next(ApiError.notFound('User does not exist'));
+		}
+
+		const passwordsMatch = await bcrypt.compare(
+			passwordDetails.oldPassword,
+			user.hashedPassword as string
+		);
+		if (!passwordsMatch) {
+			return next(ApiError.badRequest('Incorrect password'));
+		}
+
+		if (passwordDetails.newPassword) {
+			const hashedPassword = await bcrypt.hash(passwordDetails.newPassword, 10);
+			await usersOperations.updateUserPassword(user.id, hashedPassword);
+		}
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e: any) {
+		return next(e);
+	}
+}
+
 async function updateUser(req: Request, res: Response, next: NextFunction) {
 	const uid = (req.body.user as User).id;
 	const userDetails = req.body as UpdateUserProps;
@@ -128,10 +160,6 @@ async function updateUser(req: Request, res: Response, next: NextFunction) {
 	}
 
 	try {
-		if (userDetails.password) {
-			const hashedPassword = await bcrypt.hash(userDetails.password, 10);
-			await usersOperations.updateUserPassword(userDetails.id, hashedPassword);
-		}
 		await usersOperations.updateUser(
 			userDetails.id,
 			userDetails.name,
@@ -167,7 +195,11 @@ export interface UpdateUserProps {
 	name: string;
 	surname: string;
 	phone?: string;
-	password?: string;
+}
+
+interface UpdatePasswordProps {
+	oldPassword: string;
+	newPassword: string;
 }
 
 export interface AdminUpdateUserProps {
@@ -190,4 +222,5 @@ export default {
 	getUsers,
 	deleteUser,
 	adminUpdateUserAndTrainer,
+	updateUserPassword,
 };

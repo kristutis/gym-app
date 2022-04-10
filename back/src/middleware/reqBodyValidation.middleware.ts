@@ -99,7 +99,11 @@ export const updateUserSchema: ObjectSchema = Joi.object({
 	name: nameSchema,
 	surname: surnameSchema,
 	phone: phoneSchema,
-	password: passwordSchema,
+});
+
+export const updateUserPasswordSchema: ObjectSchema = Joi.object({
+	oldPassword: passwordSchema,
+	newPassword: passwordSchema,
 });
 
 export const adminUpdateUserSchema: ObjectSchema = Joi.object({
