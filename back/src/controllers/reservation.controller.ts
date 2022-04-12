@@ -171,6 +171,19 @@ async function createReservation(
 			return next(ApiError.badRequest('Not enough visiting space'));
 		}
 
+		const date = new Date(window.startTime);
+		const monthFirstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+		const monthLastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+		const reservations =
+			(await reservationsOperations.getUsersReservationWindowIdsInRange(
+				userId,
+				monthFirstDay,
+				monthLastDay
+			)) as number[];
+		if (reservations?.length >= CONFIG.MAX_MONTHLY_RESERVATIONS) {
+			return next(ApiError.badRequest('Reached monthly reservations limit'));
+		}
+
 		if (window.limitedSpace) {
 			const updatedWindow = {
 				...window,

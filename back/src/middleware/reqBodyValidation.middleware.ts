@@ -168,6 +168,8 @@ export const getTimetablesSchema: ObjectSchema = Joi.object({
 	endDate: Joi.date().required(),
 });
 
+export const getReservationAvailabilityParamSchema = getTimetablesSchema;
+
 export const deleteTimetableSchema = getTimetablesSchema;
 
 export const reservationIdSchema: ObjectSchema = Joi.object({

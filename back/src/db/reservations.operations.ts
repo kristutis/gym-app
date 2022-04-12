@@ -73,8 +73,8 @@ function getUsersReservationWindowIds(
 
 function getUsersReservationWindowIdsInRange(
 	userId: string,
-	startDate: string,
-	endDate: string
+	startDate: string | Date,
+	endDate: string | Date
 ): Promise<number[] | MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(

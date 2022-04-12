@@ -3,9 +3,11 @@ import reservationController from '../controllers/reservation.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 import {
 	createReservationBodySchema,
+	getReservationAvailabilityParamSchema,
 	reservationIdSchema,
 	validateRequestBody,
 	validateRequestParams,
+	validateRequestQuery,
 } from '../middleware/reqBodyValidation.middleware';
 
 export const reservationRouter = express.Router();
@@ -21,6 +23,7 @@ reservationRouter.get(
 reservationRouter.get(
 	BASE_ROUTE + '/availability',
 	authenticateUser,
+	validateRequestQuery(getReservationAvailabilityParamSchema),
 	reservationController.getReservationsAvailability
 );
 
