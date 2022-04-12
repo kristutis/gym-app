@@ -71,9 +71,34 @@ function getUsersReservationWindowIds(
 	});
 }
 
+function getUsersReservationWindowIdsInRange(
+	userId: string,
+	startDate: string,
+	endDate: string
+): Promise<number[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT fk_reservation_id as id ' +
+				' FROM reservations ' +
+				' LEFT JOIN reservation_windows ' +
+				' ON reservations.fk_reservation_id = reservation_windows.id ' +
+				' WHERE fk_user_id = ? AND start_time > ? AND start_time < ?',
+			[userId, startDate, endDate],
+			(err, result) => {
+				if (err) {
+					return reject(err);
+				}
+				const ids = result.map((res) => res.id);
+				return resolve(ids as number[]);
+			}
+		);
+	});
+}
+
 export default {
 	insertReservation,
 	reservationExist,
 	getUsersReservationWindowIds,
 	deleteReservation,
+	getUsersReservationWindowIdsInRange,
 };

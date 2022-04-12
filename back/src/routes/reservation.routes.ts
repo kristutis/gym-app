@@ -18,6 +18,12 @@ reservationRouter.get(
 	reservationController.getReservationIds
 );
 
+reservationRouter.get(
+	BASE_ROUTE + '/availability',
+	authenticateUser,
+	reservationController.getReservationsAvailability
+);
+
 reservationRouter.post(
 	BASE_ROUTE + '/:resId',
 	validateRequestParams(reservationIdSchema),

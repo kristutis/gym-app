@@ -4,7 +4,7 @@ import { ReservationWindow } from '../models/reservationWindow.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 
-function convertParamsToDates(params: any): TimetableQueryProps {
+export function convertParamsToDates(params: any): TimetableQueryProps {
 	return {
 		startDate: new Date(params.startDate as any),
 		endDate: new Date(params.endDate as any),
@@ -331,7 +331,7 @@ function getWeekend(day: Date): Date | null {
 	return day.getDay() === 0 || day.getDay() === 6 ? day : null;
 }
 
-interface TimetableQueryProps {
+export interface TimetableQueryProps {
 	startDate: Date;
 	endDate: Date;
 }

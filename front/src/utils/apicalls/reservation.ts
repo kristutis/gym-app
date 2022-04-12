@@ -1,6 +1,32 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 import { getErrorMsg } from './errors'
 
+export const getUserReservationAvailabilityCall = async (
+  startDate: Date,
+  endDate: Date,
+  authToken: string
+): Promise<ReservationsAvailabilityDetails | string> => {
+  const params = { startDate, endDate }
+  const url: string =
+    DEFAULT_BACKEND_PATH +
+    '/reservations/availability?' +
+    new URLSearchParams(params as any)
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody)
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const getUserReservationIdsCall = async (
   authToken: string
 ): Promise<string | number[]> => {
@@ -70,4 +96,15 @@ export const createReservationCall = async (
   console.log(responseBody)
 
   return Promise.reject(getErrorMsg(responseBody))
+}
+
+export interface ReservationsAvailabilityProps {
+  startDate: string
+  endDate: string
+  reachedMonthlyLimit: boolean
+}
+
+export interface ReservationsAvailabilityDetails {
+  availability: ReservationsAvailabilityProps[]
+  maxMonthlyReservationsCount: number
 }

@@ -9,8 +9,50 @@ import { ReservationWindow } from '../models/reservationWindow.model';
 import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
+import { convertParamsToDates } from './timetable.controller';
 
 const twilioClient = new Twilio(CONFIG.TWILIO_USER, CONFIG.TWILIO_PASS);
+
+async function getReservationsAvailability(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const params = convertParamsToDates(req.query);
+	params.endDate.setMonth(params.endDate.getMonth() + 1);
+	const userId = (req.body.user as User).id;
+
+	const monthRanges = monthsBetween(
+		params.startDate.toISOString().split('T')[0],
+		params.endDate.toISOString().split('T')[0]
+	);
+
+	const availability = [] as ReservationsAvailabilityProps[];
+	try {
+		for (let i = 0; i < monthRanges.length - 1; i++) {
+			const first = monthRanges[i];
+			const last = monthRanges[i + 1];
+			const reservations =
+				(await reservationsOperations.getUsersReservationWindowIdsInRange(
+					userId,
+					first,
+					last
+				)) as number[];
+			availability.push({
+				startDate: first,
+				endDate: last,
+				reachedMonthlyLimit:
+					reservations?.length >= CONFIG.MAX_MONTHLY_RESERVATIONS,
+			} as ReservationsAvailabilityProps);
+		}
+		return res.status(ResponseCode.OK).json({
+			availability,
+			maxMonthlyReservationsCount: CONFIG.MAX_MONTHLY_RESERVATIONS,
+		} as ReservationsAvailabilityDetails);
+	} catch (e) {
+		next(e);
+	}
+}
 
 async function getReservationIds(
 	req: Request,
@@ -166,8 +208,32 @@ async function createReservation(
 	}
 }
 
+function monthsBetween(...args: any[]): string[] {
+	let [a, b] = args.map((arg) =>
+		arg
+			.split('-')
+			.slice(0, 2)
+			.reduce((y: any, m: any) => m - 1 + y * 12)
+	);
+	return Array.from({ length: b - a + 1 }, (_) => a++).map(
+		(m) => ~~(m / 12) + '-' + ('0' + ((m % 12) + 1)).slice(-2) + '-01'
+	);
+}
+
+interface ReservationsAvailabilityProps {
+	startDate: string;
+	endDate: string;
+	reachedMonthlyLimit: boolean;
+}
+
+interface ReservationsAvailabilityDetails {
+	availability: ReservationsAvailabilityProps[];
+	maxMonthlyReservationsCount: number;
+}
+
 export default {
 	createReservation,
 	getReservationIds,
 	deleteReservation,
+	getReservationsAvailability,
 };

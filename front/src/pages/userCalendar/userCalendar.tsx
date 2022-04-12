@@ -1,7 +1,6 @@
-
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
@@ -9,10 +8,14 @@ import { ToggleButton } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import BookSlotModal from '../../components/modals/BookSlotModal'
 import CancelSlotModal from '../../components/modals/CancelSlotModal'
+import ErrorTextModal from '../../components/modals/ErrorTextModal'
 import {
   createReservationCall,
   deleteReservationCall,
+  getUserReservationAvailabilityCall,
   getUserReservationIdsCall,
+  ReservationsAvailabilityDetails,
+  ReservationsAvailabilityProps,
 } from '../../utils/apicalls/reservation'
 import {
   getTimetablesCall,
@@ -26,6 +29,10 @@ export default function UserCalendar() {
   const authHeader = useAuthHeader()
 
   const [usersPhone, setUsersPhone] = useState('')
+  const [maxReservationsMonthlyLimit, setmaxReservationsMonthlyLimit] =
+    useState(0)
+  const [maxReservationsLimitReached, setMaxReservationsLimitReached] =
+    useState([] as ReservationsAvailabilityProps[])
   const [userDetails, setUserDetails] = useState({} as User)
   const [calendarRange, setCalendarRange] = useState({
     startDate: {} as Date,
@@ -37,6 +44,7 @@ export default function UserCalendar() {
   const [showBookModal, setShowBookModal] = useState(false)
   const [bookModalText, setBookModalText] = useState('')
   const [bookModalId, setBookModalId] = useState(0)
+  const [errorModalText, setErrorModalText] = useState('')
 
   const [showUsersOnly, setShowUsersOnly] = useState(false)
   const [events, setEvents] = useState([] as EventInput[])
@@ -108,6 +116,13 @@ export default function UserCalendar() {
   }
 
   const loadUsersReservationIds = async (): Promise<number[]> => {
+    if (
+      calendarRange.startDate.toString() === {}.toString() &&
+      calendarRange.endDate.toString() === {}.toString()
+    ) {
+      return []
+    }
+
     try {
       const userResIds = (await getUserReservationIdsCall(
         authHeader
@@ -141,6 +156,17 @@ export default function UserCalendar() {
     }
 
     const userResIds = await loadUsersReservationIds()
+    getUserReservationAvailabilityCall(
+      calendarRange.startDate,
+      calendarRange.endDate,
+      authHeader
+    )
+      .then((res: ReservationsAvailabilityDetails | string) => {
+        const body = res as ReservationsAvailabilityDetails
+        setMaxReservationsLimitReached(body.availability)
+        setmaxReservationsMonthlyLimit(body.maxMonthlyReservationsCount)
+      })
+      .catch((err) => null)
 
     const appendedEndDay = new Date(calendarRange.endDate)
     appendedEndDay.setDate(appendedEndDay.getDate() + 1)
@@ -191,6 +217,20 @@ export default function UserCalendar() {
       return
     }
 
+    if (
+      maxReservationsLimitReached.some(
+        (m) =>
+          new Date(m.startDate) <= eventDetails.start &&
+          new Date(m.endDate) >= eventDetails.start &&
+          m.reachedMonthlyLimit
+      )
+    ) {
+      setErrorModalText(
+        `Max reservations count is reached (${maxReservationsMonthlyLimit}/month)!`
+      )
+      return
+    }
+
     openBookModal(eventDetails.start, eventDetails.end)
   }
 
@@ -231,6 +271,7 @@ export default function UserCalendar() {
         text={bookModalText}
         usersPhone={usersPhone}
       />
+      <ErrorTextModal text={errorModalText} setText={setErrorModalText} />
       <SubscriptionStatusSection user={userDetails} />
       <FullCalendar
         plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}
