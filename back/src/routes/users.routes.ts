@@ -2,12 +2,14 @@ import express from 'express';
 import usersController from '../controllers/users.controller';
 import {
 	authenticateAdmin,
+	authenticateTrainer,
 	authenticateUser,
 } from '../middleware/auth.middleware';
 import {
 	adminUpdateUserSchema,
 	createUserSchema,
 	deleteUserSchema,
+	trainerUpdateUserSchema,
 	updateUserPasswordSchema,
 	updateUserSchema,
 	validateRequestBody,
@@ -25,6 +27,19 @@ usersRouter.get(
 );
 
 usersRouter.get(BASE_ROUTE, authenticateAdmin, usersController.getUsers);
+
+usersRouter.get(
+	BASE_ROUTE + '/trainer',
+	authenticateTrainer,
+	usersController.getUsersForTrainer
+);
+
+usersRouter.put(
+	BASE_ROUTE + '/trainer',
+	validateRequestBody(trainerUpdateUserSchema),
+	authenticateTrainer,
+	usersController.trainerUpdateUsersBalance
+);
 
 usersRouter.post(
 	BASE_ROUTE,

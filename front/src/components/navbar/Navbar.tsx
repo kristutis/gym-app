@@ -38,7 +38,12 @@ const clientRoutes = [
   },
 ] as NavbarRoutesProps[]
 
-const trainerRoutes = [] as NavbarRoutesProps[]
+const trainerRoutes = [
+  {
+    route: '/trainer-actions',
+    text: 'Manage Users',
+  },
+] as NavbarRoutesProps[]
 
 const adminRoutes = [
   {

@@ -23,6 +23,34 @@ async function getUsers(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function trainerUpdateUsersBalance(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const uid = req.body.id;
+	const balance = req.body.balance;
+	try {
+		await usersOperations.updateUserBalance(uid, balance);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		next(e);
+	}
+}
+
+async function getUsersForTrainer(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const users = (await usersOperations.getUsersForTrainer()) as User[];
+		return res.status(ResponseCode.OK).json(users);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function getUserDetails(req: Request, res: Response, next: NextFunction) {
 	const userId = req.body.user.id;
 
@@ -223,4 +251,6 @@ export default {
 	deleteUser,
 	adminUpdateUserAndTrainer,
 	updateUserPassword,
+	trainerUpdateUsersBalance,
+	getUsersForTrainer,
 };

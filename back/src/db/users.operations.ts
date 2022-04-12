@@ -2,6 +2,7 @@ import { MysqlError } from 'mysql';
 import { CreateUserProps } from '../controllers/users.controller';
 import { Trainer } from '../models/trainer.model';
 import { User } from '../models/user.model';
+import { USER_ROLE } from '../utils/jwt';
 import { db } from './connect';
 
 function deleteUser(uid: string): Promise<MysqlError> {
@@ -152,6 +153,26 @@ function getUserById(uid: string): Promise<User | MysqlError> {
 	});
 }
 
+function getUsersForTrainer(): Promise<User[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT uid as id, name, surname, email, ' +
+				'reg_date as createDate, modify_date as modifyDate, phone, balance, role ' +
+				'FROM users ' +
+				'LEFT JOIN user_roles ' +
+				'ON users.fk_role = user_roles.id ' +
+				'WHERE role = ?',
+			[USER_ROLE],
+			(err, results) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(results as Trainer[]);
+			}
+		);
+	});
+}
+
 function getAllUsersWithTrainerInfo(): Promise<Trainer[] | MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
@@ -182,4 +203,5 @@ export default {
 	deleteUser,
 	updateUserWithRole,
 	updateUserBalance,
+	getUsersForTrainer,
 };

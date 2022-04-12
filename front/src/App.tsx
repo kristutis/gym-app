@@ -12,6 +12,7 @@ import ManageOffers from './pages/manageOffers/ManageOffers'
 import Profile from './pages/profile/Profile'
 import TrainerDetails from './pages/trainerDetails/TrainerDetails'
 import Trainers from './pages/trainers/Trainers'
+import TrainerUsers from './pages/trainerUsers/TrainerUsers'
 import UserCalendar from './pages/userCalendar/UserCalendar'
 import Users from './pages/users/Users'
 
@@ -56,6 +57,10 @@ const protectedRoutes = [
   {
     path: '/offers',
     component: ManageOffers,
+  },
+  {
+    path: '/trainer-actions',
+    component: TrainerUsers,
   },
 ] as RouteProps[]
 

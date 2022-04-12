@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { CONFIG } from '../config/config';
 import { User } from '../models/user.model';
 import { ApiError } from '../utils/errors';
-import { ADMIN_ROLE } from '../utils/jwt';
+import { ADMIN_ROLE, TRAINER_ROLE } from '../utils/jwt';
 
 export const authenticateRefreshToken = (
 	req: Request,
@@ -49,6 +49,24 @@ export const authenticateAdmin = async (
 	try {
 		const user = (await authenticateAccount(req)) as User;
 		if (ADMIN_ROLE == user.role) {
+			req.body.user = user;
+			next();
+		} else {
+			return next(ApiError.forbidden(''));
+		}
+	} catch (err) {
+		return next(err);
+	}
+};
+
+export const authenticateTrainer = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const user = (await authenticateAccount(req)) as User;
+		if (TRAINER_ROLE == user.role) {
 			req.body.user = user;
 			next();
 		} else {

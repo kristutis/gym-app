@@ -3,6 +3,47 @@ import { getErrorMsg } from './errors'
 
 export const DEFAULT_PROFILE_PIC_SRC = '/images/profile-picture.png'
 
+export const trainerUpdateUsersBalanceCall = async (
+  id: string,
+  balance: number,
+  authToken: string
+): Promise<string> => {
+  const payload = { id, balance }
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users/trainer', {
+    method: 'PUT',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
+export const trainerGetUsersCall = async (
+  authToken: string
+): Promise<string | User[]> => {
+  const response = await fetch(DEFAULT_BACKEND_PATH + '/users/trainer', {
+    method: 'GET',
+    headers: {
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody as User[])
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export const adminGetUsersCall = async (
   authToken: string
 ): Promise<string | Trainer[]> => {

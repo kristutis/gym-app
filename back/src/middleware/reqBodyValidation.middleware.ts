@@ -116,7 +116,12 @@ export const adminUpdateUserSchema: ObjectSchema = Joi.object({
 	description: Joi.string().allow(null).allow(''),
 	moto: Joi.string().allow(null).allow(''),
 	photoUrl: Joi.string().allow(null).allow(''),
-	balance: Joi.number().required(),
+	balance: Joi.number().min(0).required(),
+});
+
+export const trainerUpdateUserSchema: ObjectSchema = Joi.object({
+	id: uidSchema,
+	balance: Joi.number().min(0).required(),
 });
 
 export const loginUserSchema: ObjectSchema = Joi.object({

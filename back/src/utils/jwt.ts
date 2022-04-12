@@ -4,6 +4,7 @@ import { User } from '../models/user.model';
 
 export const ADMIN_ROLE = 'admin';
 export const TRAINER_ROLE = 'trainer';
+export const USER_ROLE = 'user';
 const ACCESS_TOKEN_EXPIRE = CONFIG.ACCESS_TOKEN_EXPIRE;
 const REFRESH_TOKEN_EXPIRE = CONFIG.REFRESH_TOKEN_EXPIRE;
 const ACCESS_TOKEN_SECRET = CONFIG.ACCESS_TOKEN_SECRET;
