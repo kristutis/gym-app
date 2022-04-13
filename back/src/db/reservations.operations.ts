@@ -3,12 +3,11 @@ import { Reservation } from '../models/reservation.model';
 import { ReservationWindow } from '../models/reservationWindow.model';
 import { db } from './connect';
 
-function updateReservationAttendency(
+async function updateReservationAttendency(
 	userId: string,
 	reservationId: string,
 	attended: boolean
 ): Promise<MysqlError> {
-	console.log(userId, reservationId, attended);
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE reservations SET attended = ? WHERE fk_user_id = ? AND fk_reservation_id = ?',
@@ -23,7 +22,7 @@ function updateReservationAttendency(
 	});
 }
 
-function getUsersReservationWindows(
+async function getUsersReservationWindows(
 	userId: string,
 	startDate: Date,
 	endDate: Date
@@ -49,7 +48,7 @@ function getUsersReservationWindows(
 	});
 }
 
-function deleteReservation(reseration: Reservation): Promise<MysqlError> {
+async function deleteReservation(reseration: Reservation): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'DELETE FROM reservations WHERE fk_user_id = ? AND fk_reservation_id = ?',
@@ -64,7 +63,7 @@ function deleteReservation(reseration: Reservation): Promise<MysqlError> {
 	});
 }
 
-function insertReservation(reseration: Reservation): Promise<MysqlError> {
+async function insertReservation(reseration: Reservation): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'INSERT INTO reservations (fk_user_id, fk_reservation_id) VALUES (?, ?)',
@@ -79,7 +78,7 @@ function insertReservation(reseration: Reservation): Promise<MysqlError> {
 	});
 }
 
-function reservationExist(
+async function reservationExist(
 	reseration: Reservation
 ): Promise<boolean | MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -98,7 +97,7 @@ function reservationExist(
 	});
 }
 
-function getUsersReservationWindowIds(
+async function getUsersReservationWindowIds(
 	userId: string
 ): Promise<number[] | MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -118,7 +117,30 @@ function getUsersReservationWindowIds(
 	});
 }
 
-function getUsersReservationWindowIdsInRange(
+async function getUsersMissedReservations(
+	uid: string,
+	startDate: Date,
+	endDate: Date
+): Promise<number | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT COUNT(*) ' +
+				' FROM reservations ' +
+				' LEFT JOIN reservation_windows ' +
+				' ON reservations.fk_reservation_id = reservation_windows.id ' +
+				' WHERE fk_user_id = ? AND start_time > ? AND start_time < ? AND attended = 0',
+			[uid, startDate, endDate],
+			(err, result) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(parseInt(result[0]['COUNT(*)']));
+			}
+		);
+	});
+}
+
+async function getUsersReservationWindowIdsInRange(
 	userId: string,
 	startDate: string | Date,
 	endDate: string | Date
@@ -155,4 +177,5 @@ export default {
 	getUsersReservationWindowIdsInRange,
 	getUsersReservationWindows,
 	updateReservationAttendency,
+	getUsersMissedReservations,
 };

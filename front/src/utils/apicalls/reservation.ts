@@ -166,6 +166,8 @@ export interface ReservationsAvailabilityProps {
 export interface ReservationsAvailabilityDetails {
   availability: ReservationsAvailabilityProps[]
   maxMonthlyReservationsCount: number
+  reachedMissedAttendanceLimit: boolean
+  maxMissedAttendanceLimit: number
 }
 
 export interface UserReservation extends ReservationWindow {

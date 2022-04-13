@@ -27,6 +27,15 @@ async function getReservationsAvailability(
 		params.endDate.toISOString().split('T')[0]
 	);
 
+	const now = new Date();
+	const firstMonthDay = new Date(now.getFullYear(), now.getMonth(), 1);
+	const currentMonthMissedAttendanceCount =
+		(await reservationsOperations.getUsersMissedReservations(
+			userId,
+			firstMonthDay,
+			now
+		)) as number;
+
 	const availability = [] as ReservationsAvailabilityProps[];
 	try {
 		for (let i = 0; i < monthRanges.length - 1; i++) {
@@ -48,6 +57,9 @@ async function getReservationsAvailability(
 		return res.status(ResponseCode.OK).json({
 			availability,
 			maxMonthlyReservationsCount: CONFIG.MAX_MONTHLY_RESERVATIONS,
+			reachedMissedAttendanceLimit:
+				currentMonthMissedAttendanceCount >= CONFIG.MAX_MISSED_ATTENDANACE,
+			maxMissedAttendanceLimit: CONFIG.MAX_MISSED_ATTENDANACE,
 		} as ReservationsAvailabilityDetails);
 	} catch (e) {
 		next(e);
@@ -139,7 +151,7 @@ async function deleteReservation(
 		if (window.limitedSpace) {
 			const updatedWindow = {
 				...window,
-				peopleCount: window.peopleCount + 1,
+				peopleCount: window.peopleCount! + 1,
 			} as ReservationWindow;
 			await timetablesOperations.updateTimetable(updatedWindow);
 		}
@@ -283,6 +295,8 @@ interface ReservationsAvailabilityProps {
 interface ReservationsAvailabilityDetails {
 	availability: ReservationsAvailabilityProps[];
 	maxMonthlyReservationsCount: number;
+	reachedMissedAttendanceLimit: boolean;
+	maxMissedAttendanceLimit: number;
 }
 
 export default {

@@ -33,6 +33,9 @@ export default function UserCalendar() {
     useState(0)
   const [maxReservationsLimitReached, setMaxReservationsLimitReached] =
     useState([] as ReservationsAvailabilityProps[])
+  const [reachedMaxMissedAttendenceLimit, setReachedMaxMissedAttendenceLimit] =
+    useState(false)
+  const [maxMissedAttendenceLimit, setMaxMissedAttendenceLimit] = useState(0)
   const [userDetails, setUserDetails] = useState({} as User)
   const [calendarRange, setCalendarRange] = useState({
     startDate: {} as Date,
@@ -165,6 +168,8 @@ export default function UserCalendar() {
         const body = res as ReservationsAvailabilityDetails
         setMaxReservationsLimitReached(body.availability)
         setmaxReservationsMonthlyLimit(body.maxMonthlyReservationsCount)
+        setReachedMaxMissedAttendenceLimit(body.reachedMissedAttendanceLimit)
+        setMaxMissedAttendenceLimit(body.maxMissedAttendanceLimit)
       })
       .catch((err) => null)
 
@@ -227,6 +232,19 @@ export default function UserCalendar() {
     ) {
       setErrorModalText(
         `Max reservations count is reached (${maxReservationsMonthlyLimit}/month)!`
+      )
+      return
+    }
+
+    const now = new Date()
+    console.log(reachedMaxMissedAttendenceLimit)
+    if (
+      reachedMaxMissedAttendenceLimit &&
+      eventDetails.start.getMonth() == now.getMonth() &&
+      eventDetails.start.getFullYear() == now.getFullYear()
+    ) {
+      setErrorModalText(
+        `Max missed attendance count is reached (${maxMissedAttendenceLimit}/month)!`
       )
       return
     }
