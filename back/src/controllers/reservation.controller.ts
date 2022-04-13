@@ -237,6 +237,27 @@ async function createReservation(
 			return next(ApiError.badRequest('Reached monthly reservations limit'));
 		}
 
+		const now = new Date();
+		if (
+			new Date(window.startTime).getMonth() == now.getMonth() &&
+			new Date(window.startTime).getFullYear() == now.getFullYear()
+		) {
+			const firstMonthDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			const currentMonthMissedAttendanceCount =
+				(await reservationsOperations.getUsersMissedReservations(
+					userId,
+					firstMonthDay,
+					now
+				)) as number;
+			if (currentMonthMissedAttendanceCount >= CONFIG.MAX_MISSED_ATTENDANACE) {
+				next(
+					ApiError.badRequest(
+						`Max amount of unattended reservations in this month is reached! (${CONFIG.MAX_MISSED_ATTENDANACE})`
+					)
+				);
+			}
+		}
+
 		if (window.limitedSpace) {
 			const updatedWindow = {
 				...window,
