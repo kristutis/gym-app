@@ -1,6 +1,53 @@
 import { MysqlError } from 'mysql';
 import { Reservation } from '../models/reservation.model';
+import { ReservationWindow } from '../models/reservationWindow.model';
 import { db } from './connect';
+
+function updateReservationAttendency(
+	userId: string,
+	reservationId: string,
+	attended: boolean
+): Promise<MysqlError> {
+	console.log(userId, reservationId, attended);
+	return new Promise((resolve, reject) => {
+		db.query(
+			'UPDATE reservations SET attended = ? WHERE fk_user_id = ? AND fk_reservation_id = ?',
+			[attended, userId, reservationId],
+			(err, _) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(null);
+			}
+		);
+	});
+}
+
+function getUsersReservationWindows(
+	userId: string,
+	startDate: Date,
+	endDate: Date
+): Promise<UserReservation[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT fk_reservation_id as id, fk_user_id as uid, start_time as startTime, end_time as endTime, attended=1 as attended ' +
+				'FROM reservations ' +
+				'LEFT JOIN reservation_windows ' +
+				'ON reservation_windows.id=reservations.fk_reservation_id ' +
+				'WHERE fk_user_id = ? AND start_time > ? && start_time < ?',
+			[userId, startDate, endDate],
+			(err, result) => {
+				if (err) {
+					return reject(err);
+				}
+				const results = result.map((res: UserReservation) => {
+					return { ...res, attended: !!res.attended };
+				});
+				return resolve(results as UserReservation[]);
+			}
+		);
+	});
+}
 
 function deleteReservation(reseration: Reservation): Promise<MysqlError> {
 	return new Promise((resolve, reject) => {
@@ -95,10 +142,17 @@ function getUsersReservationWindowIdsInRange(
 	});
 }
 
+export interface UserReservation extends ReservationWindow {
+	uid: string;
+	attended: boolean;
+}
+
 export default {
 	insertReservation,
 	reservationExist,
 	getUsersReservationWindowIds,
 	deleteReservation,
 	getUsersReservationWindowIdsInRange,
+	getUsersReservationWindows,
+	updateReservationAttendency,
 };

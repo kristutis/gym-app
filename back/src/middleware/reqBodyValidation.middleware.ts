@@ -175,6 +175,18 @@ export const getTimetablesSchema: ObjectSchema = Joi.object({
 
 export const getReservationAvailabilityParamSchema = getTimetablesSchema;
 
+export const trainerGetUsersReservationsParamSchema = Joi.object({
+	startDate: Joi.date().required(),
+	endDate: Joi.date().required(),
+	uid: uidSchema,
+});
+
+export const trainerUpdateAttendencySchema = Joi.object({
+	uid: uidSchema,
+	attended: Joi.boolean().required(),
+	resId: Joi.number().integer().min(1).required(),
+});
+
 export const deleteTimetableSchema = getTimetablesSchema;
 
 export const reservationIdSchema: ObjectSchema = Joi.object({

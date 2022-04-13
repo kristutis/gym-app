@@ -6,6 +6,7 @@ import {
   InputGroup,
   Table,
 } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import Loading from '../../components/loading/Loading'
 import TrainerEditBalanceModal from '../../components/modals/TrainerEditBalanceModal'
 import Unauthorized from '../../components/unauthorized/Unauthorized'
@@ -53,7 +54,7 @@ export default function TrainerUsers() {
       <div className="mx-3">
         <InputGroup className="my-3">
           <FormControl
-            placeholder="Search by user's name, surname or email"
+            placeholder="Search by user's id, name, surname, email or phone"
             value={search}
             onChange={(e: any) => setSearch(e.target.value)}
           />
@@ -130,7 +131,9 @@ function UserDetailsRow({
         />
       </td>
       <td>
-        <Button variant="secondary">Manage Reservations</Button>
+        <Link to={{ pathname: '/manage-attendance', state: { user } }}>
+          <Button variant="secondary">Manage Reservations</Button>
+        </Link>
       </td>
     </tr>
   )

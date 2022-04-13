@@ -11,6 +11,7 @@ import Home from './pages/home/Home'
 import ManageOffers from './pages/manageOffers/ManageOffers'
 import Profile from './pages/profile/Profile'
 import TrainerDetails from './pages/trainerDetails/TrainerDetails'
+import TrainerManageReservations from './pages/trainerManageReservations/TrainerManageReservations'
 import Trainers from './pages/trainers/Trainers'
 import TrainerUsers from './pages/trainerUsers/TrainerUsers'
 import UserCalendar from './pages/userCalendar/UserCalendar'
@@ -61,6 +62,10 @@ const protectedRoutes = [
   {
     path: '/trainer-actions',
     component: TrainerUsers,
+  },
+  {
+    path: '/manage-attendance',
+    component: TrainerManageReservations,
   },
 ] as RouteProps[]
 

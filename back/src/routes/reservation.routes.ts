@@ -1,10 +1,15 @@
 import express from 'express';
 import reservationController from '../controllers/reservation.controller';
-import { authenticateUser } from '../middleware/auth.middleware';
+import {
+	authenticateTrainer,
+	authenticateUser,
+} from '../middleware/auth.middleware';
 import {
 	createReservationBodySchema,
 	getReservationAvailabilityParamSchema,
 	reservationIdSchema,
+	trainerGetUsersReservationsParamSchema,
+	trainerUpdateAttendencySchema,
 	validateRequestBody,
 	validateRequestParams,
 	validateRequestQuery,
@@ -18,6 +23,20 @@ reservationRouter.get(
 	BASE_ROUTE,
 	authenticateUser,
 	reservationController.getReservationIds
+);
+
+reservationRouter.get(
+	BASE_ROUTE + '/trainer',
+	authenticateTrainer,
+	validateRequestQuery(trainerGetUsersReservationsParamSchema),
+	reservationController.trainerGetUsersReservations
+);
+
+reservationRouter.put(
+	BASE_ROUTE + '/trainer',
+	validateRequestBody(trainerUpdateAttendencySchema),
+	authenticateTrainer,
+	reservationController.trainerUpdateReserationAttendency
 );
 
 reservationRouter.get(

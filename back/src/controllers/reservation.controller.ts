@@ -54,6 +54,47 @@ async function getReservationsAvailability(
 	}
 }
 
+async function trainerUpdateReserationAttendency(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const uid = req.body.uid;
+	const resId = req.body.resId;
+	const attended = req.body.attended;
+
+	try {
+		await reservationsOperations.updateReservationAttendency(
+			uid,
+			resId,
+			attended
+		);
+		return res.sendStatus(ResponseCode.OK);
+	} catch (e) {
+		next(e);
+	}
+}
+
+async function trainerGetUsersReservations(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const dates = convertParamsToDates(req.query);
+	const uid = req.query.uid as string;
+
+	try {
+		const results = await reservationsOperations.getUsersReservationWindows(
+			uid,
+			dates.startDate,
+			dates.endDate
+		);
+		return res.json(results);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function getReservationIds(
 	req: Request,
 	res: Response,
@@ -249,4 +290,6 @@ export default {
 	getReservationIds,
 	deleteReservation,
 	getReservationsAvailability,
+	trainerGetUsersReservations,
+	trainerUpdateReserationAttendency,
 };

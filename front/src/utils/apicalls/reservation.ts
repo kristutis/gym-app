@@ -1,5 +1,64 @@
 import { DEFAULT_BACKEND_PATH } from '../../App'
 import { getErrorMsg } from './errors'
+import { ReservationWindow } from './timetable'
+
+export const trainerUpdateAttendencyCall = async (
+  resId: number,
+  uid: string,
+  attended: boolean,
+  authToken: string
+): Promise<string> => {
+  const payload = {
+    resId,
+    uid,
+    attended,
+  }
+  const response = await fetch(DEFAULT_BACKEND_PATH + `/reservations/trainer`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (response.status === 200) {
+    return Promise.resolve('')
+  }
+
+  const responseBody = await response.json()
+  console.log(responseBody)
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
+export const trainerGetUserReservationsCall = async (
+  startDate: Date,
+  endDate: Date,
+  uid: string,
+  authToken: string
+): Promise<string | UserReservation[]> => {
+  const params = { startDate, endDate, uid }
+  const url: string =
+    DEFAULT_BACKEND_PATH +
+    '/reservations/trainer?' +
+    new URLSearchParams(params as any)
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authToken,
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    return Promise.resolve(responseBody)
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
 
 export const getUserReservationAvailabilityCall = async (
   startDate: Date,
@@ -107,4 +166,9 @@ export interface ReservationsAvailabilityProps {
 export interface ReservationsAvailabilityDetails {
   availability: ReservationsAvailabilityProps[]
   maxMonthlyReservationsCount: number
+}
+
+export interface UserReservation extends ReservationWindow {
+  uid: string
+  attended: boolean
 }
