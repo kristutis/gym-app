@@ -7,7 +7,7 @@ async function updateReservationAttendency(
 	userId: string,
 	reservationId: string,
 	attended: boolean
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE reservations SET attended = ? WHERE fk_user_id = ? AND fk_reservation_id = ?',
@@ -48,7 +48,9 @@ async function getUsersReservationWindows(
 	});
 }
 
-async function deleteReservation(reseration: Reservation): Promise<MysqlError> {
+async function deleteReservation(
+	reseration: Reservation
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'DELETE FROM reservations WHERE fk_user_id = ? AND fk_reservation_id = ?',
@@ -63,7 +65,9 @@ async function deleteReservation(reseration: Reservation): Promise<MysqlError> {
 	});
 }
 
-async function insertReservation(reseration: Reservation): Promise<MysqlError> {
+async function insertReservation(
+	reseration: Reservation
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'INSERT INTO reservations (fk_user_id, fk_reservation_id) VALUES (?, ?)',
@@ -110,7 +114,7 @@ async function getUsersReservationWindowIds(
 				if (err) {
 					return reject(err);
 				}
-				const ids = result.map((res) => res.id);
+				const ids = result.map((res: any) => res.id);
 				return resolve(ids as number[]);
 			}
 		);
@@ -157,7 +161,7 @@ async function getUsersReservationWindowIdsInRange(
 				if (err) {
 					return reject(err);
 				}
-				const ids = result.map((res) => res.id);
+				const ids = result.map((res: any) => res.id);
 				return resolve(ids as number[]);
 			}
 		);

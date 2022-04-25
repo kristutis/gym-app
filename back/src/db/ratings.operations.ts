@@ -5,7 +5,7 @@ async function insertRating(
 	userId: string,
 	trainerId: string,
 	rating: number
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'INSERT INTO trainer_ratings (rating, fk_user_id, fk_trainer_id) VALUES (?, ?, ?)',
@@ -24,7 +24,7 @@ async function updateRating(
 	userId: string,
 	trainerId: string,
 	rating: number
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE trainer_ratings	SET rating = ? WHERE fk_user_id = ? AND fk_trainer_id = ?',

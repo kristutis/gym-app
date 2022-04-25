@@ -153,7 +153,7 @@ function getTimetableById(id: number): Promise<ReservationWindow | MysqlError> {
 
 function updateTimetable(
 	reservationWindow: ReservationWindow
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE reservation_windows SET `start_time` = ?, `end_time` = ?, `people_count` = ?, `limited_space` = ? WHERE `id` = ?',

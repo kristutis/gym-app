@@ -113,6 +113,19 @@ async function createTimetable(
 		return next(e);
 	}
 
+	const reservationWindows = generateReservationWindows(timetableDetails);
+
+	try {
+		await timetablesOperations.insertTimetables(reservationWindows);
+		res.sendStatus(ResponseCode.CREATED);
+	} catch (e) {
+		next(e);
+	}
+}
+
+function generateReservationWindows(
+	timetableDetails: CreateTimetableProps[]
+): ReservationWindow[] {
 	const filteredDays = timetableDetails.map((config) =>
 		getFilteredDays(
 			config.onlyWeekends,
@@ -145,12 +158,7 @@ async function createTimetable(
 		(r) => r
 	);
 
-	try {
-		await timetablesOperations.insertTimetables(reservationWindows);
-		res.sendStatus(ResponseCode.CREATED);
-	} catch (e) {
-		next(e);
-	}
+	return reservationWindows;
 }
 
 async function checkForOverlappingTimes(
@@ -356,3 +364,5 @@ export default {
 	deleteTimetableById,
 	updateTimetable,
 };
+
+export const testTimetableGenerator = generateReservationWindows;

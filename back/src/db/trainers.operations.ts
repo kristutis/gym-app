@@ -39,7 +39,7 @@ function getTrainerImgSrc(uid: string): Promise<string | MysqlError> {
 	});
 }
 
-function deleteTrainer(uid: string): Promise<MysqlError> {
+function deleteTrainer(uid: string): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query('DELETE FROM trainers WHERE fk_user_id = ?', [uid], (err, _) => {
 			if (err) {
@@ -77,7 +77,7 @@ function updateTrainer({
 	description,
 	moto,
 	photoUrl,
-}: TrainerProps): Promise<MysqlError> {
+}: TrainerProps): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE trainers SET price = ?, description = ?, moto = ?, photo_url = ? WHERE fk_user_id = ?',

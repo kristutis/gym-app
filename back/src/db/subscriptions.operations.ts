@@ -2,7 +2,7 @@ import { MysqlError } from 'mysql';
 import { SubscriptionType } from '../models/subscriptionType.model';
 import { db } from './connect';
 
-// function deleteUser(uid: string): Promise<MysqlError> {
+// function deleteUser(uid: string): Promise<MysqlError | null> {
 // 	return new Promise((resolve, reject) => {
 // 		db.query('DELETE FROM users WHERE uid = ?', [uid], (err, _) => {
 // 			if (err) {

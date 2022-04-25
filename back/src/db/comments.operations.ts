@@ -40,7 +40,7 @@ async function insertComment(
 	userId: string,
 	trainerId: string,
 	comment: string
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'INSERT INTO trainer_comments (comment, fk_user_id, fk_trainer_id) VALUES (?, ?, ?)',
@@ -55,7 +55,7 @@ async function insertComment(
 	});
 }
 
-async function deleteComment(commentId: number): Promise<MysqlError> {
+async function deleteComment(commentId: number): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'DELETE FROM trainer_comments WHERE id = ?',
@@ -73,7 +73,7 @@ async function deleteComment(commentId: number): Promise<MysqlError> {
 async function updateComment(
 	commentId: number,
 	comment: string
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE trainer_comments SET comment = ? WHERE id = ?',

@@ -5,7 +5,7 @@ import { User } from '../models/user.model';
 import { USER_ROLE } from '../utils/jwt';
 import { db } from './connect';
 
-function deleteUser(uid: string): Promise<MysqlError> {
+function deleteUser(uid: string): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query('DELETE FROM users WHERE uid = ?', [uid], (err, _) => {
 			if (err) {
@@ -16,7 +16,10 @@ function deleteUser(uid: string): Promise<MysqlError> {
 	});
 }
 
-function updateUserBalance(id: string, balance: number): Promise<MysqlError> {
+function updateUserBalance(
+	id: string,
+	balance: number
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE users SET  balance = ? WHERE uid = ?',
@@ -38,7 +41,7 @@ function updateUserWithRole(
 	phone: string,
 	role: number,
 	balance: number
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE users SET name = ?, surname = ?, phone = ?, fk_role = ?, balance = ? WHERE uid = ?',
@@ -58,7 +61,7 @@ function updateUser(
 	name: string,
 	surname: string,
 	phone?: string
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE users SET name = ?, surname = ?, phone = ? WHERE uid = ?',
@@ -76,7 +79,7 @@ function updateUser(
 function updateUserPassword(
 	uid: string,
 	hashedPassword: string
-): Promise<MysqlError> {
+): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE users SET password = ? WHERE uid = ?',

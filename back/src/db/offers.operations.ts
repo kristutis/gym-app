@@ -1,7 +1,7 @@
 import { MysqlError } from 'mysql';
 import { db } from './connect';
 
-function insertOffer(offer: Offer): Promise<MysqlError> {
+function insertOffer(offer: Offer): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'INSERT INTO offers (image_src, discount_percentage, description) VALUES (?, ?, ?)',
@@ -16,7 +16,7 @@ function insertOffer(offer: Offer): Promise<MysqlError> {
 	});
 }
 
-function deleteOffer(id: number): Promise<MysqlError> {
+function deleteOffer(id: number): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query('DELETE FROM offers WHERE id = ?', [id], (err, _) => {
 			if (err) {
@@ -27,7 +27,7 @@ function deleteOffer(id: number): Promise<MysqlError> {
 	});
 }
 
-function updateOffer(offer: Offer): Promise<MysqlError> {
+function updateOffer(offer: Offer): Promise<MysqlError | null> {
 	return new Promise((resolve, reject) => {
 		db.query(
 			'UPDATE offers SET image_src = ?, discount_percentage = ?, description = ? WHERE id = ?',
