@@ -1,0 +1,79 @@
+Date : 2022-05-03 01:18:26
+Directory : c:\Users\K\Desktop\gym-app\back\src
+Total : 47 files,  3342 codes, 11 comments, 454 blanks, all 3807 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |         46 |      3,336 |         10 |        453 |      3,799 |
+| JavaScript |          1 |          6 |          1 |          1 |          8 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                           | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                              |         47 |      3,342 |         11 |        454 |      3,807 |
+| config                                                                         |          1 |         53 |          0 |         13 |         66 |
+| controllers                                                                    |         10 |      1,466 |          0 |        207 |      1,673 |
+| db                                                                             |         10 |      1,015 |         10 |         81 |      1,106 |
+| middleware                                                                     |          2 |        281 |          0 |         47 |        328 |
+| models                                                                         |          7 |         54 |          0 |          8 |         62 |
+| routes                                                                         |          9 |        330 |          0 |         67 |        397 |
+| utils                                                                          |          4 |         84 |          0 |         19 |        103 |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                       | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\K\Desktop\gym-app\back\src\app.test.ts                                | TypeScript |         14 |          0 |          3 |         17 |
+| c:\Users\K\Desktop\gym-app\back\src\app.ts                                     | TypeScript |         35 |          0 |          6 |         41 |
+| c:\Users\K\Desktop\gym-app\back\src\config\config.ts                           | TypeScript |         53 |          0 |         13 |         66 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\auth.controller.ts             | TypeScript |        100 |          0 |         16 |        116 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\comments.controller.ts         | TypeScript |         89 |          0 |         15 |        104 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\offers.controllers.ts          | TypeScript |         47 |          0 |          6 |         53 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\ratings.controller.ts          | TypeScript |         60 |          0 |          8 |         68 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\reservation.controller.ts      | TypeScript |        294 |          0 |         37 |        331 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\subscriptions.controller.ts    | TypeScript |         88 |          0 |         13 |        101 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\timetable.controller.test.ts   | TypeScript |        208 |          0 |         33 |        241 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\timetable.controller.ts        | TypeScript |        325 |          0 |         44 |        369 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\trainers.controller.ts         | TypeScript |         29 |          0 |          4 |         33 |
+| c:\Users\K\Desktop\gym-app\back\src\controllers\users.controller.ts            | TypeScript |        226 |          0 |         31 |        257 |
+| c:\Users\K\Desktop\gym-app\back\src\db\comments.operations.ts                  | TypeScript |         91 |          0 |          7 |         98 |
+| c:\Users\K\Desktop\gym-app\back\src\db\connect.ts                              | TypeScript |         18 |          0 |          6 |         24 |
+| c:\Users\K\Desktop\gym-app\back\src\db\offers.operations.ts                    | TypeScript |         65 |          0 |          7 |         72 |
+| c:\Users\K\Desktop\gym-app\back\src\db\ratings.operations.ts                   | TypeScript |         78 |          0 |          6 |         84 |
+| c:\Users\K\Desktop\gym-app\back\src\db\reservations.operations.ts              | TypeScript |        175 |          0 |         11 |        186 |
+| c:\Users\K\Desktop\gym-app\back\src\db\roles.operations.ts                     | TypeScript |         19 |          0 |          4 |         23 |
+| c:\Users\K\Desktop\gym-app\back\src\db\subscriptions.operations.ts             | TypeScript |         75 |         10 |          7 |         92 |
+| c:\Users\K\Desktop\gym-app\back\src\db\timetables.operations.ts                | TypeScript |        175 |          0 |         12 |        187 |
+| c:\Users\K\Desktop\gym-app\back\src\db\trainers.operations.ts                  | TypeScript |        120 |          0 |          9 |        129 |
+| c:\Users\K\Desktop\gym-app\back\src\db\users.operations.ts                     | TypeScript |        199 |          0 |         12 |        211 |
+| c:\Users\K\Desktop\gym-app\back\src\index.ts                                   | TypeScript |          4 |          0 |          2 |          6 |
+| c:\Users\K\Desktop\gym-app\back\src\jest.config.js                             | JavaScript |          6 |          1 |          1 |          8 |
+| c:\Users\K\Desktop\gym-app\back\src\middleware\auth.middleware.ts              | TypeScript |         98 |          0 |          8 |        106 |
+| c:\Users\K\Desktop\gym-app\back\src\middleware\reqBodyValidation.middleware.ts | TypeScript |        183 |          0 |         39 |        222 |
+| c:\Users\K\Desktop\gym-app\back\src\models\comment.model.ts                    | TypeScript |          7 |          0 |          1 |          8 |
+| c:\Users\K\Desktop\gym-app\back\src\models\offer.model.ts                      | TypeScript |          6 |          0 |          1 |          7 |
+| c:\Users\K\Desktop\gym-app\back\src\models\reservation.model.ts                | TypeScript |          4 |          0 |          1 |          5 |
+| c:\Users\K\Desktop\gym-app\back\src\models\reservationWindow.model.ts          | TypeScript |          7 |          0 |          1 |          8 |
+| c:\Users\K\Desktop\gym-app\back\src\models\subscriptionType.model.ts           | TypeScript |          7 |          0 |          1 |          8 |
+| c:\Users\K\Desktop\gym-app\back\src\models\trainer.model.ts                    | TypeScript |          7 |          0 |          2 |          9 |
+| c:\Users\K\Desktop\gym-app\back\src\models\user.model.ts                       | TypeScript |         16 |          0 |          1 |         17 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\auth.routes.ts                      | TypeScript |         26 |          0 |          6 |         32 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\comments.routes.ts                  | TypeScript |         40 |          0 |          7 |         47 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\offers.routes.ts                    | TypeScript |         36 |          0 |          8 |         44 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\ratings.routes.ts                   | TypeScript |         27 |          0 |          6 |         33 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\reservation.routes.ts               | TypeScript |         54 |          0 |          9 |         63 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\subscriptions.routes.ts             | TypeScript |         24 |          0 |          6 |         30 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\timetable.routes.ts                 | TypeScript |         44 |          0 |          8 |         52 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\trainers.routes.ts                  | TypeScript |         14 |          0 |          5 |         19 |
+| c:\Users\K\Desktop\gym-app\back\src\routes\users.routes.ts                     | TypeScript |         65 |          0 |         12 |         77 |
+| c:\Users\K\Desktop\gym-app\back\src\utils\errors.ts                            | TypeScript |         50 |          0 |         12 |         62 |
+| c:\Users\K\Desktop\gym-app\back\src\utils\jwt.ts                               | TypeScript |         20 |          0 |          4 |         24 |
+| c:\Users\K\Desktop\gym-app\back\src\utils\logger.ts                            | TypeScript |          9 |          0 |          2 |         11 |
+| c:\Users\K\Desktop\gym-app\back\src\utils\responseCodes.ts                     | TypeScript |          5 |          0 |          1 |          6 |
+| Total                                                                          |            |      3,342 |         11 |        454 |      3,807 |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

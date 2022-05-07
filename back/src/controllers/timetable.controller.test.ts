@@ -12,6 +12,16 @@ const weekends = [
 ];
 
 describe('testing timetables generation', () => {
+	it('', () => {});
+
+	it('', () => {});
+
+	it('', () => {});
+
+	it('', () => {});
+
+	it('', () => {});
+
 	it('Generates timetables correctly', async () => {
 		const generatingProps = [
 			{

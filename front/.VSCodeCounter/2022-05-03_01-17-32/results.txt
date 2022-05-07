@@ -1,0 +1,142 @@
+Date : 2022-05-03 01:17:32
+Directory : c:\Users\K\Desktop\gym-app\front\src
+Total : 85 files,  6150 codes, 14 comments, 711 blanks, all 6875 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| TypeScript React |         51 |      4,709 |          5 |        449 |      5,163 |
+| TypeScript       |         13 |        866 |          5 |        158 |      1,029 |
+| CSS              |         19 |        568 |          4 |        104 |        676 |
+| JSON             |          1 |          6 |          0 |          0 |          6 |
+| XML              |          1 |          1 |          0 |          0 |          1 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                               | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                  |         85 |      6,150 |         14 |        711 |      6,875 |
+| components                                                                                         |         43 |      2,863 |          1 |        310 |      3,174 |
+| components\auth                                                                                    |          1 |         28 |          0 |          9 |         37 |
+| components\buttons                                                                                 |          2 |         45 |          0 |          8 |         53 |
+| components\errorLabel                                                                              |          2 |         21 |          0 |          4 |         25 |
+| components\footer                                                                                  |          2 |        201 |          1 |         30 |        232 |
+| components\frontdoorvideo                                                                          |          2 |         65 |          0 |         11 |         76 |
+| components\loading                                                                                 |          2 |         26 |          0 |          4 |         30 |
+| components\logo                                                                                    |          1 |         19 |          0 |          4 |         23 |
+| components\modals                                                                                  |         23 |      1,728 |          0 |        161 |      1,889 |
+| components\navbar                                                                                  |          2 |        324 |          0 |         42 |        366 |
+| components\protectedRoute                                                                          |          1 |         20 |          0 |          3 |         23 |
+| components\reservationWindowForm                                                                   |          2 |        299 |          0 |         19 |        318 |
+| components\trainersCards                                                                           |          2 |         78 |          0 |         13 |         91 |
+| components\unauthorized                                                                            |          1 |          9 |          0 |          2 |         11 |
+| pages                                                                                              |         19 |      2,208 |          5 |        216 |      2,429 |
+| pages\adminTimetable                                                                               |          2 |        197 |          0 |         19 |        216 |
+| pages\createTimeTable                                                                              |          2 |        137 |          0 |         22 |        159 |
+| pages\home                                                                                         |          2 |         56 |          0 |          8 |         64 |
+| pages\manageOffers                                                                                 |          2 |        144 |          0 |         13 |        157 |
+| pages\profile                                                                                      |          2 |        309 |          3 |         29 |        341 |
+| pages\trainerDetails                                                                               |          2 |        483 |          0 |         39 |        522 |
+| pages\trainerManageReservations                                                                    |          1 |        117 |          0 |         12 |        129 |
+| pages\trainerUsers                                                                                 |          1 |        168 |          0 |         13 |        181 |
+| pages\trainers                                                                                     |          2 |         33 |          1 |          6 |         40 |
+| pages\userCalendar                                                                                 |          1 |        345 |          1 |         35 |        381 |
+| pages\users                                                                                        |          2 |        219 |          0 |         20 |        239 |
+| sectionSeparator                                                                                   |          2 |         14 |          0 |          3 |         17 |
+| utils                                                                                              |         12 |        903 |          0 |        163 |      1,066 |
+| utils\apicalls                                                                                     |         11 |        864 |          0 |        154 |      1,018 |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                           | language         | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| c:\Users\K\Desktop\gym-app\front\src\.prettierrc                                                   | JSON             |          6 |          0 |          0 |          6 |
+| c:\Users\K\Desktop\gym-app\front\src\App.css                                                       | CSS              |         19 |          0 |          2 |         21 |
+| c:\Users\K\Desktop\gym-app\front\src\App.test.tsx                                                  | TypeScript React |          8 |          0 |          2 |         10 |
+| c:\Users\K\Desktop\gym-app\front\src\App.tsx                                                       | TypeScript React |        100 |          0 |          7 |        107 |
+| c:\Users\K\Desktop\gym-app\front\src\components\auth\AuthProvider.tsx                              | TypeScript React |         28 |          0 |          9 |         37 |
+| c:\Users\K\Desktop\gym-app\front\src\components\buttons\NavbarSignUpButton.css                     | CSS              |         24 |          0 |          3 |         27 |
+| c:\Users\K\Desktop\gym-app\front\src\components\buttons\NavbarSignUpButton.tsx                     | TypeScript React |         21 |          0 |          5 |         26 |
+| c:\Users\K\Desktop\gym-app\front\src\components\errorLabel\ErrorLabel.css                          | CSS              |          3 |          0 |          1 |          4 |
+| c:\Users\K\Desktop\gym-app\front\src\components\errorLabel\ErrorLabel.tsx                          | TypeScript React |         18 |          0 |          3 |         21 |
+| c:\Users\K\Desktop\gym-app\front\src\components\footer\Footer.css                                  | CSS              |        136 |          1 |         28 |        165 |
+| c:\Users\K\Desktop\gym-app\front\src\components\footer\Footer.tsx                                  | TypeScript React |         65 |          0 |          2 |         67 |
+| c:\Users\K\Desktop\gym-app\front\src\components\frontdoorvideo\FrontDoorVideo.css                  | CSS              |         43 |          0 |          7 |         50 |
+| c:\Users\K\Desktop\gym-app\front\src\components\frontdoorvideo\FrontDoorVideo.tsx                  | TypeScript React |         22 |          0 |          4 |         26 |
+| c:\Users\K\Desktop\gym-app\front\src\components\loading\Loading.css                                | CSS              |          8 |          0 |          2 |         10 |
+| c:\Users\K\Desktop\gym-app\front\src\components\loading\Loading.tsx                                | TypeScript React |         18 |          0 |          2 |         20 |
+| c:\Users\K\Desktop\gym-app\front\src\components\logo\LogoLink.tsx                                  | TypeScript React |         19 |          0 |          4 |         23 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\BaseModal.css                               | CSS              |          7 |          0 |          2 |          9 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\BaseModal.tsx                               | TypeScript React |         59 |          0 |          3 |         62 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\BookSlotModal.tsx                           | TypeScript React |         65 |          0 |          5 |         70 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\CancelSlotModal.tsx                         | TypeScript React |         28 |          0 |          4 |         32 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\CancelSubscriptionModal.tsx                 | TypeScript React |         43 |          0 |          7 |         50 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\ChangePasswordModal.tsx                     | TypeScript React |         93 |          0 |         10 |        103 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\CreateOfferModal.tsx                        | TypeScript React |        116 |          0 |         11 |        127 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\DeleteCommentModal.tsx                      | TypeScript React |         39 |          0 |          5 |         44 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\DeleteOfferModal.tsx                        | TypeScript React |         41 |          0 |          5 |         46 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\DeleteTimetablesModal.tsx                   | TypeScript React |         35 |          0 |          3 |         38 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\DeleteUserModal.tsx                         | TypeScript React |         44 |          0 |          6 |         50 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\EditOfferModal.tsx                          | TypeScript React |         97 |          0 |         11 |        108 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\EditTimetableModal.tsx                      | TypeScript React |        139 |          0 |          9 |        148 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\EditUserModal.tsx                           | TypeScript React |        198 |          0 |         15 |        213 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\ErrorTextModal.tsx                          | TypeScript React |         18 |          0 |          3 |         21 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\LoginModal.tsx                              | TypeScript React |        107 |          0 |         10 |        117 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\ModalFormGroup.tsx                          | TypeScript React |         32 |          0 |          3 |         35 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\ModalFormGroupList.tsx                      | TypeScript React |         23 |          0 |          3 |         26 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\ProfileEditModal.tsx                        | TypeScript React |        137 |          0 |         12 |        149 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\PurchaseSubscriptionModal.tsx               | TypeScript React |        101 |          0 |         10 |        111 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\SignupModal.tsx                             | TypeScript React |        191 |          0 |         10 |        201 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\TrainerEditBalanceModal.tsx                 | TypeScript React |         57 |          0 |          8 |         65 |
+| c:\Users\K\Desktop\gym-app\front\src\components\modals\UserAttendencyModal.tsx                     | TypeScript React |         58 |          0 |          6 |         64 |
+| c:\Users\K\Desktop\gym-app\front\src\components\navbar\Navbar.css                                  | CSS              |        145 |          0 |         22 |        167 |
+| c:\Users\K\Desktop\gym-app\front\src\components\navbar\Navbar.tsx                                  | TypeScript React |        179 |          0 |         20 |        199 |
+| c:\Users\K\Desktop\gym-app\front\src\components\protectedRoute\ProtectedRoute.tsx                  | TypeScript React |         20 |          0 |          3 |         23 |
+| c:\Users\K\Desktop\gym-app\front\src\components\reservationWindowForm\ReservationWindowForm.css    | CSS              |          9 |          0 |          2 |         11 |
+| c:\Users\K\Desktop\gym-app\front\src\components\reservationWindowForm\ReservationWindowForm.tsx    | TypeScript React |        290 |          0 |         17 |        307 |
+| c:\Users\K\Desktop\gym-app\front\src\components\trainersCards\TrainersCards.css                    | CSS              |         31 |          0 |          9 |         40 |
+| c:\Users\K\Desktop\gym-app\front\src\components\trainersCards\TrainersCards.tsx                    | TypeScript React |         47 |          0 |          4 |         51 |
+| c:\Users\K\Desktop\gym-app\front\src\components\unauthorized\Unauthorized.tsx                      | TypeScript React |          9 |          0 |          2 |         11 |
+| c:\Users\K\Desktop\gym-app\front\src\index.tsx                                                     | TypeScript React |         14 |          3 |          3 |         20 |
+| c:\Users\K\Desktop\gym-app\front\src\logo.svg                                                      | XML              |          1 |          0 |          0 |          1 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\adminTimetable\AdminTimetable.css                       | CSS              |          3 |          0 |          1 |          4 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\adminTimetable\AdminTimetable.tsx                       | TypeScript React |        194 |          0 |         18 |        212 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\createTimeTable\CreateTimeTable.css                     | CSS              |         13 |          0 |          3 |         16 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\createTimeTable\CreateTimeTable.tsx                     | TypeScript React |        124 |          0 |         19 |        143 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\home\Home.css                                           | CSS              |          7 |          0 |          2 |          9 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\home\Home.tsx                                           | TypeScript React |         49 |          0 |          6 |         55 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\manageOffers\ManageOffers.css                           | CSS              |          7 |          0 |          2 |          9 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\manageOffers\ManageOffers.tsx                           | TypeScript React |        137 |          0 |         11 |        148 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\profile\Profile.css                                     | CSS              |         34 |          3 |          8 |         45 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\profile\Profile.tsx                                     | TypeScript React |        275 |          0 |         21 |        296 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainerDetails\TrainerDetails.css                       | CSS              |         62 |          0 |          5 |         67 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainerDetails\TrainerDetails.tsx                       | TypeScript React |        421 |          0 |         34 |        455 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainerManageReservations\TrainerManageReservations.tsx | TypeScript React |        117 |          0 |         12 |        129 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainerUsers\TrainerUsers.tsx                           | TypeScript React |        168 |          0 |         13 |        181 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainers\Trainers.css                                   | CSS              |          3 |          0 |          1 |          4 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\trainers\Trainers.tsx                                   | TypeScript React |         30 |          1 |          5 |         36 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\userCalendar\UserCalendar.tsx                           | TypeScript React |        345 |          1 |         35 |        381 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\users\Users.css                                         | CSS              |          9 |          0 |          3 |         12 |
+| c:\Users\K\Desktop\gym-app\front\src\pages\users\Users.tsx                                         | TypeScript React |        210 |          0 |         17 |        227 |
+| c:\Users\K\Desktop\gym-app\front\src\react-app-env.d.ts                                            | TypeScript       |          0 |          1 |          1 |          2 |
+| c:\Users\K\Desktop\gym-app\front\src\reportWebVitals.ts                                            | TypeScript       |         13 |          0 |          3 |         16 |
+| c:\Users\K\Desktop\gym-app\front\src\sectionSeparator\SectionSeparator.css                         | CSS              |          5 |          0 |          1 |          6 |
+| c:\Users\K\Desktop\gym-app\front\src\sectionSeparator\SectionSeparator.tsx                         | TypeScript React |          9 |          0 |          2 |         11 |
+| c:\Users\K\Desktop\gym-app\front\src\setupTests.ts                                                 | TypeScript       |          1 |          4 |          1 |          6 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\comments.ts                                    | TypeScript       |         93 |          0 |         14 |        107 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\errors.tsx                                     | TypeScript React |         28 |          0 |          3 |         31 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\login.ts                                       | TypeScript       |         40 |          0 |          8 |         48 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\offers.ts                                      | TypeScript       |         85 |          0 |         17 |        102 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\ratings.ts                                     | TypeScript       |         56 |          0 |         10 |         66 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\reservation.ts                                 | TypeScript       |        151 |          0 |         26 |        177 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\signup.ts                                      | TypeScript       |         32 |          0 |          7 |         39 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\subscriptions.ts                               | TypeScript       |         55 |          0 |         11 |         66 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\timetable.ts                                   | TypeScript       |        114 |          0 |         20 |        134 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\trainer.tsx                                    | TypeScript React |         23 |          0 |          7 |         30 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\apicalls\user.ts                                        | TypeScript       |        187 |          0 |         31 |        218 |
+| c:\Users\K\Desktop\gym-app\front\src\utils\auth.ts                                                 | TypeScript       |         39 |          0 |          9 |         48 |
+| Total                                                                                              |                  |      6,150 |         14 |        711 |      6,875 |
++----------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

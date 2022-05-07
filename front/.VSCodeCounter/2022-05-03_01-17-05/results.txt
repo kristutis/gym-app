@@ -1,0 +1,46 @@
+Date : 2022-05-03 01:17:05
+Directory : c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials
+Total : 20 files,  1179 codes, 641 comments, 383 blanks, all 2203 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         20 |      1,179 |        641 |        383 |      2,203 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                             |         20 |      1,179 |        641 |        383 |      2,203 |
+| 1-getting-started                                                                                             |          1 |         58 |         66 |         20 |        144 |
+| 2-advanced-examples                                                                                           |         19 |      1,121 |        575 |        363 |      2,059 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                      | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\1-getting-started\todo.spec.js                 | JavaScript |         58 |         66 |         20 |        144 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\actions.spec.js            | JavaScript |        146 |         92 |         62 |        300 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\aliasing.spec.js           | JavaScript |         15 |         18 |          7 |         40 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\assertions.spec.js         | JavaScript |        107 |         43 |         27 |        177 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\connectors.spec.js         | JavaScript |         69 |         16 |         13 |         98 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\cookies.spec.js            | JavaScript |         42 |         14 |         22 |         78 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\cypress_api.spec.js        | JavaScript |        126 |         35 |         40 |        201 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\files.spec.js              | JavaScript |         10 |         72 |          6 |         88 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\local_storage.spec.js      | JavaScript |         37 |          8 |          8 |         53 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\location.spec.js           | JavaScript |         24 |          4 |          5 |         33 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\misc.spec.js               | JavaScript |         63 |         21 |         21 |        105 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\navigation.spec.js         | JavaScript |         33 |         11 |         13 |         57 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\network_requests.spec.js   | JavaScript |         89 |         61 |         14 |        164 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\querying.spec.js           | JavaScript |         60 |         28 |         27 |        115 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\spies_stubs_clocks.spec.js | JavaScript |        100 |         59 |         45 |        204 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\traversal.spec.js          | JavaScript |         83 |         19 |         20 |        122 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\utilities.spec.js          | JavaScript |         52 |         43 |         14 |        109 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\viewport.spec.js           | JavaScript |         37 |         12 |         11 |         60 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\waiting.spec.js            | JavaScript |         14 |         15 |          3 |         32 |
+| c:\Users\K\Desktop\gym-app\front\cypress\integration\tutorials\2-advanced-examples\window.spec.js             | JavaScript |         14 |          4 |          5 |         23 |
+| Total                                                                                                         |            |      1,179 |        641 |        383 |      2,203 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

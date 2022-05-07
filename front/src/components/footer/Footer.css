@@ -54,6 +54,7 @@
 
 .footer-link-wrapper {
   display: flex;
+  min-height: 10vH;
 }
 
 .footer-link-items {
