@@ -7,6 +7,7 @@ import usersOperations from '../db/users.operations';
 import { Reservation } from '../models/reservation.model';
 import { ReservationWindow } from '../models/reservationWindow.model';
 import { User } from '../models/user.model';
+import sendTwilioMessage from '../services/twillio.service';
 import { ApiError } from '../utils/errors';
 import { ResponseCode } from '../utils/responseCodes';
 import { convertParamsToDates } from './timetable.controller';
@@ -269,18 +270,7 @@ async function createReservation(
 		await reservationsOperations.insertReservation(newReservation);
 
 		if (sendMessage) {
-			const user = (await usersOperations.getUserById(userId)) as User;
-			const usersPhone = user.phone;
-			if (!usersPhone) {
-				return ApiError.badRequest('User have not provided phone number');
-			}
-			await twilioClient.messages.create({
-				from: CONFIG.TWILIO_NUMBER,
-				to: usersPhone,
-				body: `Dear ${
-					user.name
-				}, your registration on ${window.startTime.toLocaleString()} was successful`,
-			});
+			await sendTwilioMessage(userId, window.startTime.toLocaleString());
 		}
 
 		return res.sendStatus(ResponseCode.CREATED);

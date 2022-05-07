@@ -133,7 +133,7 @@ export default function Profile() {
                       />
                     )}
                     <h5>
-                      {userDetails.name} {userDetails.surname}
+                      {userDetails.name + ' '} {userDetails.surname}
                     </h5>
                     <p>{userDetails.role}</p>
                     <i
