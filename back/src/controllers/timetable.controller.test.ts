@@ -1,3 +1,5 @@
+import request from 'supertest';
+import app from '../app';
 import {
 	CreateTimetableProps,
 	testTimetableGenerator,
@@ -12,16 +14,6 @@ const weekends = [
 ];
 
 describe('testing timetables generation', () => {
-	it('', () => {});
-
-	it('', () => {});
-
-	it('', () => {});
-
-	it('', () => {});
-
-	it('', () => {});
-
 	it('Generates timetables correctly', async () => {
 		const generatingProps = [
 			{
@@ -236,5 +228,122 @@ describe('testing timetables generation', () => {
 			expect(window.limitedSpace).toBeFalsy();
 			expect(window.peopleCount).toBe(undefined);
 		});
+	});
+
+	it('Does not generate if no weekends are present', () => {
+		const generatingProps = [
+			{
+				startDate: new Date('2022-04-04'),
+				startTime: '10:00',
+				endDate: new Date('2022-04-09'),
+				endTime: '16:00',
+				visitingTime: '2:00',
+				breakTime: '00:00',
+				excludeWeekends: false,
+				onlyWeekends: true,
+				limitVisitors: false,
+				visitorsCount: 30,
+			},
+		] as CreateTimetableProps[];
+
+		const reservationWindows = testTimetableGenerator(generatingProps);
+
+		expect(reservationWindows.length).toBe(0);
+	});
+
+	it('Does not generate if no weekdays are present', () => {
+		const generatingProps = [
+			{
+				startDate: new Date('2022-04-09'),
+				startTime: '10:00',
+				endDate: new Date('2022-04-11'),
+				endTime: '16:00',
+				visitingTime: '2:00',
+				breakTime: '00:00',
+				excludeWeekends: true,
+				onlyWeekends: false,
+				limitVisitors: false,
+				visitorsCount: 30,
+			},
+		] as CreateTimetableProps[];
+
+		const reservationWindows = testTimetableGenerator(generatingProps);
+
+		expect(reservationWindows.length).toBe(0);
+	});
+
+	it('Does not generate if request is invalid', async () => {
+		const reqBody = [
+			{
+				startDate: new Date('2022-04-09'),
+				startTime: '10:00',
+				endDate: new Date('2022-04-11'),
+				endTime: '16:00',
+				visitingTime: '',
+				breakTime: '00:00',
+				excludeWeekends: true,
+				onlyWeekends: false,
+				limitVisitors: false,
+				visitorsCount: 30,
+			},
+		] as CreateTimetableProps[];
+		const response = await request(app).post('/api/timetable').send(reqBody);
+		expect(response.statusCode).toBe(422);
+		expect(JSON.parse(response.text)?.error?.message?.details[0]?.message).toBe(
+			`"[0].visitingTime" is not allowed to be empty`
+		);
+	});
+
+	it('Does not generate if request body is empty', async () => {
+		const reqBody = {};
+		const response = await request(app).post('/api/timetable').send(reqBody);
+		expect(response.statusCode).toBe(422);
+		expect(JSON.parse(response.text)?.error?.message?.details[0]?.message).toBe(
+			`"value" must be an array`
+		);
+	});
+
+	it('Does not generate if admin is unauthorized', async () => {
+		const reqBody = [
+			{
+				startDate: new Date('2022-04-09'),
+				startTime: '10:00',
+				endDate: new Date('2022-04-11'),
+				endTime: '16:00',
+				visitingTime: '02:00',
+				breakTime: '00:00',
+				excludeWeekends: true,
+				onlyWeekends: false,
+				limitVisitors: false,
+				visitorsCount: 30,
+			},
+		] as CreateTimetableProps[];
+		const response = await request(app).post('/api/timetable').send(reqBody);
+		expect(response.statusCode).toBe(401);
+		expect(JSON.parse(response.text)?.error?.message).toBe(
+			`Authorization header is missing`
+		);
+	});
+
+	it('Cannot edit timetable if admin is unauthorized', async () => {
+		const reqBody = {
+			id: 5,
+			startTime: new Date('2022-04-09'),
+			endTime: new Date('2022-04-09'),
+			limitedSpace: false,
+		};
+		const response = await request(app).put('/api/timetable').send(reqBody);
+		expect(response.statusCode).toBe(401);
+		expect(JSON.parse(response.text)?.error?.message).toBe(
+			`Authorization header is missing`
+		);
+	});
+
+	it('Cannot delete timetables if admin is unauthorized', async () => {
+		const response = await request(app).delete('/api/timetable/4');
+		expect(response.statusCode).toBe(401);
+		expect(JSON.parse(response.text)?.error?.message).toBe(
+			`Authorization header is missing`
+		);
 	});
 });
