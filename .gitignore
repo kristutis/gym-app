@@ -3,3 +3,6 @@ back/.env
 sql.txt
 front/cypress.json
 front/cypress/integration/tutorials/
+back/.VSCodeCounter/
+back/coverage/
+front/.VSCodeCounter/
