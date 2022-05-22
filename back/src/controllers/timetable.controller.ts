@@ -263,7 +263,7 @@ function getReservationWindows(
 
 	const maxDate = new Date(date);
 	const addDay = shouldAddDay(date, startTime, endTime) ? 1 : 0;
-	maxDate.setDate(maxDate.getDate() + addDay); //24h?
+	maxDate.setDate(maxDate.getDate() + addDay);
 	maxDate.setHours(endTime.hour);
 	maxDate.setMinutes(endTime.minutes);
 
@@ -283,7 +283,9 @@ function getReservationWindows(
 		newDate.setMinutes(newDate.getMinutes() + breakTime.minutes);
 		nextDate = newDate;
 	} while (nextDate < maxDate);
-	windows.pop();
+	if (addDay) {
+		windows.pop();
+	}
 	return windows;
 }
 
