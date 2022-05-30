@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown, Table } from 'react-bootstrap'
+import {
+  Button,
+  Dropdown,
+  FormControl,
+  InputGroup,
+  Table,
+} from 'react-bootstrap'
 import Loading from '../../components/loading/Loading'
 import DeleteUserModal from '../../components/modals/DeleteUserModal'
 import EditUserModal from '../../components/modals/EditUserModal'
@@ -14,6 +20,13 @@ import './Users.css'
 function Users() {
   const authHeader = useAuthHeader()
   const [users, setUsers] = useState([] as Trainer[])
+
+  const [search, setSearch] = useState('')
+  const includesSearch = (...args: string[]) => {
+    return args.some(
+      (a) => !!a && a.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    )
+  }
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -47,7 +60,19 @@ function Users() {
         closeFunction={() => setShowDeleteModal(false)}
         reloadUserFunction={() => loadUsers()}
       />
-      <div className="m-2 table-responsive">
+      <div className="m-2 table-responsive users-table-responsive">
+        <div className="mx-3">
+          <InputGroup className="my-3">
+            <FormControl
+              placeholder="Search by user's id, name, surname, email or phone"
+              value={search}
+              onChange={(e: any) => setSearch(e.target.value)}
+            />
+            <Button variant="outline-secondary" onClick={() => setSearch('')}>
+              Clear
+            </Button>
+          </InputGroup>
+        </div>
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
@@ -63,21 +88,27 @@ function Users() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => {
-              const actionProps = {
-                trainer: user,
-                setEditable: (t: Trainer) => setEditableUser(t),
-                openEdit: () => setShowEditModal(true),
-                openDelete: () => setShowDeleteModal(true),
-              } as ActionsProps
-              return (
-                <UserDetailsRow
-                  key={index}
-                  trainer={user}
-                  actionProps={actionProps}
-                />
+            {users
+              .filter(
+                (u) =>
+                  search === '' ||
+                  includesSearch(u.id, u.name, u.surname, u.email, u.phone!)
               )
-            })}
+              .map((user, index) => {
+                const actionProps = {
+                  trainer: user,
+                  setEditable: (t: Trainer) => setEditableUser(t),
+                  openEdit: () => setShowEditModal(true),
+                  openDelete: () => setShowDeleteModal(true),
+                } as ActionsProps
+                return (
+                  <UserDetailsRow
+                    key={index}
+                    trainer={user}
+                    actionProps={actionProps}
+                  />
+                )
+              })}
           </tbody>
         </Table>
       </div>

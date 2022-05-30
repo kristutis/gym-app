@@ -1,8 +1,13 @@
 .offer-details-img {
   height: 100px;
+  min-width: 150px;
   width: auto;
 }
 
 .td-width {
   width: 200px;
+}
+
+.manage-offers-height {
+  min-height: 80vH;
 }

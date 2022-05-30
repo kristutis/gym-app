@@ -6,6 +6,7 @@ import DeleteOfferModal from '../../components/modals/DeleteOfferModal'
 import EditOfferModal from '../../components/modals/EditOfferModal'
 import { adminGetOffersCall, Offer } from '../../utils/apicalls/offers'
 import { useAuthHeader } from '../../utils/auth'
+import { useMobileVersion } from '../../utils/hooks/mobileVersion'
 import './ManageOffers.css'
 
 export default function ManageOffers() {
@@ -27,6 +28,10 @@ export default function ManageOffers() {
   useEffect(() => {
     loadOffers()
   }, [])
+
+  const wrapperClassName = `manage-offers-height ${
+    useMobileVersion() ? ' ' : 'mx-3'
+  }`
 
   if (!offers.length) {
     return <Loading />
@@ -51,43 +56,45 @@ export default function ManageOffers() {
         closeFunction={() => setShowDeleteModal(false)}
         reloadOffers={() => loadOffers()}
       />
-      <div className="m-2 table-responsive">
-        <Table striped bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Image</th>
-              <th>Discount</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {offers.map((offer, index) => {
-              const actionProps = {
-                offer,
-                setEditable: () => setEditable(offer),
-                openEdit: () => setShowEditModal(true),
-                openDelete: () => setShowDeleteModal(true),
-              } as ActionsProps
-              return (
-                <OfferDetailsRow
-                  key={index}
-                  offer={offer}
-                  actionProps={actionProps}
-                />
-              )
-            })}
-          </tbody>
-        </Table>
-        <div className="d-grid my-2">
-          <Button
-            variant="success"
-            size="lg"
-            onClick={() => setCreateOfferOpen(true)}
-          >
-            Create Offer
-          </Button>
+      <div className={wrapperClassName}>
+        <div className="m-2 table-responsive">
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Discount</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {offers.map((offer, index) => {
+                const actionProps = {
+                  offer,
+                  setEditable: () => setEditable(offer),
+                  openEdit: () => setShowEditModal(true),
+                  openDelete: () => setShowDeleteModal(true),
+                } as ActionsProps
+                return (
+                  <OfferDetailsRow
+                    key={index}
+                    offer={offer}
+                    actionProps={actionProps}
+                  />
+                )
+              })}
+            </tbody>
+          </Table>
+          <div className="d-grid my-2">
+            <Button
+              variant="success"
+              size="lg"
+              onClick={() => setCreateOfferOpen(true)}
+            >
+              Create Offer
+            </Button>
+          </div>
         </div>
       </div>
     </>

@@ -9,3 +9,7 @@
 .trainer-details-z-index {
   z-index: 1;
 }
+
+.users-table-responsive {
+  min-height: 70vH;
+}

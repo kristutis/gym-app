@@ -141,6 +141,7 @@ export default function AdminTimetable() {
         deleteFunction={(value: number) => deleteReservationWindow(value)}
         errorMsg={editModalError}
       />
+      <div className='mx-5 my-2'>
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -193,6 +194,7 @@ export default function AdminTimetable() {
           Generate Timetable
         </Button>
       </Link>
+      </div>
     </>
   )
 }

@@ -12,6 +12,8 @@ import TrainerEditBalanceModal from '../../components/modals/TrainerEditBalanceM
 import Unauthorized from '../../components/unauthorized/Unauthorized'
 import { trainerGetUsersCall, User } from '../../utils/apicalls/user'
 import { useAuthHeader, useTrainerRole } from '../../utils/auth'
+import { useMobileVersion } from '../../utils/hooks/mobileVersion'
+import './TrainerUsers.css'
 
 export default function TrainerUsers() {
   const authHeader = useAuthHeader()
@@ -35,6 +37,10 @@ export default function TrainerUsers() {
   useEffect(() => {
     loadUsers()
   }, [])
+
+  const wrapperClassName = `manage-trainer-users-height ${
+    useMobileVersion() ? ' ' : 'mx-3'
+  }`
 
   if (!useTrainerRole()) {
     return <Unauthorized />
@@ -63,37 +69,39 @@ export default function TrainerUsers() {
           </Button>
         </InputGroup>
       </div>
-      <div className="m-2 table-responsive">
-        <Table striped bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Surname</th>
-              <th>Contacts</th>
-              <th>Activity</th>
-              <th>Balance</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users
-              .filter(
-                (u) =>
-                  search === '' ||
-                  includesSearch(u.id, u.name, u.surname, u.email, u.phone!)
-              )
-              .map((user, index) => {
-                return (
-                  <UserDetailsRow
-                    key={index}
-                    user={user}
-                    setEditable={setEditable}
-                  />
+      <div className={wrapperClassName}>
+        <div className="m-2 table-responsive">
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Contacts</th>
+                <th>Activity</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users
+                .filter(
+                  (u) =>
+                    search === '' ||
+                    includesSearch(u.id, u.name, u.surname, u.email, u.phone!)
                 )
-              })}
-          </tbody>
-        </Table>
+                .map((user, index) => {
+                  return (
+                    <UserDetailsRow
+                      key={index}
+                      user={user}
+                      setEditable={setEditable}
+                    />
+                  )
+                })}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </>
   )

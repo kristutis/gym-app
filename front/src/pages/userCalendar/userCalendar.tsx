@@ -1,6 +1,7 @@
+
+import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import FullCalendar, { EventInput } from '@fullcalendar/react' // must go before plugins, 1
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import React, { useEffect, useState } from 'react'
@@ -291,43 +292,45 @@ export default function UserCalendar() {
       />
       <ErrorTextModal text={errorModalText} setText={setErrorModalText} />
       <SubscriptionStatusSection user={userDetails} />
-      <FullCalendar
-        plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}
-        initialView="dayGridMonth"
-        themeSystem="bootstrap5"
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        }}
-        events={events}
-        eventClick={(e) => handleEventClick(e)}
-        navLinks={true}
-        dayMaxEvents={true}
-        datesSet={(dateInfo) =>
-          setCalendarRange({
-            startDate: dateInfo.start,
-            endDate: dateInfo.end,
-          })
-        }
-        eventTimeFormat={{
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        }}
-      />
+      <div className="mx-5">
+        <FullCalendar
+          plugins={[dayGridPlugin, bootstrap5Plugin, timeGridPlugin]}
+          initialView="dayGridMonth"
+          themeSystem="bootstrap5"
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          events={events}
+          eventClick={(e) => handleEventClick(e)}
+          navLinks={true}
+          dayMaxEvents={true}
+          datesSet={(dateInfo) =>
+            setCalendarRange({
+              startDate: dateInfo.start,
+              endDate: dateInfo.end,
+            })
+          }
+          eventTimeFormat={{
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+          }}
+        />
 
-      <ToggleButton
-        className="mb-2"
-        id="toggle-check"
-        type="checkbox"
-        variant="outline-warning"
-        checked={showUsersOnly}
-        value="null"
-        onChange={() => setShowUsersOnly(!showUsersOnly)}
-      >
-        Show only my bookings
-      </ToggleButton>
+        <ToggleButton
+          className="mb-2"
+          id="toggle-check"
+          type="checkbox"
+          variant="outline-warning"
+          checked={showUsersOnly}
+          value="null"
+          onChange={() => setShowUsersOnly(!showUsersOnly)}
+        >
+          Show only my bookings
+        </ToggleButton>
+      </div>
     </div>
   )
 }

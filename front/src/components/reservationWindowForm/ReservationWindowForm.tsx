@@ -33,6 +33,7 @@ export default function ReservationWindowForm({
   const [onlyWeekends, setOnlyWeekends] = useState(false)
   const [limitVisitors, setLimitVisitors] = useState(false)
   const [visitorsCount, setVisitorsCount] = useState(0)
+  const [weekdays, setWeekdays] = useState<number[]>([])
 
   const handleProgressBar = () => {
     let progress = 0
@@ -69,6 +70,7 @@ export default function ReservationWindowForm({
       onlyWeekends: onlyWeekends,
       limitVisitors: limitVisitors,
       visitorsCount: visitorsCount,
+      weekdays,
     } as CreateTimetableCallProps
 
     setFormPayload(payload)
@@ -88,6 +90,7 @@ export default function ReservationWindowForm({
     limitVisitors,
     visitorsCount,
     onlyWeekends,
+    weekdays,
   ])
 
   window.addEventListener('resize', () => setMobileVersion(isMobileVersion()))
@@ -178,15 +181,30 @@ export default function ReservationWindowForm({
           </Row>
 
           <Row>
+            <WeekDays
+              setWeekdays={setWeekdays}
+              disabled={!!excludeWeekends || !!onlyWeekends}
+            />
+          </Row>
+
+          <Row>
             <DecorateCheckboxLayout
               isMobile={mobileVersion}
               element={
-                <ExcludeWeekends setExcludeWeekends={setExcludeWeekends} />
+                <ExcludeWeekends
+                  setExcludeWeekends={setExcludeWeekends}
+                  disabled={!!weekdays?.length}
+                />
               }
             />
             <DecorateCheckboxLayout
               isMobile={mobileVersion}
-              element={<OnlyWeekends setOnlyWeekends={setOnlyWeekends} />}
+              element={
+                <OnlyWeekends
+                  setOnlyWeekends={setOnlyWeekends}
+                  disabled={!!weekdays?.length}
+                />
+              }
             />
             <DecorateCheckboxLayout
               isMobile={mobileVersion}
@@ -217,15 +235,73 @@ export default function ReservationWindowForm({
   )
 }
 
+function WeekDays({
+  disabled,
+  setWeekdays,
+}: {
+  disabled: boolean
+  setWeekdays: (w: number[]) => void
+}) {
+  const days: CheckedDay[] = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ].map((day) => {
+    return { day: day, checked: false }
+  })
+
+  const [checkedDays, setCheckedDays] = useState<CheckedDay[]>(days)
+
+  return (
+    <InputGroup className="mb-3">
+      {checkedDays.map((cd, index) => (
+        <React.Fragment key={index}>
+          <InputGroup.Text>
+            {cd.day}
+            <Form.Check
+              disabled={disabled}
+              type={'checkbox'}
+              className="mx-2"
+              onClick={(e: any) => {
+                checkedDays[index].checked = !cd.checked
+                const nums = [] as number[]
+                checkedDays.forEach((d, index) => {
+                  if (d.checked) {
+                    nums.push(index)
+                  }
+                })
+                setWeekdays(nums)
+                setCheckedDays(checkedDays)
+              }}
+            />
+          </InputGroup.Text>
+        </React.Fragment>
+      ))}
+    </InputGroup>
+  )
+}
+
+interface CheckedDay {
+  day: string
+  checked: boolean
+}
+
 function ExcludeWeekends({
+  disabled,
   setExcludeWeekends,
 }: {
+  disabled: boolean
   setExcludeWeekends: (val: boolean) => void
 }) {
   return (
     <InputGroup className="mb-3">
       <InputGroup.Text>Exclude weekends?</InputGroup.Text>
       <InputGroup.Checkbox
+        disabled={disabled}
         onChange={(e: any) => {
           setExcludeWeekends(e.target.checked)
         }}
@@ -236,14 +312,17 @@ function ExcludeWeekends({
 }
 
 function OnlyWeekends({
+  disabled,
   setOnlyWeekends,
 }: {
+  disabled: boolean
   setOnlyWeekends: (val: boolean) => void
 }) {
   return (
     <InputGroup className="mb-3">
       <InputGroup.Text>Only weekends?</InputGroup.Text>
       <InputGroup.Checkbox
+        disabled={disabled}
         onChange={(e: any) => {
           setOnlyWeekends(e.target.checked)
         }}

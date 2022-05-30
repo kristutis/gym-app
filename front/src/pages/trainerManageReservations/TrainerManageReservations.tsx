@@ -88,6 +88,7 @@ export default function TrainerManageReservations(props: any) {
         closeFunction={() => setEditableReservation({} as UserReservation)}
         reloadFunction={loadReservations}
       />
+      <div className='mx-5 my-2'>
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -123,6 +124,7 @@ export default function TrainerManageReservations(props: any) {
           Back
         </Button>
       </Link>
+      </div>
     </>
   )
 }

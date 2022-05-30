@@ -428,6 +428,7 @@ function Actions({ actionProps }: { actionProps: ActionsProps }) {
   const { comment, setEditable, openEdit, openDelete } = actionProps
   return (
     <>
+      <br></br>
       <i
         className="fas fa-pen text-success mx-2"
         onClick={() => {

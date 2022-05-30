@@ -134,7 +134,8 @@ function generateReservationWindows(
 				new Date(config.startDate),
 				new Date(config.endDate),
 				parseTime(config.startTime)
-			)
+			),
+			config.weekdays
 		)
 	);
 
@@ -321,7 +322,8 @@ function getDaysFromRange(
 function getFilteredDays(
 	weekends: boolean,
 	weekdays: boolean,
-	days: Date[]
+	days: Date[],
+	daysArr?: number[]
 ): Date[] {
 	let filteredDays = days;
 	if (weekends) {
@@ -330,7 +332,14 @@ function getFilteredDays(
 	if (weekdays) {
 		filteredDays = days.map((d) => getWeekday(d)) as Date[];
 	}
+	if (daysArr?.length) {
+		filteredDays = days.map((d) => getFilteredByWeekDays(d, daysArr)) as Date[];
+	}
 	return filteredDays.filter((d) => d != null);
+}
+
+function getFilteredByWeekDays(day: Date, daysArr: number[]): Date | null {
+	return daysArr.includes(day.getDay()) ? day : null;
 }
 
 function getWeekday(day: Date): Date | null {
@@ -357,6 +366,7 @@ export interface CreateTimetableProps {
 	onlyWeekends: boolean;
 	limitVisitors: boolean;
 	visitorsCount?: number;
+	weekdays?: number[];
 }
 
 export default {

@@ -118,6 +118,7 @@ export interface CreateTimetableCallProps {
   endTime: string | null
   visitingTime: string | null
   breakTime: string | null
+  weekdays?: number[]
   excludeWeekends: boolean
   onlyWeekends: boolean
   limitVisitors: boolean
