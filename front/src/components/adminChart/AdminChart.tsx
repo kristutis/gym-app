@@ -14,6 +14,16 @@ import { useAuthHeader } from '../../utils/auth'
 import './AdminChart.css'
 Chart.register(...registerables)
 
+const daysOfWeek = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+]
+
 const options = {
   scales: {
     y: {
@@ -188,7 +198,9 @@ function getChartData(reservations: ReservationsCount[], daily: boolean) {
   }
 
   const dates = reservations.map((r) =>
-    daily ? r.date.toLocaleDateString() : r.date.toLocaleTimeString()
+    daily
+      ? r.date.toLocaleString('en-us', { weekday: 'long' })
+      : r.date.toLocaleTimeString()
   )
 
   const count = dates.reduce((accumulator: any, value) => {
@@ -196,7 +208,9 @@ function getChartData(reservations: ReservationsCount[], daily: boolean) {
   }, {})
 
   return {
-    labels: Object.keys(count).sort(daily ? sortDay : sortHour),
+    labels: daily
+      ? daysOfWeek
+      : Object.keys(count).sort(daily ? sortDay : sortHour),
     datasets: [
       getDataSet('MORNING', reservations, 'rgba(75,192,192,1)', daily),
       getDataSet('UNLIMITED', reservations, '#742774', daily),
@@ -213,20 +227,14 @@ function getDataSet(
 ) {
   const dates = reservations.map((r) => {
     const date = r.date
-    // date.setHours(date.getHours() + 3)
     return {
       subscription: r.subscription,
-      date: daily ? date.toLocaleDateString() : date.toLocaleTimeString(),
+      date: daily
+        ? date.toLocaleString('en-us', { weekday: 'long' })
+        : date.toLocaleTimeString(),
       count: r.subscription === type.toUpperCase() ? 1 : 0,
     }
   })
-
-  reservations.forEach(
-    (r) =>
-      r.subscription === 'MORNING' &&
-      r.date.toLocaleTimeString().includes('PM') &&
-      console.log(r.date.toLocaleTimeString())
-  )
 
   const count = dates.reduce((accumulator: any, value) => {
     return {
@@ -235,16 +243,26 @@ function getDataSet(
     }
   }, {})
 
-  const countArray = Object.entries(count)
-    .map((o) => {
-      return {
-        time: o[0],
-        count: o[1],
-      }
+  let countArray = Object.entries(count).map((o) => {
+    return {
+      time: o[0],
+      count: o[1],
+    }
+  })
+
+  if (daily) {
+    const sortedArr = [] as any[]
+    daysOfWeek.forEach((d) => {
+      sortedArr.push(
+        countArray.find((item) => item.time === d) || { time: d, count: 0 }
+      )
     })
-    .sort((a, b) =>
+    countArray = sortedArr
+  } else {
+    countArray.sort((a, b) =>
       daily ? sortDay(a.time, b.time) : sortHour(a.time, b.time)
     )
+  }
 
   return {
     label: type.toLocaleLowerCase(),
