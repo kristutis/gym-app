@@ -1,6 +1,9 @@
 import express from 'express';
 import subscriptionsController from '../controllers/subscriptions.controller';
-import { authenticateUser } from '../middleware/auth.middleware';
+import {
+	authenticateAdmin,
+	authenticateUser,
+} from '../middleware/auth.middleware';
 import {
 	purchaseSubscriptionParamSchema,
 	validateRequestParams,
@@ -26,4 +29,10 @@ subscriptionsRouter.delete(
 	BASE_ROUTE,
 	authenticateUser,
 	subscriptionsController.deleteSubscription
+);
+
+subscriptionsRouter.get(
+	BASE_ROUTE + '/stats',
+	authenticateAdmin,
+	subscriptionsController.getSubscriptionStats
 );

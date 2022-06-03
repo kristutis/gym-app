@@ -24,9 +24,11 @@
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/chart.js": "^2.9.37",
     "@types/cors": "^2.8.12",
     "@types/jsonwebtoken": "^8.5.8",
     "bcrypt": "^5.0.1",
+    "chart.js": "^3.8.0",
     "cors": "^2.8.5",
     "dayjs": "^1.10.7",
     "dotenv": "^14.2.0",

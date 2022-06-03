@@ -1,12 +1,14 @@
 import express from 'express';
 import reservationController from '../controllers/reservation.controller';
 import {
+	authenticateAdmin,
 	authenticateTrainer,
 	authenticateUser,
 } from '../middleware/auth.middleware';
 import {
 	createReservationBodySchema,
 	getReservationAvailabilityParamSchema,
+	getTimetablesSchema,
 	reservationIdSchema,
 	trainerGetUsersReservationsParamSchema,
 	trainerUpdateAttendencySchema,
@@ -59,4 +61,11 @@ reservationRouter.delete(
 	validateRequestParams(reservationIdSchema),
 	authenticateUser,
 	reservationController.deleteReservation
+);
+
+reservationRouter.get(
+	BASE_ROUTE + '/reservationsCount',
+	validateRequestQuery(getTimetablesSchema),
+	authenticateAdmin,
+	reservationController.geReservationsCount
 );

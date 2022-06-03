@@ -121,6 +121,33 @@ async function getUsersReservationWindowIds(
 	});
 }
 
+async function getReservationsCount(
+	startDate: Date,
+	endDate: Date
+): Promise<ReservationsCount[] | MysqlError> {
+	return new Promise((resolve, reject) => {
+		db.query(
+			'SELECT fk_subscription_name, start_time FROM reservations ' +
+				'LEFT JOIN user_subscriptions on reservations.fk_user_id=user_subscriptions.fk_user_id ' +
+				'LEFT JOIN reservation_windows on reservations.fk_reservation_id = reservation_windows.id ' +
+				'WHERE (start_time BETWEEN ? AND ?)',
+			[startDate, endDate],
+			(err, result) => {
+				if (err) {
+					return reject(err);
+				}
+				const subs = result.map((res: any) => {
+					return {
+						subscription: res.fk_subscription_name,
+						date: new Date(res.start_time),
+					} as ReservationsCount;
+				});
+				return resolve(subs);
+			}
+		);
+	});
+}
+
 async function getUsersMissedReservations(
 	uid: string,
 	startDate: Date,
@@ -173,7 +200,13 @@ export interface UserReservation extends ReservationWindow {
 	attended: boolean;
 }
 
+export interface ReservationsCount {
+	subscription: string;
+	date: Date;
+}
+
 export default {
+	getReservationsCount,
 	insertReservation,
 	reservationExist,
 	getUsersReservationWindowIds,

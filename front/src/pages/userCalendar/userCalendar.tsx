@@ -133,7 +133,7 @@ export default function UserCalendar() {
       )) as number[]
       return Promise.resolve(userResIds)
     } catch (e) {
-      alert('Error when getting user events')
+      
     }
     return Promise.resolve([])
   }
@@ -148,7 +148,7 @@ export default function UserCalendar() {
         setUserDetails(usersDetails as User)
         setUsersPhone((usersDetails as User).phone || '')
       })
-      .catch((err) => alert('Error when getting users details'))
+      .catch((err) => null)
   }, [])
 
   const loadReservationWindows = async () => {
@@ -183,7 +183,7 @@ export default function UserCalendar() {
       )
       setEvents(convertToEvents(data as ReservationWindow[], userResIds))
     } catch (e) {
-      alert('Error when getting all events')
+      
     }
   }
 
@@ -238,7 +238,6 @@ export default function UserCalendar() {
     }
 
     const now = new Date()
-    console.log(reachedMaxMissedAttendenceLimit)
     if (
       reachedMaxMissedAttendenceLimit &&
       eventDetails.start.getMonth() == now.getMonth() &&

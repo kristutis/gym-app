@@ -157,6 +157,38 @@ export const createReservationCall = async (
   return Promise.reject(getErrorMsg(responseBody))
 }
 
+export const getReservationsCount = async (
+  authToken: string,
+  startDate: string,
+  endDate: string
+): Promise<string | ReservationsCount[]> => {
+  const params = { startDate, endDate }
+  const url: string =
+    DEFAULT_BACKEND_PATH +
+    '/reservations/reservationsCount?' +
+    new URLSearchParams(params as any)
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  const responseBody = await response.json()
+  if (response.status === 200) {
+    const res = responseBody.map((r: any) => {
+      return {
+        subscription: r.subscription,
+        date: new Date(r.date),
+      } as ReservationsCount
+    })
+    return Promise.resolve(res)
+  }
+
+  return Promise.reject(getErrorMsg(responseBody))
+}
+
 export interface ReservationsAvailabilityProps {
   startDate: string
   endDate: string
@@ -173,4 +205,13 @@ export interface ReservationsAvailabilityDetails {
 export interface UserReservation extends ReservationWindow {
   uid: string
   attended: boolean
+}
+
+export interface ReservationsCountProps {
+  startDate: Date
+}
+
+export interface ReservationsCount {
+  subscription: string
+  date: Date
 }

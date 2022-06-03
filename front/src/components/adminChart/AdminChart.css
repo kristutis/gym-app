@@ -1,0 +1,9 @@
+.donut-chart {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.admin-chart-text {
+    display: flex;
+    justify-content: center;
+}

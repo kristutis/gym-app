@@ -5,3 +5,8 @@ export interface SubscriptionType {
 	endTime: string;
 	validDays: number;
 }
+
+export interface SubscriptionsCount {
+	name: string;
+	count: number;
+}

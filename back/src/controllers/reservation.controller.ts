@@ -285,6 +285,25 @@ async function createReservation(
 	}
 }
 
+async function geReservationsCount(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const params = convertParamsToDates(req.query);
+
+	try {
+		const reservations = await reservationsOperations.getReservationsCount(
+			params.startDate,
+			params.endDate
+		);
+
+		return res.json(reservations);
+	} catch (e) {
+		next(e);
+	}
+}
+
 function monthsBetween(...args: any[]): string[] {
 	let [a, b] = args.map((arg) =>
 		arg
@@ -317,4 +336,5 @@ export default {
 	getReservationsAvailability,
 	trainerGetUsersReservations,
 	trainerUpdateReserationAttendency,
+	geReservationsCount,
 };

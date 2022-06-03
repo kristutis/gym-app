@@ -7,6 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import React, { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import AdminChart from '../../components/adminChart/AdminChart'
 import DeleteTimetablesModal from '../../components/modals/DeleteTimetablesModal'
 import EditTimetableModal from '../../components/modals/EditTimetableModal'
 import {
@@ -141,59 +142,66 @@ export default function AdminTimetable() {
         deleteFunction={(value: number) => deleteReservationWindow(value)}
         errorMsg={editModalError}
       />
-      <div className='mx-5 my-2'>
-      <FullCalendar
-        plugins={[
-          dayGridPlugin,
-          bootstrap5Plugin,
-          timeGridPlugin,
-          interactionPlugin,
-        ]}
-        initialView="dayGridMonth"
-        themeSystem="bootstrap5"
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        }}
-        events={events}
-        eventClick={(e) => handleEventClick(e)}
-        select={(e: any) => {
-          setDeleteDates({ startDate: e.start as Date, endDate: e.end as Date })
-          setDeleteModalOpened(
-            events.some((event) =>
-              dateRangeOverlaps(
-                new Date(event.start as Date),
-                new Date(event.end as Date),
-                e.start,
-                e.end
+      <div className="mx-5 my-2">
+        <AdminChart
+          startDate={calendarRange.startDate}
+          endDate={calendarRange.endDate}
+        />
+        <FullCalendar
+          plugins={[
+            dayGridPlugin,
+            bootstrap5Plugin,
+            timeGridPlugin,
+            interactionPlugin,
+          ]}
+          initialView="dayGridMonth"
+          themeSystem="bootstrap5"
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          events={events}
+          eventClick={(e) => handleEventClick(e)}
+          select={(e: any) => {
+            setDeleteDates({
+              startDate: e.start as Date,
+              endDate: e.end as Date,
+            })
+            setDeleteModalOpened(
+              events.some((event) =>
+                dateRangeOverlaps(
+                  new Date(event.start as Date),
+                  new Date(event.end as Date),
+                  e.start,
+                  e.end
+                )
               )
             )
-          )
-        }}
-        selectable={true}
-        navLinks={true}
-        dayMaxEvents={true}
-        datesSet={(dateInfo) =>
-          setCalendarRange({
-            startDate: dateInfo.start,
-            endDate: dateInfo.end,
-          })
-        }
-        eventTimeFormat={{
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        }}
-      />
-      <Link
-        to={'/admin-timetable/create'}
-        className="admin-table-generate-button d-grid gap-2 my-2"
-      >
-        <Button variant="success" size="lg">
-          Generate Timetable
-        </Button>
-      </Link>
+          }}
+          selectable={true}
+          navLinks={true}
+          dayMaxEvents={true}
+          datesSet={(dateInfo) =>
+            setCalendarRange({
+              startDate: dateInfo.start,
+              endDate: dateInfo.end,
+            })
+          }
+          eventTimeFormat={{
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+          }}
+        />
+        <Link
+          to={'/admin-timetable/create'}
+          className="admin-table-generate-button d-grid gap-2 my-2"
+        >
+          <Button variant="success" size="lg">
+            Generate Timetable
+          </Button>
+        </Link>
       </div>
     </>
   )

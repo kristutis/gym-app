@@ -55,3 +55,7 @@ Content-Type: application/json
   "email": "hello@wasdorld.com",
 }
 
+###
+GET http://localhost:3001/api/reservations/daily/1653771600000
+Content-Type: application/json
+

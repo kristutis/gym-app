@@ -20,6 +20,19 @@ async function getSubscriptionTypes(
 	}
 }
 
+async function getSubscriptionStats(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const subscriptions = await subscriptionsOperations.getSubscriptionsCount();
+		return res.status(ResponseCode.OK).json(subscriptions);
+	} catch (e) {
+		next(e);
+	}
+}
+
 async function purchaseSubscription(
 	req: Request,
 	res: Response,
@@ -94,6 +107,7 @@ function isSubscriptionValid(user: User): boolean {
 }
 
 export default {
+	getSubscriptionStats,
 	getSubscriptionTypes,
 	purchaseSubscription,
 	deleteSubscription,
